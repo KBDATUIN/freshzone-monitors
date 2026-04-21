@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshZone | History</title>
+    <meta name="description" content="FreshZone — complete archive of campus vape aerosol detection events.">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#004e7a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FreshZone">
+    <link rel="apple-touch-icon" href="/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/pwa.css">
+    <style>
+        /* ── KEYFRAMES ─────────────────────────────────────── */
+        @keyframes rowSlideIn {
+            from { opacity:0; transform:translateX(-18px); }
+            to   { opacity:1; transform:translateX(0); }
+        }
+        @keyframes tagPulse {
+            0%,100% { box-shadow:0 0 0 0 rgba(220,53,69,0.35); }
+            50%     { box-shadow:0 0 0 7px rgba(220,53,69,0); }
+        }
+        @keyframes countPop {
+            from { transform:translateY(8px); opacity:0; }
+            to   { transform:translateY(0);   opacity:1; }
+        }
+
+        /* ── STATS GRID ─────────────────────────────────────── */
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+        .stat-box h3 {
+            font-size:2rem; color:var(--primary); display:inline-block;
+            transition:transform 0.4s cubic-bezier(0.4,0,0.2,1), color 0.3s;
+        }
+        .stat-box:hover h3 { transform:scale(1.14); color:var(--secondary); }
+        .stat-box h3.pop { animation:countPop 0.35s cubic-bezier(0.4,0,0.2,1) both; }
+        .stats-grid .stat-box:nth-child(1) { animation-delay:0.10s; }
+        .stats-grid .stat-box:nth-child(2) { animation-delay:0.22s; }
+        .stats-grid .stat-box:nth-child(3) { animation-delay:0.34s; }
+
+        /* ── TABLE ──────────────────────────────────────────── */
+        table { width:100%; border-collapse:collapse; min-width:600px; }
+        th,td { padding:1.1rem 1.2rem; text-align:left; border-bottom:1px solid #eee; font-size:0.95rem; }
+        th { background:#f8f9fa; color:var(--gray); font-size:0.85rem; font-weight:600; }
+        tbody tr { transition:background 0.22s ease, transform 0.22s cubic-bezier(0.4,0,0.2,1); }
+        tbody tr:nth-child(even) td { background: rgba(0,180,216,0.03); }
+        th { cursor:pointer; user-select:none; position:relative; }
+        th:hover { background:#edf2f7 !important; color:var(--primary) !important; }
+        th.sort-asc::after  { content:' ↑'; font-size:0.75rem; color:var(--secondary); }
+        th.sort-desc::after { content:' ↓'; font-size:0.75rem; color:var(--secondary); }
+        [data-theme='dark'] th:hover { background:#0d2035 !important; }
+        [data-theme='dark'] tbody tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+        tbody tr:hover td { background:rgba(0,180,216,0.06); }
+        tbody tr:hover    { transform:translateX(5px); }
+        tbody tr.row-animate { opacity:0; animation:rowSlideIn 0.42s cubic-bezier(0.4,0,0.2,1) forwards; }
+        .tag-danger { animation:tagPulse 3s ease-in-out infinite; }
+
+        /* ── FILTER BAR ─────────────────────────────────────── */
+        .filter-bar { display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem; }
+        .filter-bar label { font-size:0.78rem; margin-top:0; margin-bottom:0.2rem; font-weight:600; color:var(--gray); letter-spacing:0.04em; text-transform:uppercase; }
+        .filter-bar input,
+        .filter-bar select { font-size:0.85rem; padding:0.5rem 0.75rem; margin-top:0; border-radius:8px; }
+        .filter-bar button { width:auto; padding:0.52rem 1.2rem; margin-top:0; font-size:0.82rem; border-radius:8px; }
+        .filter-group { display:flex; flex-direction:column; }
+        .export-btn { width:auto; padding:0.52rem 1.1rem; margin-top:0; font-size:0.82rem; border-radius:8px; background:var(--success) !important; }
+
+        /* ── HERO ───────────────────────────────────────────── */
+        .page-hero {
+            display:flex; flex-direction:column; align-items:center;
+            justify-content:center; background:#e5f6ff; padding:2rem;
+            border-radius:15px; margin-bottom:2rem; text-align:center;
+        }
+        .page-hero h1 { margin-bottom:0.5rem; }
+        .page-hero p  { margin-bottom:1rem; font-size:1rem; color:#555; }
+        .page-hero img { width:160px; height:auto; margin-top:0.5rem; animation:float 6s ease-in-out infinite; }
+        [data-theme="dark"] .page-hero { background:rgba(0,80,120,0.3); }
+        [data-theme="dark"] .page-hero p { color:#a0b8c8; }
+
+        /* ── EMPTY STATE ─────────────────────────────────────── */
+        .empty-row td { text-align:center; color:var(--gray); padding:2.5rem; font-style:italic; }
+
+        /* ── PUSH NOTIFICATION TOGGLE ──────────────────────── */
+        .push-toggle-wrap { display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;margin-left:4px; }
+        .push-toggle-icon { font-size:0.9rem;line-height:1; }
+        .push-toggle-switch { position:relative;width:44px;height:24px;background:#ccc;border-radius:12px;cursor:pointer;transition:background 0.25s;outline:none;flex-shrink:0; }
+        .push-toggle-switch:focus-visible { box-shadow:0 0 0 3px rgba(0,200,150,0.4); }
+        .push-toggle-switch.active { background:var(--secondary,#00c896); }
+        .push-toggle-knob { position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);will-change:transform; }
+        .push-toggle-switch.active .push-toggle-knob { transform:translateX(20px); }
+        .push-toggle-label { font-size:0.72rem;font-weight:700;color:var(--secondary,#00c896);letter-spacing:0.04em;min-width:22px; }
+    
+        /* ── FILTER BAR MOBILE FIX ───────────────────── */
+        .filter-inputs-row {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            flex: 1;
+            width: 100%;
+        }
+        .filter-inputs-row .filter-group {
+            flex: 1;
+            min-width: 130px;
+        }
+        /* ── FILTER ACTIONS ─────────────────────────────────── */
+        .filter-actions-row {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            align-items: stretch;
+            width: 100%;
+        }
+        .filter-action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.65rem 1rem !important;
+            margin: 0 !important;
+            font-size: 0.85rem !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            border: none;
+            color: white;
+            box-shadow: none !important;
+            text-transform: none !important;
+            width: auto !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 7px !important;
+            transition: filter 0.15s, transform 0.1s !important;
+            letter-spacing: 0.01em;
+        }
+        .filter-action-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .filter-action-btn:active { transform: translateY(0); }
+        .filter-action-btn::after { display: none !important; }
+
+        .filter-clear-btn  { background: #64748b !important; }
+        .filter-export-btn { background: #16a34a !important; }
+        .filter-danger-btn {
+            background: #e74c3c !important;
+            /* visually separated — always full width */
+            flex: none !important;
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+        .filter-clear-btn:hover  { background: #475569 !important; }
+        .filter-export-btn:hover { background: #15803d !important; }
+        .filter-danger-btn:hover { background: #c0392b !important; }
+
+        /* Danger section with divider */
+        .filter-danger-section {
+            width: 100%;
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+            border-top: 1px solid rgba(231,76,60,0.2);
+        }
+        .filter-danger-label {
+            font-size: 0.7rem;
+            color: #e74c3c;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Inline clear button inside input wrap */
+        .filter-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .filter-input-wrap input,
+        .filter-input-wrap select {
+            width: 100%;
+            padding-right: 2rem;
+        }
+        .filter-inline-clear {
+            position: absolute !important;
+            right: 6px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 20px !important;
+            height: 20px !important;
+            min-width: unset !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            border-radius: 50% !important;
+            background: #94a3b8 !important;
+            color: white !important;
+            font-size: 0.6rem !important;
+            cursor: pointer !important;
+            box-shadow: none !important;
+            text-transform: none !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            line-height: 1 !important;
+            z-index: 2 !important;
+            transition: background 0.2s !important;
+        }
+        .filter-inline-clear:hover { background: #64748b !important; }
+        .filter-inline-clear::after { display: none !important; }
+
+        /* Button label parts — always visible */
+        .fab-icon { display: inline-flex; align-items: center; flex-shrink: 0; }
+        .fab-text  { font-size: 0.85rem; }
+
+        @media (max-width: 600px) {
+            .filter-inputs-row { flex-direction: column; gap: 0.6rem; }
+            .filter-inputs-row .filter-group { min-width: auto; }
+            .filter-actions-row { gap: 0.5rem; }
+            .filter-action-btn {
+                flex: 1;
+                min-width: calc(50% - 0.3rem);
+                font-size: 0.8rem !important;
+                padding: 0.65rem 0.6rem !important;
+            }
+            /* On mobile keep text but smaller */
+            .fab-text { font-size: 0.78rem; }
+        }
+        @media (max-width: 360px) {
+            .filter-action-btn { min-width: 100%; flex: none; width: 100% !important; }
+        }
+</style>
+    
+    <style>
+        /* ── ICON SIZES (all SVG icons hard-locked) ─────────── */
+        .icon     { display:inline-block; width:1em;    height:1em;    vertical-align:-0.125em; flex-shrink:0; overflow:hidden; }
+        .nav-icon { display:inline-block; width:1.05rem;height:1.05rem;vertical-align:-0.15em;  flex-shrink:0; overflow:hidden; }
+        .btn-icon { display:inline-block; width:0.9rem; height:0.9rem; vertical-align:-0.1em;   flex-shrink:0; overflow:hidden; }
+        .h-icon   { display:inline-block; width:1.1rem; height:1.1rem; vertical-align:-0.18em;  flex-shrink:0; overflow:hidden; }
+        .sm-icon  { display:inline-block; width:0.8rem; height:0.8rem; vertical-align:-0.08em;  flex-shrink:0; overflow:hidden; }
+    </style>
+</head>
+<body>
+
+    <!-- Smoke background — same as dashboard -->
+    <div class="smoke-container" aria-hidden="true">
+        <div class="smoke-particle" style="left:8%;  width:200px;height:200px;animation-delay:0s;"></div>
+        <div class="smoke-particle" style="left:28%; width:140px;height:140px;animation-delay:3s;"></div>
+        <div class="smoke-particle" style="left:55%; width:220px;height:220px;animation-delay:6s;"></div>
+        <div class="smoke-particle" style="left:78%; width:170px;height:170px;animation-delay:1.5s;"></div>
+    </div>
+
+        <nav role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="dashboard.html" class="logo" aria-label="FreshZone Home">
+                <img src="logo1.png" alt="FreshZone Logo">
+            </a>
+            <div class="nav-links" id="desktop-nav">
+                <a href="dashboard.html" >Dashboard</a>
+                <a href="history.html" class="active">History</a>
+                <a href="profile.html" >Profile</a>
+                <a href="contact.html" >Contact</a>
+                <a href="#" onclick="openLogoutModal();return false;">Logout</a>
+                <div class="nav-user" id="nav-user-display">
+                    <span class="nav-user-dot"></span>
+                    <span id="nav-user-name">—</span>
+                </div>
+                <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+                <label class="push-toggle-wrap" title="Toggle push notifications" aria-label="Toggle push notifications">
+                    <span class="push-toggle-icon"><svg style="width:1rem;height:1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+                    <div class="push-toggle-switch" id="push-btn" onclick="togglePushNotifications()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')togglePushNotifications()">
+                        <div class="push-toggle-knob"></div>
+                    </div>
+                    <span class="push-toggle-label" id="push-label">OFF</span>
+                </label>
+            </div>
+            <button class="hamburger" id="hamburger" onclick="openMobileNav()" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile nav drawer -->
+    <div class="mobile-nav" id="mobile-nav" onclick="closeMobileNav()">
+        <div class="mobile-nav-drawer" onclick="event.stopPropagation()">
+            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu">&#x2715;</button>
+            <div style="display:flex;align-items:center;gap:10px;padding:0 0.5rem 1rem;border-bottom:1px solid rgba(0,78,122,0.1);margin-bottom:0.5rem;">
+                <img src="logo1.png" alt="FreshZone" style="width:36px;height:36px;border-radius:8px;object-fit:contain;">
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:var(--primary);">FreshZone</div>
+                    <div style="font-size:0.72rem;color:var(--gray);" id="mobile-user-name">—</div>
+                </div>
+            </div>
+            <a href="dashboard.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Dashboard</a>
+            <a href="history.html" class="active"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
+            <a href="profile.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
+            <a href="contact.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Contact</a>
+            <div class="mobile-nav-divider"></div>
+            <button class="mobile-nav-logout" onclick="openLogoutModal();closeMobileNav();"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
+            <div class="mobile-nav-divider"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;">
+                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Dark Mode</span>
+                <button class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 1rem 0.8rem;">
+                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Notifications</span>
+                <label class="push-toggle-wrap">
+                    <div class="push-toggle-switch" id="push-btn-mobile" onclick="togglePushNotifications()" role="button" tabindex="0">
+                        <div class="push-toggle-knob"></div>
+                    </div>
+                    <span class="push-toggle-label" id="push-label-mobile">OFF</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Page hero -->
+        <div class="page-hero animate-in">
+            <h1 style="color:var(--primary); font-size:1.6rem; margin-bottom:0.25rem;">
+                <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
+                Detection History
+            </h1>
+            <p>Complete archive of campus vape aerosol detection events.</p>
+            <img src="logo1.png" alt="">
+        </div>
+
+        <!-- Stats grid -->
+        <div class="stats-grid">
+            <div class="stat-box glass-card animate-in" style="animation-delay:0.1s; text-align:center;">
+                <h3 id="stat-today">—</h3>
+                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Today's Detections</p>
+            </div>
+            <div class="stat-box glass-card animate-in" style="animation-delay:0.22s; text-align:center;">
+                <h3 id="stat-total">—</h3>
+                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Total Events</p>
+            </div>
+            <div class="stat-box glass-card animate-in" style="animation-delay:0.34s; text-align:center;">
+                <h3 id="stat-resolved">—</h3>
+                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Resolved</p>
+            </div>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="glass-card animate-in" style="margin-bottom:1.5rem;">
+            <div class="filter-bar">
+                <!-- Row 1: Filter inputs -->
+                <div class="filter-inputs-row">
+                    <div class="filter-group">
+                        <label for="filter-search">Search</label>
+                        <div class="filter-input-wrap">
+                            <input type="text" id="filter-search" placeholder="Location, status, handled by…" oninput="renderTable();updateClearBtns()">
+                            <button class="filter-inline-clear" id="clear-search" style="display:none;" onclick="clearField('filter-search')" title="Clear search">✕</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-status">Status</label>
+                        <div class="filter-input-wrap">
+                            <select id="filter-status" onchange="renderTable();updateClearBtns()">
+                                <option value="">All Statuses</option>
+                                <option value="Detected">Detected</option>
+                                <option value="Acknowledged">Acknowledged</option>
+                                <option value="Cleared">Cleared</option>
+                            </select>
+                            <button class="filter-inline-clear" id="clear-status" style="display:none;" onclick="clearField('filter-status')" title="Clear status">✕</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-date">Date</label>
+                        <div class="filter-input-wrap">
+                            <input type="date" id="filter-date" onchange="renderTable();updateClearBtns()">
+                            <button class="filter-inline-clear" id="clear-date" style="display:none;" onclick="clearField('filter-date')" title="Clear date">✕</button>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- Row 2: Filter action buttons -->
+            <div class="filter-actions-row">
+                <button class="filter-action-btn filter-clear-btn" onclick="clearFilters()">
+                    <span class="fab-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></span>
+                    <span class="fab-text">Reset Filters</span>
+                </button>
+                <button class="filter-action-btn filter-export-btn" onclick="exportCSV()">
+                    <span class="fab-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    <span class="fab-text">Export to CSV</span>
+                </button>
+            </div>
+
+            <!-- Row 3: Danger zone — separated, admin only -->
+            <div class="filter-danger-section" id="danger-section" style="display:none;">
+                <div class="filter-danger-label">
+                    <svg style="width:0.75rem;height:0.75rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    Admin Action — Cannot be undone
+                </div>
+                <button id="clear-all-btn" class="filter-action-btn filter-danger-btn" onclick="clearAllHistory()">
+                    <span class="fab-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></span>
+                    <span class="fab-text">Delete All History</span>
+                </button>
+            </div>
+        </div>
+
+        </div><!-- /.glass-card filter -->
+
+        <div class="log-container">
+            <table role="table" aria-label="Detection history log">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable(0)" title="Sort by detected time">🕐 Detected</th>
+                        <th onclick="sortTable(1)" title="Sort by location">📍 Location</th>
+                        <th onclick="sortTable(2)" title="Sort by status">Status</th>
+                        <th title="Time acknowledged">✅ Acknowledged</th>
+                        <th title="Time resolved">🏁 Resolved</th>
+                        <th title="Response time">⏱ Response</th>
+                        <th onclick="sortTable(6)" title="Sort by staff">👤 By</th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+        </div><!-- /.log-container -->
+    </div><!-- /.container -->
+
+    <div id="session-warning" role="status"></div>
+    <div id="notification" class="notification" role="alert" aria-live="polite"></div>
+
+    <div id="logoutModal" class="modal-overlay-custom" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+        <div class="modal-content-custom">
+            <h3 id="logout-title">Confirm Logout</h3>
+            <p>Are you sure you want to log out of FreshZone?</p>
+            <div class="modal-btn-group">
+                <button class="confirm-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="closeLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear All Confirm Modal -->
+    <div id="clearAllModal" class="modal-overlay-custom" role="dialog" aria-modal="true" aria-labelledby="clear-title" style="display:none;">
+        <div class="modal-content-custom">
+            <h3 id="clear-title" style="color:#e74c3c;"><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg> Delete All History</h3>
+            <p>This will permanently delete <strong>all</strong> detection events, sensor readings, push notifications, system logs, and login attempts. This cannot be undone.</p>
+            <div class="modal-btn-group">
+                <button class="confirm-btn" style="background:#e74c3c;" onclick="confirmClearAll()">Yes, Delete Everything</button>
+                <button class="cancel-btn" onclick="document.getElementById('clearAllModal').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <button id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+        title="Back to top" aria-label="Back to top"
+        style="position:fixed;bottom:70px;right:20px;width:42px;height:42px;border-radius:50%;
+               background:var(--primary);color:white;border:none;font-size:1.2rem;cursor:pointer;
+               display:none;align-items:center;justify-content:center;z-index:900;
+               box-shadow:0 4px 14px rgba(0,0,0,0.2);margin:0;padding:0;text-transform:none;">↑</button>
+
+    <footer><p>© 2026 FreshZone – Campus Vape Aerosol Detection System</p></footer>
+
+    <script src="utils.js"></script>
+    <script>
+        // Auth guard
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; }
+
+        // Show danger section (Delete All History) only for Administrators
+        if (user && user.position === 'Administrator') {
+            const ds = document.getElementById('danger-section');
+            if (ds) ds.style.display = '';
+        }
+
+        let allRecords = [];
+
+        async function loadHistory() {
+            try {
+                const data = await apiFetch('/history');
+                if (data && data.success) {
+                    allRecords = data.data;
+                } else {
+                    allRecords = [];
+                }
+                renderTable();
+                loadStats();
+            } catch(err) {
+                showNotification('Failed to load history.', 'error');
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const data = await apiFetch('/history/stats');
+                if (data && data.success) {
+                    setStatAnimated('stat-today',    data.stats.today);
+                    setStatAnimated('stat-total',    data.stats.total);
+                    setStatAnimated('stat-resolved', data.stats.resolved);
+                }
+            } catch(err) {}
+        }
+
+        function renderTable() {
+            const search  = document.getElementById('filter-search').value.toLowerCase();
+            const status  = document.getElementById('filter-status').value;
+            const dateVal = document.getElementById('filter-date').value;
+            const tbody   = document.getElementById('history-tbody');
+
+            let records = allRecords.filter(r => {
+                const matchSearch = !search ||
+                    (r.location    || '').toLowerCase().includes(search) ||
+                    (r.status      || '').toLowerCase().includes(search) ||
+                    (r.handled_by  || '').toLowerCase().includes(search) ||
+                    (r.notes       || '').toLowerCase().includes(search);
+                const matchStatus = !status || r.status === status;
+                const matchDate = !dateVal || (() => {
+                    if (!r.detected_at) return false;
+                    const d = new Date(r.detected_at);
+                    const manila = d.toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' }); // YYYY-MM-DD
+                    return manila === dateVal;
+                })();
+                return matchSearch && matchStatus && matchDate;
+            });
+
+            tbody.style.transition = 'opacity 0.18s ease';
+            tbody.style.opacity = '0';
+            setTimeout(() => {
+                tbody.innerHTML = '';
+                if (records.length === 0) {
+                    tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No records found matching your filters.</td></tr>';
+                } else {
+                    records.forEach((r, i) => {
+                        const isDetected = r.status === 'Detected';
+                        const tr = document.createElement('tr');
+                        tr.className = 'row-animate';
+                        tr.style.animationDelay = (i * 0.055) + 's';
+                        // Format times in Manila timezone
+                        const phLocale = 'en-PH';
+                        const phOpts   = { timeZone: 'Asia/Manila', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                        const timeOnly = { timeZone: 'Asia/Manila', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+                        const dateOnly = { timeZone: 'Asia/Manila', month: 'short', day: 'numeric', year: 'numeric' };
+
+                        const detectedStr     = r.detected_at     ? new Date(r.detected_at).toLocaleString(phLocale, phOpts)     : '—';
+                        const acknowledgedStr = r.acknowledged_at  ? new Date(r.acknowledged_at).toLocaleString(phLocale, phOpts)  : '—';
+                        const resolvedStr     = r.resolved_at      ? new Date(r.resolved_at).toLocaleString(phLocale, phOpts)      : '—';
+
+                        // Response time — duration + acknowledged timestamp
+                        let responseDuration = '—';
+                        let responseTimestamp = '';
+                        if (r.response_seconds !== null && r.response_seconds !== undefined) {
+                            const totalSec = r.response_seconds;
+                            const hrs  = Math.floor(totalSec / 3600);
+                            const mins = Math.floor((totalSec % 3600) / 60);
+                            const secs = totalSec % 60;
+                            if (totalSec < 60)        responseDuration = secs + 's';
+                            else if (totalSec < 3600) responseDuration = mins + 'm ' + secs + 's';
+                            else                      responseDuration = hrs + 'h ' + mins + 'm';
+                        }
+                        if (r.acknowledged_at) {
+                            responseTimestamp = new Date(r.acknowledged_at).toLocaleString(phLocale, phOpts);
+                        }
+
+                        const responseCell = responseDuration !== '—'
+                            ? `<span style="font-weight:600;color:var(--primary);">${responseDuration}</span>${responseTimestamp ? `<br><span style="font-size:0.78rem;color:var(--gray);font-weight:400;">${responseTimestamp}</span>` : ''}`
+                            : '—';
+
+                        // Status tag
+                        let statusTag = 'tag-info';
+                        if (r.status === 'Detected')     statusTag = 'tag-danger';
+                        else if (r.status === 'Cleared') statusTag = 'tag-success';
+                        else if (r.status === 'Acknowledged') statusTag = 'tag-warning';
+
+                        tr.innerHTML = `
+                            <td data-label="Detected">${detectedStr}</td>
+                            <td data-label="Location">${r.location || '—'}</td>
+                            <td data-label="Status"><span class="tag ${statusTag}">${r.status}</span></td>
+                            <td data-label="Acknowledged">${acknowledgedStr}</td>
+                            <td data-label="Resolved">${resolvedStr}</td>
+                            <td data-label="Response">${responseCell}</td>
+                            <td data-label="By">${r.handled_by || '—'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                tbody.style.opacity = '1';
+            }, 180);
+        }
+
+        function setStatAnimated(id, val) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = val;
+            el.classList.remove('pop');
+            void el.offsetWidth;
+            el.classList.add('pop');
+        }
+
+        // ── FILTER CLEAR BUTTONS ──────────────────────────────
+        // Shows/hides the inline ✕ button inside each filter input
+        function updateClearBtns() {
+            const fields = [
+                { inputId: 'filter-search', btnId: 'clear-search' },
+                { inputId: 'filter-status', btnId: 'clear-status' },
+                { inputId: 'filter-date',   btnId: 'clear-date'   },
+            ];
+            fields.forEach(({ inputId, btnId }) => {
+                const input = document.getElementById(inputId);
+                const btn   = document.getElementById(btnId);
+                if (!input || !btn) return;
+                btn.style.display = input.value ? 'flex' : 'none';
+            });
+        }
+
+        function clearField(fieldId) {
+            const el = document.getElementById(fieldId);
+            if (!el) return;
+            el.value = '';
+            renderTable();
+            updateClearBtns();
+        }
+
+        function clearFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-date').value = '';
+            updateClearBtns();
+            renderTable();
+        }
+
+        function exportCSV() {
+            const ph = { timeZone: 'Asia/Manila', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:true };
+            const fmt = dt => dt ? new Date(dt).toLocaleString('en-PH', ph) : '—';
+            const fmtSec = (s) => {
+                if (s === null || s === undefined) return '';
+                const hrs = Math.floor(s / 3600), mins = Math.floor((s % 3600) / 60), secs = s % 60;
+                if (s < 60) return secs + 's';
+                if (s < 3600) return mins + 'm ' + secs + 's';
+                return hrs + 'h ' + mins + 'm';
+            };
+            const header = 'Detected,Location,Status,Acknowledged,Resolved,Response Time,By,Notes\n';
+            const rows = allRecords.map(r =>
+                `"${fmt(r.detected_at)}","${r.location}","${r.status}","${fmt(r.acknowledged_at)}","${fmt(r.resolved_at)}","${fmtSec(r.response_seconds)}","${r.handled_by||''}","${r.notes||''}"`
+            ).join('\n');
+            const blob = new Blob([header + rows], { type: 'text/csv' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = 'freshzone-history.csv'; a.click();
+            showNotification('CSV exported successfully.', 'success');
+        }
+
+
+        function clearAllHistory() {
+            document.getElementById('clearAllModal').style.display = 'flex';
+        }
+
+        async function confirmClearAll() {
+            document.getElementById('clearAllModal').style.display = 'none';
+            try {
+                const data = await apiFetch('/history/clear-all', { method: 'DELETE' });
+                if (data && data.success) {
+                    allRecords = [];
+                    renderTable();
+                    loadStats();
+                    showNotification('All history cleared successfully.', 'success');
+                } else {
+                    showNotification(data?.message || 'Failed to clear history.', 'error');
+                }
+            } catch(err) {
+                showNotification('Connection error.', 'error');
+            }
+        }
+
+        loadHistory();
+        
+        // ── SORT TABLE ─────────────────────────────────────
+        let sortCol = 0; let sortAsc = false;
+        const COLS = ['detected_at','location','status','acknowledged_at','resolved_at','response_seconds','handled_by'];
+
+        function sortTable(colIdx) {
+            const key = COLS[colIdx];
+            if (sortCol === colIdx) { sortAsc = !sortAsc; } else { sortCol = colIdx; sortAsc = true; }
+            allRecords = [...allRecords].sort((a, b) => {
+                const va = (a[key] || '').toString().toLowerCase();
+                const vb = (b[key] || '').toString().toLowerCase();
+                return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
+            });
+            // Update header indicators
+            document.querySelectorAll('th').forEach((th, i) => {
+                th.classList.remove('sort-asc','sort-desc');
+                if (i === colIdx) th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+            });
+            renderTable();
+        }
+
+        // ── BACK TO TOP ────────────────────────────────────
+        const btt = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (btt) btt.style.display = window.scrollY > 300 ? 'flex' : 'none';
+        }, { passive: true });
+
+
+        // Show logged-in user name in nav
+        (function() {
+            const u = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const el = document.getElementById('nav-user-name');
+            if (el && (u.full_name || u.name)) el.textContent = u.full_name || u.name;
+        })();
+        initHotkeys('history');
+    </script>
+    <script src="/pwa.js" defer></script>
+
+    <!-- ── BOTTOM NAV (mobile only) ─────────────────────────── -->
+    <nav id="fz-bottom-nav" aria-label="Mobile navigation">
+        <a href="dashboard.html" class="fz-bn-tab " aria-label="Monitor">
+            <span class="fz-bn-badge"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Monitor</span>
+        </a>
+        <a href="history.html" class="fz-bn-tab active" aria-label="History">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
+            <span>History</span>
+        </a>
+        <a href="profile.html" class="fz-bn-tab " aria-label="Profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </a>
+        <a href="contact.html" class="fz-bn-tab " aria-label="Contact">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+            <span>Contact</span>
+        </a>
+        <button class="fz-bn-tab" id="fz-bn-tab-more" onclick="toggleBnMore()" aria-label="More" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
+            <span>More</span>
+        </button>
+    </nav>
+    <div id="fz-bn-more-menu" role="menu">
+        <button class="fz-bn-more-item" onclick="togglePushNotifications();closeBnMore();" id="fz-bn-push-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="fz-bn-push-label">Notifications</span>
+        </button>
+        <button class="fz-bn-more-item danger" onclick="openLogoutModal();closeBnMore();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span>
+        </button>
+    </div>
+    <div id="fz-bn-more-backdrop" onclick="closeBnMore()" style="display:none;position:fixed;inset:0;z-index:9050;"></div>
+
+</body>
+</html>

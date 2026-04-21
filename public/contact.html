@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshZone | Contact</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#004e7a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FreshZone">
+    <link rel="apple-touch-icon" href="/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/pwa.css">
+    <style>
+        .ticket-success {
+            background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7;
+            border-radius: 12px; padding: 1.2rem; text-align: center;
+            font-weight: 600; margin-top: 1rem; display: none; font-family: sans-serif;
+        }
+        [data-theme="dark"] .ticket-success { background: rgba(6,95,70,0.3); color: #6ee7b7; border-color: rgba(110,231,183,0.3); }
+
+        /* Admin inbox */
+        .inbox-section { margin-top: 2rem; }
+        .inbox-section h3 { color: var(--primary); margin-bottom: 1rem; }
+        .ticket-item {
+            background: white; border-radius: 12px; padding: 1rem 1.25rem;
+            margin-bottom: 0.75rem; border-left: 5px solid var(--secondary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        [data-theme="dark"] .ticket-item { background: #0f1e2c; }
+        .ticket-item .ticket-meta { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.4rem; }
+        .ticket-item .ticket-subject { font-weight: 700; color: var(--primary); margin-bottom: 0.3rem; }
+        .ticket-item .ticket-msg { font-size: 0.88rem; color: var(--dark); }
+        .ticket-item .ticket-resolve {
+            width: auto; padding: 0.3rem 0.8rem; margin-top: 0.6rem;
+            font-size: 0.75rem; border-radius: 6px; background: var(--success) !important;
+        }
+        .ticket-item.resolved { border-left-color: var(--gray); opacity: 0.65; }
+        .no-tickets { text-align: center; color: var(--gray); font-style: italic; padding: 1.5rem 0; }
+        .char-count { font-size: 0.72rem; color: var(--gray); float: right; margin-top: 2px; }
+
+        /* ── PUSH NOTIFICATION TOGGLE ──────────────────────── */
+        .push-toggle-wrap { display:flex;align-items:center;gap:5px;cursor:pointer;user-select:none;margin-left:4px; }
+        .push-toggle-icon { font-size:0.9rem;line-height:1; }
+        .push-toggle-switch { position:relative;width:44px;height:24px;background:#ccc;border-radius:12px;cursor:pointer;transition:background 0.25s;outline:none;flex-shrink:0; }
+        .push-toggle-switch:focus-visible { box-shadow:0 0 0 3px rgba(0,200,150,0.4); }
+        .push-toggle-switch.active { background:var(--secondary,#00c896); }
+        .push-toggle-knob { position:absolute;top:3px;left:3px;width:18px;height:18px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);will-change:transform; }
+        .push-toggle-switch.active .push-toggle-knob { transform:translateX(20px); }
+        .push-toggle-label { font-size:0.72rem;font-weight:700;color:var(--secondary,#00c896);letter-spacing:0.04em;min-width:22px; }
+    </style>
+    
+    <style>
+        /* ── ICON SIZES (all SVG icons hard-locked) ─────────── */
+        .icon     { display:inline-block; width:1em;    height:1em;    vertical-align:-0.125em; flex-shrink:0; overflow:hidden; }
+        .nav-icon { display:inline-block; width:1.05rem;height:1.05rem;vertical-align:-0.15em;  flex-shrink:0; overflow:hidden; }
+        .btn-icon { display:inline-block; width:0.9rem; height:0.9rem; vertical-align:-0.1em;   flex-shrink:0; overflow:hidden; }
+        .h-icon   { display:inline-block; width:1.1rem; height:1.1rem; vertical-align:-0.18em;  flex-shrink:0; overflow:hidden; }
+        .sm-icon  { display:inline-block; width:0.8rem; height:0.8rem; vertical-align:-0.08em;  flex-shrink:0; overflow:hidden; }
+    </style>
+</head>
+<body>
+
+        <nav role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="dashboard.html" class="logo" aria-label="FreshZone Home">
+                <img src="logo1.png" alt="FreshZone Logo">
+            </a>
+            <div class="nav-links" id="desktop-nav">
+                <a href="dashboard.html" >Dashboard</a>
+                <a href="history.html" >History</a>
+                <a href="profile.html" >Profile</a>
+                <a href="contact.html" class="active">Contact</a>
+                <a href="#" onclick="openLogoutModal();return false;">Logout</a>
+                <div class="nav-user" id="nav-user-display">
+                    <span class="nav-user-dot"></span>
+                    <span id="nav-user-name">—</span>
+                </div>
+                <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+                <label class="push-toggle-wrap" title="Toggle push notifications" aria-label="Toggle push notifications">
+                    <span class="push-toggle-icon"><svg style="width:1rem;height:1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+                    <div class="push-toggle-switch" id="push-btn" onclick="togglePushNotifications()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')togglePushNotifications()">
+                        <div class="push-toggle-knob"></div>
+                    </div>
+                    <span class="push-toggle-label" id="push-label">OFF</span>
+                </label>
+            </div>
+            <button class="hamburger" id="hamburger" onclick="openMobileNav()" aria-label="Open menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile nav drawer -->
+    <div class="mobile-nav" id="mobile-nav" onclick="closeMobileNav()">
+        <div class="mobile-nav-drawer" onclick="event.stopPropagation()">
+            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu">&#x2715;</button>
+            <div style="display:flex;align-items:center;gap:10px;padding:0 0.5rem 1rem;border-bottom:1px solid rgba(0,78,122,0.1);margin-bottom:0.5rem;">
+                <img src="logo1.png" alt="FreshZone" style="width:36px;height:36px;border-radius:8px;object-fit:contain;">
+                <div>
+                    <div style="font-weight:700;font-size:0.95rem;color:var(--primary);">FreshZone</div>
+                    <div style="font-size:0.72rem;color:var(--gray);" id="mobile-user-name">—</div>
+                </div>
+            </div>
+            <a href="dashboard.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Dashboard</a>
+            <a href="history.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
+            <a href="profile.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
+            <a href="contact.html" class="active"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Contact</a>
+            <div class="mobile-nav-divider"></div>
+            <button class="mobile-nav-logout" onclick="openLogoutModal();closeMobileNav();"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
+            <div class="mobile-nav-divider"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;">
+                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Dark Mode</span>
+                <button class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 1rem 0.8rem;">
+                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Notifications</span>
+                <label class="push-toggle-wrap">
+                    <div class="push-toggle-switch" id="push-btn-mobile" onclick="togglePushNotifications()" role="button" tabindex="0">
+                        <div class="push-toggle-knob"></div>
+                    </div>
+                    <span class="push-toggle-label" id="push-label-mobile">OFF</span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Page hero -->
+        <div class="glass-card animate-in" style="text-align:center; margin-bottom:1.5rem;">
+            <h1 style="font-size:1.5rem; color:var(--primary); margin-bottom:0.25rem;">
+                <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+                Contact &amp; Reports
+            </h1>
+            <p style="color:var(--gray); font-size:0.88rem; margin:0;">Send a report, feedback, or maintenance request to the administrator.</p>
+        </div>
+
+        <!-- Contact form -->
+        <div class="glass-card animate-in" style="margin-bottom:1.5rem;">
+            <h3 style="color:var(--primary); margin-bottom:1rem; font-size:1rem;">
+                <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Submit a Report
+            </h3>
+
+            <div class="input-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" id="contact-name" placeholder="Full name">
+            </div>
+            <div class="input-group">
+                <label for="contact-email">Email Address</label>
+                <input type="email" id="contact-email" placeholder="your@email.com">
+            </div>
+            <div class="input-group">
+                <label for="contact-subject">Subject</label>
+                <select id="contact-subject">
+                    <option value="">Select a subject…</option>
+                    <option value="Vape Alert Feedback">Vape Alert Feedback</option>
+                    <option value="Device Maintenance">Device Maintenance</option>
+                    <option value="General Suggestion">General Suggestion</option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="contact-message">Message <span class="char-count"><span id="char-counter">0</span>/500</span></label>
+                <textarea id="contact-message" rows="5" placeholder="Describe your report or concern in detail…" maxlength="500"
+                    oninput="document.getElementById('char-counter').textContent=this.value.length"
+                    style="width:100%;padding:0.8rem 1rem;border-radius:var(--radius-sm);border:1.5px solid #ddd;font-size:0.9rem;resize:vertical;font-family:inherit;"></textarea>
+            </div>
+
+            <button onclick="submitReport()" style="margin-top:0.5rem;">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send Report
+            </button>
+
+            <div class="ticket-success" id="ticket-confirm"></div>
+        </div>
+
+        <!-- Admin inbox (admins only) -->
+        <div id="admin-inbox" class="glass-card animate-in inbox-section" style="display:none;">
+            <h3>
+                <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+                Admin Inbox — Submitted Reports
+            </h3>
+            <div id="inbox-list">
+                <p style="text-align:center; color:var(--gray); padding:1rem;">Loading…</p>
+            </div>
+        </div>
+
+    </div><!-- /.container -->
+
+    <div id="session-warning" role="status"></div>
+    <div id="notification" class="notification" role="alert" aria-live="polite"></div>
+
+    <div id="logoutModal" class="modal-overlay-custom" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+        <div class="modal-content-custom">
+            <h3 id="logout-title">Confirm Logout</h3>
+            <p>Are you sure you want to log out of FreshZone?</p>
+            <div class="modal-btn-group">
+                <button class="confirm-btn" onclick="confirmLogout()">Yes, Logout</button>
+                <button class="cancel-btn"  onclick="closeLogoutModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <footer><p>© 2026 FreshZone – Campus Vape Aerosol Detection System</p></footer>
+
+    <script src="utils.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (user) {
+                document.getElementById('contact-name').value  = user.full_name || user.name || '';
+                document.getElementById('contact-email').value = user.email || '';
+            }
+            if (user?.position === 'Administrator') {
+                document.getElementById('admin-inbox').style.display = 'block';
+                renderInbox();
+            }
+        });
+
+        function validateForm() {
+            let valid = true;
+            const name    = document.getElementById('contact-name').value.trim();
+            const email   = document.getElementById('contact-email').value.trim();
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value.trim();
+
+            ['contact-name','contact-email','contact-subject','contact-message'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('field-error');
+                const err = el.parentElement.querySelector('.field-error-msg');
+                if (err) err.remove();
+            });
+
+            function addError(id, msg) {
+                const el = document.getElementById(id);
+                el.classList.add('field-error');
+                const span = document.createElement('span');
+                span.className = 'field-error-msg'; span.textContent = msg;
+                el.parentElement.appendChild(span);
+                valid = false;
+            }
+
+            if (!name)    addError('contact-name',    'Name is required.');
+            if (!email)   addError('contact-email',   'Email is required.');
+            else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) addError('contact-email','Enter a valid email.');
+            const validSubjects = ['Vape Alert Feedback','Device Maintenance','General Suggestion','Bug Report','Other'];
+            if (!subject || !validSubjects.includes(subject)) addError('contact-subject', 'Please select a valid subject.');
+            if (!message) addError('contact-message', 'Message cannot be empty.');
+            else if (message.length < 10) addError('contact-message', 'Message is too short (min 10 characters).');
+            return valid;
+        }
+
+        async function submitReport() {
+            if (!validateForm()) return;
+
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value.trim();
+            const name    = document.getElementById('contact-name').value.trim();
+            const email   = document.getElementById('contact-email').value.trim();
+
+            try {
+                const data = await apiFetch('/contact', {
+                    method: 'POST',
+                    body: JSON.stringify({ subject, message, name, email })
+                });
+
+                if (data && data.success) {
+                    const confirm = document.getElementById('ticket-confirm');
+                    confirm.textContent = `Report submitted! Ticket ID: ${data.ticket_ref}. We'll get back to you soon.`;
+                    confirm.style.display = 'block';
+
+                    document.getElementById('contact-subject').value = '';
+                    document.getElementById('contact-message').value = '';
+                    document.getElementById('char-counter').textContent = '0';
+
+                    showNotification('Report submitted successfully!', 'success');
+                    if (user?.position === 'Administrator') renderInbox();
+                } else {
+                    showNotification(data?.message || 'Failed to submit report.', 'error');
+                }
+            } catch(err) {
+                showNotification('Cannot connect to server.', 'error');
+            }
+        }
+
+        async function renderInbox() {
+            try {
+                const list = document.getElementById('inbox-list');
+                list.innerHTML = '<p style="text-align:center;color:var(--gray);padding:1rem;">Loading…</p>';
+                const data = await apiFetch('/contact');
+                if (!data || !data.success || data.data.length === 0) {
+                    list.innerHTML = '<p class="no-tickets">No reports submitted yet.</p>';
+                    return;
+                }
+                list.innerHTML = data.data.map(t => {
+                    const date = new Date(t.created_at).toLocaleString('en-PH', {timeZone:'Asia/Manila',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+                    const msg = t.message.length > 200 ? t.message.slice(0,200) + '…' : t.message;
+                    const isResolved = t.ticket_status === 'Resolved';
+                    return `<div class="ticket-item ${isResolved ? 'resolved' : ''}" id="ticket-${t.id}">
+                        <div class="ticket-meta">${date} · <b>${t.submitter_name || t.submitter_email}</b> · <span style="font-family:monospace;background:rgba(0,180,216,0.1);padding:1px 6px;border-radius:4px;">${t.ticket_ref}</span></div>
+                        <div class="ticket-subject">${t.subject}</div>
+                        <div class="ticket-msg">${msg}</div>
+                        ${!isResolved
+                            ? `<button class="ticket-resolve" onclick="resolveTicket(${t.id})">Mark Resolved</button>`
+                            : `<small style="color:var(--success);display:block;margin-top:0.4rem;">Resolved${t.resolved_by_name ? ' by ' + t.resolved_by_name : ''}</small>`}
+                    </div>`;
+                }).join('');
+            } catch(err) {
+                console.error('Inbox error:', err);
+            }
+        }
+
+        async function resolveTicket(id) {
+            try {
+                const data = await apiFetch(`/contact/${id}/resolve`, { method: 'POST' });
+                if (data && data.success) {
+                    renderInbox();
+                    showNotification('Ticket marked as resolved.', 'success');
+                }
+            } catch(err) {
+                showNotification('Failed to resolve ticket.', 'error');
+            }
+        }
+
+
+
+        // Show logged-in user name in nav
+        (function() {
+            const u = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const el = document.getElementById('nav-user-name');
+            if (el && (u.full_name || u.name)) el.textContent = u.full_name || u.name;
+        })();
+        initHotkeys('contact');
+    </script>
+    <script src="/pwa.js" defer></script>
+
+    <!-- ── BOTTOM NAV (mobile only) ─────────────────────────── -->
+    <nav id="fz-bottom-nav" aria-label="Mobile navigation">
+        <a href="dashboard.html" class="fz-bn-tab " aria-label="Monitor">
+            <span class="fz-bn-badge"></span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Monitor</span>
+        </a>
+        <a href="history.html" class="fz-bn-tab " aria-label="History">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
+            <span>History</span>
+        </a>
+        <a href="profile.html" class="fz-bn-tab " aria-label="Profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+        </a>
+        <a href="contact.html" class="fz-bn-tab active" aria-label="Contact">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+            <span>Contact</span>
+        </a>
+        <button class="fz-bn-tab" id="fz-bn-tab-more" onclick="toggleBnMore()" aria-label="More" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
+            <span>More</span>
+        </button>
+    </nav>
+    <div id="fz-bn-more-menu" role="menu">
+        <button class="fz-bn-more-item" onclick="togglePushNotifications();closeBnMore();" id="fz-bn-push-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="fz-bn-push-label">Notifications</span>
+        </button>
+        <button class="fz-bn-more-item danger" onclick="openLogoutModal();closeBnMore();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span>
+        </button>
+    </div>
+    <div id="fz-bn-more-backdrop" onclick="closeBnMore()" style="display:none;position:fixed;inset:0;z-index:9050;"></div>
+
+</body>
+</html>
