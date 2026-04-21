@@ -63,31 +63,8 @@ function toggleDarkMode() {
 }
 
 // ── MOBILE NAV ────────────────────────────────────────────────
-function openMobileNav() {
-    document.getElementById('mobile-nav')?.classList.add('open');
-    const hb = document.getElementById('hamburger');
-    if (hb) { hb.classList.add('open'); hb.setAttribute('aria-expanded','true'); }
-    // Populate username in drawer
-    const u = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const mn = document.getElementById('mobile-user-name');
-    if (mn) mn.textContent = (u.full_name || u.name || '—') + (u.position ? ' · ' + u.position : '');
-    // Sync push toggle state in drawer
-    const pushBtn = document.getElementById('push-btn');
-    const mobilePushBtn = document.getElementById('push-btn-mobile');
-    const mobilePushLbl = document.getElementById('push-label-mobile');
-    if (mobilePushBtn && pushBtn) {
-        const isActive = pushBtn.classList.contains('active');
-        isActive ? mobilePushBtn.classList.add('active') : mobilePushBtn.classList.remove('active');
-        if (mobilePushLbl) { mobilePushLbl.textContent = isActive ? 'ON' : 'OFF'; mobilePushLbl.style.color = isActive ? 'var(--secondary)' : '#aaa'; }
-    }
-    document.body.style.overflow = 'hidden';
-}
-function closeMobileNav() {
-    document.getElementById('mobile-nav')?.classList.remove('open');
-    const hb = document.getElementById('hamburger');
-    if (hb) { hb.classList.remove('open'); hb.setAttribute('aria-expanded','false'); }
-    document.body.style.overflow = '';
-}
+function openMobileNav()  { document.getElementById('mobile-nav')?.classList.add('open'); document.getElementById('hamburger')?.classList.add('open'); }
+function closeMobileNav() { document.getElementById('mobile-nav')?.classList.remove('open'); document.getElementById('hamburger')?.classList.remove('open'); }
 
 // ── SESSION TIMEOUT (30 min idle) ─────────────────────────────
 let _idleTimer, _warnTimer;
@@ -300,11 +277,12 @@ async function togglePushNotifications() {
 }
 
 function updatePushBtn(subscribed) {
-    // Desktop toggle
-    const btn = document.getElementById('push-btn');
-    const lbl = document.getElementById('push-label');
+    const btn       = document.getElementById('push-btn');
+    const lbl       = document.getElementById('push-label');
+    const mobileBtn = document.getElementById('mobile-push-btn');
     if (btn) {
-        subscribed ? btn.classList.add('active') : btn.classList.remove('active');
+        if (subscribed) btn.classList.add('active');
+        else btn.classList.remove('active');
         btn.style.background = '';
         btn.style.color = '';
     }
@@ -312,19 +290,7 @@ function updatePushBtn(subscribed) {
         lbl.textContent = subscribed ? 'ON' : 'OFF';
         lbl.style.color = subscribed ? 'var(--secondary)' : '#aaa';
     }
-    // Mobile drawer toggle
-    const mobileBtn = document.getElementById('push-btn-mobile');
-    const mobileLbl = document.getElementById('push-label-mobile');
-    if (mobileBtn) {
-        subscribed ? mobileBtn.classList.add('active') : mobileBtn.classList.remove('active');
-    }
-    if (mobileLbl) {
-        mobileLbl.textContent = subscribed ? 'ON' : 'OFF';
-        mobileLbl.style.color = subscribed ? 'var(--secondary)' : '#aaa';
-    }
-    // Legacy button
-    const legacyBtn = document.getElementById('mobile-push-btn');
-    if (legacyBtn) legacyBtn.textContent = subscribed ? '🔔 Notifications ON' : '🔔 Notify Me';
+    if (mobileBtn) mobileBtn.textContent = subscribed ? '🔔 Notifications ON' : '🔔 Notify Me';
 }
 
 function urlBase64ToUint8Array(base64String) {
@@ -361,30 +327,3 @@ function clearAPIError() {
 document.addEventListener('DOMContentLoaded', () => {
     initPushNotifications();
 });
-
-// ── BOTTOM NAV MORE MENU ──────────────────────────────────────
-function toggleBnMore() {
-    const menu     = document.getElementById('fz-bn-more-menu');
-    const backdrop = document.getElementById('fz-bn-more-backdrop');
-    const btn      = document.getElementById('fz-bn-tab-more');
-    if (!menu) return;
-    const isOpen = menu.classList.contains('open');
-    if (isOpen) {
-        menu.classList.remove('open');
-        if (backdrop) backdrop.style.display = 'none';
-        if (btn) { btn.classList.remove('menu-open'); btn.setAttribute('aria-expanded','false'); }
-    } else {
-        menu.classList.add('open');
-        if (backdrop) backdrop.style.display = 'block';
-        if (btn) { btn.classList.add('menu-open'); btn.setAttribute('aria-expanded','true'); }
-    }
-}
-
-function closeBnMore() {
-    const menu     = document.getElementById('fz-bn-more-menu');
-    const backdrop = document.getElementById('fz-bn-more-backdrop');
-    const btn      = document.getElementById('fz-bn-tab-more');
-    if (menu)     menu.classList.remove('open');
-    if (backdrop) backdrop.style.display = 'none';
-    if (btn)      { btn.classList.remove('menu-open'); btn.setAttribute('aria-expanded','false'); }
-}

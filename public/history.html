@@ -232,14 +232,13 @@
             .filter-action-btn { min-width: 100%; flex: none; width: 100% !important; }
         }
 </style>
-    
     <style>
-        /* ── ICON SIZES (all SVG icons hard-locked) ─────────── */
-        .icon     { display:inline-block; width:1em;    height:1em;    vertical-align:-0.125em; flex-shrink:0; overflow:hidden; }
-        .nav-icon { display:inline-block; width:1.05rem;height:1.05rem;vertical-align:-0.15em;  flex-shrink:0; overflow:hidden; }
-        .btn-icon { display:inline-block; width:0.9rem; height:0.9rem; vertical-align:-0.1em;   flex-shrink:0; overflow:hidden; }
-        .h-icon   { display:inline-block; width:1.1rem; height:1.1rem; vertical-align:-0.18em;  flex-shrink:0; overflow:hidden; }
-        .sm-icon  { display:inline-block; width:0.8rem; height:0.8rem; vertical-align:-0.08em;  flex-shrink:0; overflow:hidden; }
+        /* ICON SYSTEM */
+        .icon { display:inline-block; width:1em; height:1em; vertical-align:-0.125em; flex-shrink:0; }
+        .nav-icon { width:1.05rem; height:1.05rem; margin-right:5px; vertical-align:-0.15em; opacity:0.85; }
+        .btn-icon { width:0.9rem; height:0.9rem; margin-right:4px; vertical-align:-0.1em; }
+        .h-icon   { width:1.1rem; height:1.1rem; margin-right:6px; vertical-align:-0.18em; }
+        .sm-icon  { width:0.8rem; height:0.8rem; vertical-align:-0.08em; margin-right:3px; }
     </style>
 </head>
 <body>
@@ -252,117 +251,109 @@
         <div class="smoke-particle" style="left:78%; width:170px;height:170px;animation-delay:1.5s;"></div>
     </div>
 
-        <nav role="navigation" aria-label="Main navigation">
+    <nav role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <a href="dashboard.html" class="logo" aria-label="FreshZone Home">
                 <img src="logo1.png" alt="FreshZone Logo">
             </a>
-            <div class="nav-links" id="desktop-nav">
-                <a href="dashboard.html" >Dashboard</a>
+            <div class="nav-links">
+                <a href="dashboard.html">Dashboard</a>
                 <a href="history.html" class="active">History</a>
-                <a href="profile.html" >Profile</a>
-                <a href="contact.html" >Contact</a>
+                <a href="profile.html">Profile</a>
+                <a href="contact.html">Contact</a>
                 <a href="#" onclick="openLogoutModal();return false;">Logout</a>
-                <div class="nav-user" id="nav-user-display">
+<div class="nav-user" id="nav-user-display">
                     <span class="nav-user-dot"></span>
                     <span id="nav-user-name">—</span>
                 </div>
                 <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
                 <label class="push-toggle-wrap" title="Toggle push notifications" aria-label="Toggle push notifications">
-                    <span class="push-toggle-icon"><svg style="width:1rem;height:1rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+                    <span class="push-toggle-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
                     <div class="push-toggle-switch" id="push-btn" onclick="togglePushNotifications()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')togglePushNotifications()">
                         <div class="push-toggle-knob"></div>
                     </div>
                     <span class="push-toggle-label" id="push-label">OFF</span>
                 </label>
             </div>
+            <button class="hamburger" id="hamburger" onclick="openMobileNav()" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </nav>
 
-    <!-- Mobile nav drawer -->
-            <a href="dashboard.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Dashboard</a>
-            <a href="history.html" class="active"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
-            <a href="profile.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
-            <a href="contact.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Contact</a>
+    <div class="mobile-nav" id="mobile-nav" onclick="closeMobileNav()" role="dialog" aria-modal="true">
+        <div class="mobile-nav-drawer" onclick="event.stopPropagation()">
+            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <a href="dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Monitor</a>
+            <a href="history.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
+            <a href="profile.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
+            <a href="contact.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Contact</a>
             <div class="mobile-nav-divider"></div>
-            <button class="mobile-nav-logout" onclick="openLogoutModal();closeMobileNav();"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
-            <div class="mobile-nav-divider"></div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1rem;">
-                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Dark Mode</span>
-                <button class="dark-toggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 1rem 0.8rem;">
-                <span style="font-size:0.82rem;color:var(--gray);font-weight:600;">Notifications</span>
-                <label class="push-toggle-wrap">
-                    <div class="push-toggle-switch" id="push-btn-mobile" onclick="togglePushNotifications()" role="button" tabindex="0">
-                        <div class="push-toggle-knob"></div>
-                    </div>
-                    <span class="push-toggle-label" id="push-label-mobile">OFF</span>
-                </label>
-            </div>
+            <a href="#" onclick="openLogoutModal();closeMobileNav();return false;" class="mobile-nav-logout"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
+            <a href="#" onclick="togglePushNotifications();closeMobileNav();return false;" id="mobile-push-btn"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notifications</a>
         </div>
     </div>
 
     <div class="container">
-
-        <!-- Page hero -->
-        <div class="page-hero animate-in">
-            <h1 style="color:var(--primary); font-size:1.6rem; margin-bottom:0.25rem;">
-                <svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
-                Detection History
-            </h1>
-            <p>Complete archive of campus vape aerosol detection events.</p>
-            <img src="logo1.png" alt="">
+        <div class="page-hero">
+            <div>
+                <h1>Detection History</h1>
+                <p>Complete archive of on-campus vape aerosol detection events</p>
+            </div>
+            <img src="vape.png" alt="No Vaping Allowed">
         </div>
 
-        <!-- Stats grid -->
-        <div class="stats-grid">
-            <div class="stat-box glass-card animate-in" style="animation-delay:0.1s; text-align:center;">
-                <h3 id="stat-today">—</h3>
-                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Today's Detections</p>
+        <!-- Stats -->
+        <div class="stats-grid animate-in">
+            <div class="stat-box">
+                <p>Today's Alerts</p>
+                <h3 id="stat-today">0</h3>
             </div>
-            <div class="stat-box glass-card animate-in" style="animation-delay:0.22s; text-align:center;">
-                <h3 id="stat-total">—</h3>
-                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Total Events</p>
+            <div class="stat-box">
+                <p>Total Records</p>
+                <h3 id="stat-total" style="color:var(--success)">0</h3>
             </div>
-            <div class="stat-box glass-card animate-in" style="animation-delay:0.34s; text-align:center;">
-                <h3 id="stat-resolved">—</h3>
-                <p style="color:var(--gray); font-size:0.82rem; margin:0;">Resolved</p>
+            <div class="stat-box">
+                <p>Resolved</p>
+                <h3 id="stat-resolved">0</h3>
             </div>
         </div>
 
         <!-- Filter bar -->
-        <div class="glass-card animate-in" style="margin-bottom:1.5rem;">
-            <div class="filter-bar">
-                <!-- Row 1: Filter inputs -->
-                <div class="filter-inputs-row">
-                    <div class="filter-group">
-                        <label for="filter-search">Search</label>
-                        <div class="filter-input-wrap">
-                            <input type="text" id="filter-search" placeholder="Location, status, handled by…" oninput="renderTable();updateClearBtns()">
-                            <button class="filter-inline-clear" id="clear-search" style="display:none;" onclick="clearField('filter-search')" title="Clear search">✕</button>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="filter-status">Status</label>
-                        <div class="filter-input-wrap">
-                            <select id="filter-status" onchange="renderTable();updateClearBtns()">
-                                <option value="">All Statuses</option>
-                                <option value="Detected">Detected</option>
-                                <option value="Acknowledged">Acknowledged</option>
-                                <option value="Cleared">Cleared</option>
-                            </select>
-                            <button class="filter-inline-clear" id="clear-status" style="display:none;" onclick="clearField('filter-status')" title="Clear status">✕</button>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label for="filter-date">Date</label>
-                        <div class="filter-input-wrap">
-                            <input type="date" id="filter-date" onchange="renderTable();updateClearBtns()">
-                            <button class="filter-inline-clear" id="clear-date" style="display:none;" onclick="clearField('filter-date')" title="Clear date">✕</button>
-                        </div>
+        <div class="filter-bar">
+            <!-- Row 1: Filter inputs each with inline clear -->
+            <div class="filter-inputs-row">
+
+                <div class="filter-group">
+                    <label for="filter-search"><svg class="sm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Search</label>
+                    <div class="filter-input-wrap">
+                        <input type="text" id="filter-search" placeholder="Location or action…" maxlength="100" oninput="renderTable();updateClearBtns()">
+                        <button class="filter-inline-clear" id="clear-search" onclick="clearField('filter-search')" title="Clear search" style="display:none;"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
                     </div>
                 </div>
+
+                <div class="filter-group">
+                    <label for="filter-status"><svg class="sm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Status</label>
+                    <div class="filter-input-wrap">
+                        <select id="filter-status" onchange="renderTable();updateClearBtns()">
+                            <option value="">All Statuses</option>
+                            <option value="Detected">Detected</option>
+                            <option value="Acknowledged">Acknowledged</option>
+                            <option value="Cleared">Cleared</option>
+                        </select>
+                        <button class="filter-inline-clear" id="clear-status" onclick="clearField('filter-status')" title="Clear status" style="display:none;"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="filter-date"><svg class="sm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Date</label>
+                    <div class="filter-input-wrap">
+                        <input type="date" id="filter-date" onchange="renderTable();updateClearBtns()">
+                        <button class="filter-inline-clear" id="clear-date" onclick="clearField('filter-date')" title="Clear date" style="display:none;"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                    </div>
+                </div>
+
+            </div>
 
             <!-- Row 2: Filter action buttons -->
             <div class="filter-actions-row">
@@ -389,8 +380,6 @@
             </div>
         </div>
 
-        </div><!-- /.glass-card filter -->
-
         <div class="log-container">
             <table role="table" aria-label="Detection history log">
                 <thead>
@@ -410,9 +399,6 @@
             </table>
         </div>
     </div>
-
-        </div><!-- /.log-container -->
-    </div><!-- /.container -->
 
     <div id="session-warning" role="status"></div>
     <div id="notification" class="notification" role="alert" aria-live="polite"></div>
@@ -695,62 +681,6 @@
         })();
         initHotkeys('history');
     </script>
-    <script src="/pwa.js" defer>
-        // ── BOTTOM NAV ─────────────────────────────────────────
-        function toggleBnMore() {
-            const m = document.getElementById('fz-bn-more-menu');
-            const b = document.getElementById('fz-bn-more-backdrop');
-            const t = document.getElementById('fz-bn-tab-more');
-            if (!m) return;
-            const open = m.classList.contains('open');
-            m.classList.toggle('open', !open);
-            if (b) b.style.display = open ? 'none' : 'block';
-            if (t) { t.classList.toggle('menu-open', !open); t.setAttribute('aria-expanded', String(!open)); }
-        }
-        function closeBnMore() {
-            const m = document.getElementById('fz-bn-more-menu');
-            const b = document.getElementById('fz-bn-more-backdrop');
-            const t = document.getElementById('fz-bn-tab-more');
-            if (m) m.classList.remove('open');
-            if (b) b.style.display = 'none';
-            if (t) { t.classList.remove('menu-open'); t.setAttribute('aria-expanded','false'); }
-        }
-    </script>
-
-    <div id="fz-bn-more-backdrop" onclick="closeBnMore()" style="display:none;position:fixed;inset:0;z-index:9050;"></div>
-    <!-- ── BOTTOM NAV ──────────────────────────────────────── -->
-    <nav id="fz-bottom-nav" aria-label="Mobile navigation">
-        <a href="dashboard.html" class="fz-bn-tab">
-            <span class="fz-bn-badge"></span>
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-            <span>Monitor</span>
-        </a>
-        <a href="history.html" class="fz-bn-tab active">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
-            <span>History</span>
-        </a>
-        <a href="profile.html" class="fz-bn-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <span>Profile</span>
-        </a>
-        <a href="contact.html" class="fz-bn-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
-            <span>Contact</span>
-        </a>
-        <button class="fz-bn-tab" id="fz-bn-tab-more" onclick="toggleBnMore()" aria-expanded="false">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
-            <span>More</span>
-        </button>
-    </nav>
-    <div id="fz-bn-more-menu" role="menu">
-        <button class="fz-bn-more-item" id="fz-bn-push-item" onclick="togglePushNotifications();closeBnMore();">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="fz-bn-push-label">Notifications</span>
-        </button>
-        <button class="fz-bn-more-item danger" onclick="openLogoutModal();closeBnMore();">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span>
-        </button>
-    </div>
-    <div id="fz-bn-more-backdrop" onclick="closeBnMore()" style="display:none;position:fixed;inset:0;z-index:9050;"></div>
-
+    <script src="/pwa.js" defer></script>
 </body>
 </html>
