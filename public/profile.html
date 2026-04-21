@@ -186,23 +186,10 @@
                     <span class="push-toggle-label" id="push-label">OFF</span>
                 </label>
             </div>
-            <button class="hamburger" id="hamburger" onclick="openMobileNav()" aria-label="Open menu" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
         </div>
     </nav>
 
     <!-- Mobile nav drawer -->
-    <div class="mobile-nav" id="mobile-nav" onclick="closeMobileNav()">
-        <div class="mobile-nav-drawer" onclick="event.stopPropagation()">
-            <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu">&#x2715;</button>
-            <div style="display:flex;align-items:center;gap:10px;padding:0 0.5rem 1rem;border-bottom:1px solid rgba(0,78,122,0.1);margin-bottom:0.5rem;">
-                <img src="logo1.png" alt="FreshZone" style="width:36px;height:36px;border-radius:8px;object-fit:contain;">
-                <div>
-                    <div style="font-weight:700;font-size:0.95rem;color:var(--primary);">FreshZone</div>
-                    <div style="font-size:0.72rem;color:var(--gray);" id="mobile-user-name">—</div>
-                </div>
-            </div>
             <a href="dashboard.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Dashboard</a>
             <a href="history.html" ><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
             <a href="profile.html" class="active"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
@@ -701,34 +688,55 @@
 
     initPushNotifications();
 </script>
-<script src="/pwa.js" defer></script>
+<script src="/pwa.js" defer>
+        // ── BOTTOM NAV ─────────────────────────────────────────
+        function toggleBnMore() {
+            const m = document.getElementById('fz-bn-more-menu');
+            const b = document.getElementById('fz-bn-more-backdrop');
+            const t = document.getElementById('fz-bn-tab-more');
+            if (!m) return;
+            const open = m.classList.contains('open');
+            m.classList.toggle('open', !open);
+            if (b) b.style.display = open ? 'none' : 'block';
+            if (t) { t.classList.toggle('menu-open', !open); t.setAttribute('aria-expanded', String(!open)); }
+        }
+        function closeBnMore() {
+            const m = document.getElementById('fz-bn-more-menu');
+            const b = document.getElementById('fz-bn-more-backdrop');
+            const t = document.getElementById('fz-bn-tab-more');
+            if (m) m.classList.remove('open');
+            if (b) b.style.display = 'none';
+            if (t) { t.classList.remove('menu-open'); t.setAttribute('aria-expanded','false'); }
+        }
+    </script>
 
-    <!-- ── BOTTOM NAV (mobile only) ─────────────────────────── -->
+    <div id="fz-bn-more-backdrop" onclick="closeBnMore()" style="display:none;position:fixed;inset:0;z-index:9050;"></div>
+    <!-- ── BOTTOM NAV ──────────────────────────────────────── -->
     <nav id="fz-bottom-nav" aria-label="Mobile navigation">
-        <a href="dashboard.html" class="fz-bn-tab " aria-label="Monitor">
+        <a href="dashboard.html" class="fz-bn-tab">
             <span class="fz-bn-badge"></span>
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
             <span>Monitor</span>
         </a>
-        <a href="history.html" class="fz-bn-tab " aria-label="History">
+        <a href="history.html" class="fz-bn-tab">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>
             <span>History</span>
         </a>
-        <a href="profile.html" class="fz-bn-tab active" aria-label="Profile">
+        <a href="profile.html" class="fz-bn-tab active">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <span>Profile</span>
         </a>
-        <a href="contact.html" class="fz-bn-tab " aria-label="Contact">
+        <a href="contact.html" class="fz-bn-tab">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
             <span>Contact</span>
         </a>
-        <button class="fz-bn-tab" id="fz-bn-tab-more" onclick="toggleBnMore()" aria-label="More" aria-expanded="false">
+        <button class="fz-bn-tab" id="fz-bn-tab-more" onclick="toggleBnMore()" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg>
             <span>More</span>
         </button>
     </nav>
     <div id="fz-bn-more-menu" role="menu">
-        <button class="fz-bn-more-item" onclick="togglePushNotifications();closeBnMore();" id="fz-bn-push-item">
+        <button class="fz-bn-more-item" id="fz-bn-push-item" onclick="togglePushNotifications();closeBnMore();">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="fz-bn-push-label">Notifications</span>
         </button>
         <button class="fz-bn-more-item danger" onclick="openLogoutModal();closeBnMore();">
