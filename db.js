@@ -16,12 +16,16 @@ const pool = mysql.createPool({
     connectionLimit:    10,
     queueLimit:         0,
     timezone:           '+00:00',
+    // ADDED SSL CONFIGURATION BELOW
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 // Test connection on startup
 pool.getConnection()
     .then(conn => {
-        console.log('✅ MySQL connected successfully');
+        console.log('✅ MySQL connected successfully with SSL');
         console.log(`🔗 Connected to: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`);
         conn.release();
     })
