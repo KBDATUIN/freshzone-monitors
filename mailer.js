@@ -32,7 +32,7 @@ async function sendAlertEmail(to, name, location, pm25, category) {
     `;
 
     const { error } = await resend.emails.send({
-        from:    'FreshZone Alerts <onboarding@resend.dev>',
+        from:    'FreshZone Alerts <alerts@freshzone.space>',
         to,
         subject: `🚨 Smoke/Vape Detected — ${location}`,
         html,
@@ -67,7 +67,7 @@ async function sendOTPEmail(to, name, otp, type) {
     `;
 
     const { error } = await resend.emails.send({
-        from:    'FreshZone <onboarding@resend.dev>',
+        from:    'FreshZone <otp@freshzone.space>',
         to,
         subject,
         html,
