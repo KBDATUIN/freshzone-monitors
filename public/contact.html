@@ -64,7 +64,7 @@
         .sm-icon  { width:0.8rem; height:0.8rem; vertical-align:-0.08em; margin-right:3px; }
     </style>
 </head>
-<body>
+<body class="contact-page">
 
     <nav role="navigation" aria-label="Main navigation">
         <div class="nav-container">
@@ -109,16 +109,34 @@
         </div>
     </div>
 
-    <div class="container" style="max-width:720px;">
+    <div class="container page-shell contact-shell" style="max-width:1080px;">
 
         <!-- Page header -->
         <div class="contact-page-header">
+            <span class="section-kicker">Support Desk</span>
             <h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;color:var(--secondary);"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contact &amp; Reports</h1>
             <p>Send feedback, report device issues, or submit suggestions to the administrator.</p>
         </div>
 
+        <div class="contact-support-grid">
+            <div class="support-card">
+                <strong>Fast issue reporting</strong>
+                <span>Submit sensor, notification, and dashboard issues in one place.</span>
+            </div>
+            <div class="support-card">
+                <strong>Admin inbox tracking</strong>
+                <span>Administrators can review ticket references and close items quickly.</span>
+            </div>
+            <div class="support-card">
+                <strong>Better mobile flow</strong>
+                <span>The form now reads cleaner and keeps actions easier to reach on phones.</span>
+            </div>
+        </div>
+
+        <div class="contact-grid">
+
         <!-- Report Form -->
-        <div class="glass-card">
+        <div class="glass-card contact-form-card">
             <h2><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Send a Report</h2>
             <p style="color:var(--gray);margin-bottom:1.2rem;margin-top:0.3rem;">
                 Have feedback or a device issue? Let us know.
@@ -153,9 +171,10 @@
         </div>
 
         <!-- Admin Inbox (only visible to Administrators) -->
-        <div class="inbox-section glass-card" id="admin-inbox" style="display:none;">
+        <div class="inbox-section glass-card contact-admin-card" id="admin-inbox" style="display:none;">
             <h3><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> Admin Inbox</h3>
             <div id="inbox-list"></div>
+        </div>
         </div>
 
     </div>

@@ -170,7 +170,7 @@
         .sm-icon { width: 0.8rem; height: 0.8rem; vertical-align: -0.08em; margin-right: 3px; }
     </style>
 </head>
-<body>
+<body class="profile-page">
 
 <nav role="navigation" aria-label="Main navigation">
     <div class="nav-container">
@@ -215,8 +215,17 @@
     </div>
 </div>
 
-<div class="container profile-wrapper">
-    <div class="glass-card profile-card">
+<div class="container page-shell profile-shell">
+    <div class="page-hero">
+        <div>
+            <span class="section-kicker">Account Center</span>
+            <h1 style="margin-top:0.5rem;">Your FreshZone Profile</h1>
+            <p>Manage identity details, update emergency contacts, and keep your account secure from one place.</p>
+        </div>
+    </div>
+
+    <div class="profile-layout">
+    <div class="glass-card profile-card profile-sidebar-card">
 
         <!-- Avatar -->
         <div class="profile-avatar">
@@ -243,6 +252,30 @@
         </div>
 
         <div id="roleMessage" class="profile-role-badge"></div>
+
+        <div class="profile-summary-grid">
+            <div class="profile-summary-item">
+                <span>Position</span>
+                <strong id="profile-summary-position">-</strong>
+            </div>
+            <div class="profile-summary-item">
+                <span>Joined</span>
+                <strong id="profile-summary-joined">-</strong>
+            </div>
+            <div class="profile-summary-item">
+                <span>Last Login</span>
+                <strong id="profile-summary-login">-</strong>
+            </div>
+            <div class="profile-summary-item">
+                <span>Contact</span>
+                <strong id="profile-summary-contact">-</strong>
+            </div>
+        </div>
+
+        <div class="profile-divider"></div>
+    </div>
+
+    <div class="glass-card profile-card profile-main-card">
 
         <!-- Edit Profile button -->
         <button onclick="toggleEdit(true)" id="edit-btn" style="margin-top:1rem;width:auto;padding:0.55rem 1.5rem;font-size:0.85rem;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
@@ -303,6 +336,7 @@
         </div>
 
     </div>
+</div>
 </div>
 
 <!-- ── CROP MODAL ──────────────────────────────────────────── -->
@@ -548,13 +582,23 @@
             document.getElementById('userEmployeeID').textContent = u.employee_id || '—';
             const phLocale = 'en-PH';
             const phTZ     = { timeZone: 'Asia/Manila' };
-            document.getElementById('userDateJoined').textContent = u.date_joined
+            const joinedText = u.date_joined
                 ? new Date(u.date_joined).toLocaleDateString(phLocale, { ...phTZ, year:'numeric', month:'long', day:'numeric' })
                 : '—';
-            document.getElementById('userLastLogin').textContent  = u.last_login
+            const loginText = u.last_login
                 ? new Date(u.last_login).toLocaleString(phLocale, { ...phTZ, year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })
                 : '—';
+            document.getElementById('userDateJoined').textContent = joinedText;
+            document.getElementById('userLastLogin').textContent  = loginText;
             document.getElementById('userEmergency').textContent  = u.emergency_contact || '—';
+            const summaryPosition = document.getElementById('profile-summary-position');
+            const summaryJoined = document.getElementById('profile-summary-joined');
+            const summaryLogin = document.getElementById('profile-summary-login');
+            const summaryContact = document.getElementById('profile-summary-contact');
+            if (summaryPosition) summaryPosition.textContent = u.position || '—';
+            if (summaryJoined) summaryJoined.textContent = joinedText;
+            if (summaryLogin) summaryLogin.textContent = loginText;
+            if (summaryContact) summaryContact.textContent = u.contact_number || '—';
 
             const cachedUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
             const photoSrc = u.photo_url || cachedUser.photo_url

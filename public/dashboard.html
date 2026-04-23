@@ -318,7 +318,7 @@
         .sm-icon  { width:0.8rem; height:0.8rem; vertical-align:-0.08em; margin-right:3px; }
     </style>
 </head>
-<body>
+<body class="dashboard-page">
 
     <div class="smoke-container" aria-hidden="true">
         <div class="smoke-particle" style="left:10%;width:200px;height:200px;animation-delay:0s;"></div>
@@ -370,15 +370,70 @@
         </div>
     </div>
 
-    <div class="container" style="position:relative;z-index:10;">
-        <div class="hero">
-            <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
+    <div class="container page-shell dashboard-shell">
+        <div class="hero dashboard-hero">
+            <div class="dashboard-hero-grid">
+                <div class="dashboard-copy">
+                    <div>
+                        <span class="section-kicker">Live Monitoring Center</span>
+                        <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
             <p id="hero-subtitle">Real-time vape aerosol detection — 4th Floor Comfort Rooms</p>
-            <div class="flex-btn-container">
-                <button onclick="location.href='history.html'"
-                    style="width:auto;padding:12px 30px;background:var(--secondary);font-size:1rem;">
-                    View Detection History
-                </button>
+                    </div>
+                    <div class="dashboard-actions">
+                        <button onclick="location.href='history.html'" style="background:var(--secondary);">
+                            View Detection History
+                        </button>
+                        <button class="btn-secondary-soft" onclick="location.href='contact.html'">
+                            Report an Issue
+                        </button>
+                    </div>
+                </div>
+                <div class="dashboard-side-panel">
+                    <div class="page-section-title">
+                        <div>
+                            <h3>System Snapshot</h3>
+                            <p class="section-note">A quick operational summary for this session.</p>
+                        </div>
+                    </div>
+                    <div class="dashboard-status-list">
+                        <div class="dashboard-status-item">
+                            <div>
+                                <strong>Current access</strong>
+                                <span id="dashboard-role-copy">Authenticated operator</span>
+                            </div>
+                            <span class="status-pill info" id="dashboard-role-badge">Active</span>
+                        </div>
+                        <div class="dashboard-status-item">
+                            <div>
+                                <strong>Sensor heartbeat</strong>
+                                <span id="dashboard-heartbeat-copy">Waiting for first live sync</span>
+                            </div>
+                            <span class="status-pill warning" id="dashboard-heartbeat-badge">Syncing</span>
+                        </div>
+                        <div class="dashboard-status-item">
+                            <div>
+                                <strong>Notification flow</strong>
+                                <span>Push alerts and in-app warnings stay connected here.</span>
+                            </div>
+                            <span class="status-pill good">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-info-strip">
+            <div class="dashboard-mini-card">
+                <strong id="dashboard-active-alerts">0 active alerts</strong>
+                <span>Open detections that still need attention.</span>
+            </div>
+            <div class="dashboard-mini-card">
+                <strong id="dashboard-zones-online">0 of 2 zones online</strong>
+                <span>Sensor zones with fresh data in the last 30 seconds.</span>
+            </div>
+            <div class="dashboard-mini-card">
+                <strong id="dashboard-last-sync">Awaiting update</strong>
+                <span>Auto-refresh runs every 5 seconds.</span>
             </div>
         </div>
 
@@ -504,6 +559,49 @@
         // Track last event IDs seen to avoid double-notifying
         const seenEventIds = new Set(JSON.parse(localStorage.getItem('fz-seen-events') || '[]'));
 
+        function updateDashboardMeta() {
+            const roleCopy = document.getElementById('dashboard-role-copy');
+            const roleBadge = document.getElementById('dashboard-role-badge');
+            if (roleCopy) roleCopy.textContent = user?.position || 'Authenticated user';
+            if (roleBadge) {
+                roleBadge.textContent = isAdmin ? 'Admin' : isStaff ? 'Staff' : 'Viewer';
+                roleBadge.className = `status-pill ${isAdmin ? 'danger' : isStaff ? 'warning' : 'info'}`;
+            }
+        }
+
+        function updateDashboardMetrics() {
+            const activeCount = Object.values(activeAlerts).filter(Boolean).length;
+            const zoneKeys = Object.keys(ZONES);
+            const onlineCount = zoneKeys.filter(zoneCode => {
+                const tsEl = document.getElementById(ZONES[zoneCode].ts);
+                const text = (tsEl?.textContent || '').toLowerCase().replace(/—/g, '-');
+                return text && !text.includes('offline') && !text.includes('stale') && !text.includes('last reading: -');
+            }).length;
+
+            const activeEl = document.getElementById('dashboard-active-alerts');
+            const onlineEl = document.getElementById('dashboard-zones-online');
+            const lastSyncEl = document.getElementById('dashboard-last-sync');
+            const heartbeatCopy = document.getElementById('dashboard-heartbeat-copy');
+            const heartbeatBadge = document.getElementById('dashboard-heartbeat-badge');
+
+            if (activeEl) activeEl.textContent = `${activeCount} active alert${activeCount === 1 ? '' : 's'}`;
+            if (onlineEl) onlineEl.textContent = `${onlineCount} of ${zoneKeys.length} zones online`;
+            if (lastSyncEl) {
+                lastSyncEl.textContent = new Date().toLocaleTimeString('en-PH', {
+                    timeZone: 'Asia/Manila',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+            }
+            if (heartbeatCopy) heartbeatCopy.textContent = activeCount ? 'Live alert workflow is active' : 'Sensors are polling normally';
+            if (heartbeatBadge) {
+                heartbeatBadge.textContent = activeCount ? 'Alerting' : 'Healthy';
+                heartbeatBadge.className = `status-pill ${activeCount ? 'danger' : 'good'}`;
+            }
+        }
+
         // ── RENDER ZONE CARD ───────────────────────────────────
         function renderZone(zoneCode, data) {
             const z = ZONES[zoneCode];
@@ -620,6 +718,7 @@
                 : null;
             const freshness = secondsAgo === null ? '' : secondsAgo < 15 ? '' : secondsAgo < 30 ? ' · delayed' : ' · stale';
             ts.textContent = `Last reading: ${recordedAt}${freshness}`;
+            updateDashboardMetrics();
         }
 
         // ── FETCH LIVE SENSOR DATA ─────────────────────────────
@@ -639,6 +738,7 @@
                     bar.textContent = `Last updated: ${new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila' })} — Auto-refreshes every 5 seconds`;
                     bar.style.color = '';
                 }
+                updateDashboardMetrics();
             } catch(err) {
                 showAPIError('Server unreachable — retrying in 5 seconds…');
             }
@@ -912,6 +1012,8 @@
             if (subtitleEl) subtitleEl.textContent = `Logged in as ${user.full_name || user.name} — ${user.position || 'User'}`;
         }
 
+        updateDashboardMeta();
+        updateDashboardMetrics();
         initHotkeys('dashboard');
     </script>
     <script src="/pwa.js" defer></script>

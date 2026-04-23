@@ -242,7 +242,7 @@
         .sm-icon  { width:0.8rem; height:0.8rem; vertical-align:-0.08em; margin-right:3px; }
     </style>
 </head>
-<body>
+<body class="history-page">
 
     <!-- Smoke background — same as dashboard -->
     <div class="smoke-container" aria-hidden="true">
@@ -295,9 +295,10 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container page-shell history-shell">
         <div class="page-hero">
             <div>
+                <span class="section-kicker">Audit Trail</span>
                 <h1><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px;color:var(--secondary);"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg>Detection History</h1>
                 <p>Complete archive of on-campus vape aerosol detection events</p>
             </div>
@@ -321,6 +322,19 @@
         </div>
 
         <!-- Filter bar -->
+        <div class="history-results-bar">
+            <div class="history-results-copy">
+                <strong id="history-results-count">0 records shown</strong>
+                <span>Use the filters below to narrow by location, status, or date.</span>
+            </div>
+            <div class="action-row">
+                <button class="filter-action-btn filter-export-btn" onclick="exportCSV()">
+                    <span class="fab-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+                    <span class="fab-text">Quick Export</span>
+                </button>
+            </div>
+        </div>
+
         <div class="filter-bar">
             <!-- Row 1: Filter inputs each with inline clear -->
             <div class="filter-inputs-row">
@@ -381,6 +395,13 @@
             </div>
         </div>
 
+        <div class="glass-card table-shell">
+            <div class="table-shell-header">
+                <div>
+                    <strong>Event log</strong>
+                    <p class="section-note">Detection, acknowledgement, and resolution activity across the system.</p>
+                </div>
+            </div>
         <div class="log-container">
             <table role="table" aria-label="Detection history log">
                 <thead>
@@ -398,6 +419,7 @@
                     <!-- Populated by JS -->
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 
@@ -497,6 +519,11 @@
                 })();
                 return matchSearch && matchStatus && matchDate;
             });
+
+            const resultsEl = document.getElementById('history-results-count');
+            if (resultsEl) {
+                resultsEl.textContent = `${records.length} record${records.length === 1 ? '' : 's'} shown`;
+            }
 
             tbody.style.transition = 'opacity 0.18s ease';
             tbody.style.opacity = '0';
