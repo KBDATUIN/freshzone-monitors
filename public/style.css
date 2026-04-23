@@ -973,118 +973,177 @@ th { white-space:nowrap; }
     .mobile-nav-drawer { width:min(280px,90vw); }
 }
 
-/* ── GLOBAL UI POLISH UPGRADE ───────────────────────────────── */
+//* ─────────────────────────────────────────────
+   ✨ UI/UX LEVEL-UP PATCH (PRODUCTION FEEL)
+   Paste at the VERY END of your CSS
+───────────────────────────────────────────── */
 
-/* Softer gradient + less eye strain */
+/* === 1. GLOBAL SPACING SYSTEM (fix clutter) === */
+:root {
+    --space-xs: 6px;
+    --space-sm: 10px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+}
+
+/* Apply consistent spacing */
+.container {
+    padding: var(--space-xl) var(--space-lg) !important;
+}
+
+.card, .glass-card, .auth-card {
+    padding: var(--space-lg) !important;
+}
+
+/* === 2. VISUAL HIERARCHY (important fix) === */
+h1 { font-size: 2rem; font-weight: 800; }
+h2 { font-size: 1.5rem; font-weight: 700; }
+h3 { font-size: 1.2rem; font-weight: 700; }
+
+p {
+    color: var(--gray);
+    font-size: 0.92rem;
+}
+
+/* Reduce harsh text contrast */
+[data-theme="dark"] p {
+    color: #94a3b8;
+}
+
+/* === 3. CARD SYSTEM (make UI feel premium) === */
+.card, .glass-card, .auth-card, .stat-box {
+    border-radius: 18px !important;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: linear-gradient(
+        145deg,
+        rgba(255,255,255,0.95),
+        rgba(255,255,255,0.85)
+    );
+}
+
+/* Dark mode cards */
+[data-theme="dark"] .card,
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .auth-card {
+    background: linear-gradient(
+        145deg,
+        rgba(10,20,32,0.95),
+        rgba(10,20,32,0.85)
+    );
+}
+
+/* === 4. DEPTH SYSTEM (less flat, more real) === */
+.card:hover, .glass-card:hover, .stat-box:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.08),
+        0 4px 16px rgba(0,0,0,0.05) !important;
+}
+
+/* === 5. BUTTON UX (feels like real app) === */
+button {
+    border-radius: 14px !important;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+}
+
+/* Subtle glow instead of harsh hover */
+button:hover {
+    filter: brightness(1.05);
+    box-shadow:
+        0 6px 20px rgba(0,180,216,0.25);
+}
+
+/* Click feedback */
+button:active {
+    transform: scale(0.97);
+}
+
+/* === 6. INPUT UX (major usability improvement) === */
+input, select, textarea {
+    background: rgba(255,255,255,0.85);
+    border-radius: 12px !important;
+}
+
+/* Focus = premium feel */
+input:focus, select:focus, textarea:focus {
+    border-color: var(--secondary);
+    box-shadow:
+        0 0 0 3px rgba(0,180,216,0.12),
+        0 6px 20px rgba(0,0,0,0.05);
+}
+
+/* === 7. NAVBAR (clean SaaS style) === */
+nav {
+    background: rgba(255,255,255,0.7) !important;
+    backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.5);
+}
+
+/* Dark nav */
+[data-theme="dark"] nav {
+    background: rgba(6,14,24,0.7) !important;
+}
+
+/* Nav links smoother */
+.nav-links a {
+    border-radius: 10px;
+}
+.nav-links a:hover {
+    background: rgba(0,78,122,0.08);
+}
+
+/* === 8. TABLE UX (big improvement) === */
+tbody tr {
+    transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(0,180,216,0.04);
+    transform: scale(1.01);
+}
+
+/* === 9. MICRO-INTERACTIONS (feels alive) === */
+.card, button, input {
+    will-change: transform;
+}
+
+/* Smooth page load */
+.container {
+    animation: fadeUp 0.6s ease both;
+}
+
+/* === 10. EYE COMFORT FIX (important) === */
 body {
     background-size: 300% 300% !important;
     animation: wave 20s ease-in-out infinite !important;
-    line-height: 1.65 !important;
-    transition: background 0.4s ease, color 0.25s ease;
 }
 
-/* Reduce harsh white glare */
-.glass-card, .card, .hero, .auth-card, .contact-page-header {
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
+/* Reduce glare in light mode */
+.glass-card, .auth-card {
+    backdrop-filter: blur(14px) saturate(160%);
 }
 
-/* Softer shadows everywhere */
-.glass-card, .card, .stat-box, .log-container, .auth-card {
-    box-shadow: 0 10px 30px rgba(0, 78, 122, 0.08),
-                0 2px 10px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Hover feels more natural (not too jumpy) */
-.glass-card:hover, .card:hover, .stat-box:hover, .location-card:hover {
-    transform: translateY(-3px) scale(1.01);
-}
-
-/* Buttons – more premium feel */
-button {
-    border-radius: 14px !important;
-    letter-spacing: 0.02em;
-}
-
-button:hover {
-    transform: translateY(-2px) scale(1.01);
-}
-
-/* Inputs – less sharp + easier on eyes */
-input, select, textarea {
-    border-radius: 12px !important;
-    background: rgba(255,255,255,0.9);
-}
-
-/* Focus state improvement */
-input:focus, select:focus, textarea:focus {
-    box-shadow: 0 0 0 3px rgba(0,180,216,0.12),
-                0 4px 14px rgba(0,0,0,0.06);
-}
-
-/* Navbar – more glassy premium look */
-nav {
-    backdrop-filter: blur(18px) saturate(180%) !important;
-    background: rgba(255,255,255,0.75) !important;
-}
-
-/* Dark mode nav refinement */
-[data-theme="dark"] nav {
-    background: rgba(6,14,24,0.75) !important;
-}
-
-/* Table readability improvement */
-table td {
-    line-height: 1.5;
-}
-
-/* Smooth transitions globally */
-* {
-    transition: all 0.18s ease;
-}
-
-/* Reduce aggressive animation for better UX */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation: none !important;
-        transition: none !important;
+/* === 11. MOBILE + DESKTOP BALANCE === */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1200px;
     }
 }
 
-/* Auth page refinement */
-.auth-card {
-    border-radius: 24px !important;
-}
-
-.auth-header h1 {
-    letter-spacing: -0.02em;
-}
-
-/* Profile polish */
-.profile-card {
-    backdrop-filter: blur(12px);
-}
-
-/* Contact form polish */
-.inbox-ticket {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.inbox-ticket:hover {
-    transform: translateY(-2px);
-}
-
-/* Subtle UI depth layering */
-.container {
-    isolation: isolate;
-}
-
-/* Scrollbar smoother */
-::-webkit-scrollbar-thumb {
-    transition: background 0.2s;
-}
-
-/* Slight color softening (less eye fatigue) */
-:root {
-    --primary: #005f8f;
-    --secondary: #00a8cc;
+/* === 12. FINAL TOUCH: subtle premium glow === */
+.card::after, .glass-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at top left,
+        rgba(255,255,255,0.4),
+        transparent 60%
+    );
+    opacity: 0.4;
 }
