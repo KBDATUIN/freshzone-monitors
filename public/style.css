@@ -2657,27 +2657,15 @@ body::before {
 }
 
 .profile-page .profile-layout {
-    max-width: 900px;
+    max-width: 1060px;
     margin: 0 auto;
-    grid-template-columns: 1fr !important;
-    gap: 1.1rem;
-    background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.55);
-    border-radius: 28px;
-    box-shadow: var(--shadow-md);
-    padding: 1.4rem;
-}
-
-.profile-page .profile-layout > .profile-card {
-    background: transparent !important;
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-    padding: 0 !important;
+    /* Keep the proper 2-column layout */
+    grid-template-columns: minmax(280px, 0.92fr) minmax(0, 1.5fr);
+    gap: 1.25rem;
 }
 
 .profile-page .profile-summary-grid {
-    display: none;
+    display: grid;
 }
 
 .profile-page .profile-main-card {
@@ -2690,8 +2678,7 @@ body::before {
 }
 
 .profile-page .profile-card .profile-details {
-    max-width: 520px;
-    margin: 0 auto;
+    text-align: left;
 }
 
 .profile-page .profile-card .profile-details p,
@@ -2706,11 +2693,7 @@ body::before {
 }
 
 .profile-page .profile-card .btn-row {
-    justify-content: center;
-}
-
-.contact-page .contact-support-grid {
-    display: none !important;
+    justify-content: flex-start;
 }
 
 .contact-page .contact-shell {
@@ -2718,14 +2701,15 @@ body::before {
 }
 
 .contact-page .contact-grid {
-    max-width: 820px;
+    max-width: 1060px;
     margin: 0 auto;
-    grid-template-columns: 1fr !important;
-    gap: 1.1rem;
+    /* Keep the proper 2-column layout */
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.9fr);
+    gap: 1.2rem;
 }
 
 .contact-page .contact-page-header {
-    max-width: 820px;
+    max-width: 1060px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -2760,17 +2744,16 @@ body::before {
     color: #c8f4ff !important;
 }
 
-[data-theme="dark"] .profile-page .profile-layout,
+[data-theme="dark"] .profile-page .profile-layout {
+    /* Let the cards handle their own dark backgrounds */
+}
+
 [data-theme="dark"] .profile-page .page-hero {
     background: rgba(8,18,32,0.92) !important;
     border-color: rgba(34,211,238,0.1) !important;
 }
 
 @media (max-width: 768px) {
-    .profile-page .profile-layout {
-        padding: 1rem;
-    }
-
     .dashboard-page .dashboard-status-item {
         align-items: flex-start;
     }
