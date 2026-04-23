@@ -2573,3 +2573,205 @@ body::before {
         width: 100%;
     }
 }
+
+/* Desktop repo cleanup: alignment + readability */
+.dashboard-page .dashboard-copy p {
+    color: #5a7388 !important;
+}
+
+.dashboard-page .btn-secondary-soft {
+    background: rgba(255,255,255,0.84) !important;
+    border-color: rgba(0,78,122,0.14) !important;
+    color: #0d4d77 !important;
+    font-weight: 700 !important;
+}
+
+.dashboard-page .btn-secondary-soft:hover {
+    background: rgba(255,255,255,0.95) !important;
+    color: #083d60 !important;
+}
+
+.dashboard-page .dashboard-status-item {
+    align-items: center;
+}
+
+.dashboard-page .dashboard-status-item > div {
+    flex: 1;
+    text-align: left;
+}
+
+.dashboard-page .dashboard-status-item > div span {
+    display: block;
+    line-height: 1.45;
+}
+
+.dashboard-page .dashboard-status-list {
+    align-content: start;
+}
+
+.dashboard-page .dashboard-side-panel h3,
+.dashboard-page .dashboard-status-item strong,
+.dashboard-page .dashboard-mini-card strong {
+    color: #103f63 !important;
+}
+
+.dashboard-page .dashboard-status-item span,
+.dashboard-page .dashboard-mini-card span,
+.dashboard-page #last-updated-bar {
+    color: #61798f !important;
+}
+
+.history-page .page-hero {
+    text-align: center !important;
+}
+
+.history-page .page-hero > div,
+.history-page .page-hero p {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center !important;
+}
+
+.history-page .section-kicker {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-page .page-hero {
+    background: var(--card-bg) !important;
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
+    padding: 1.5rem 1.75rem !important;
+    text-align: center !important;
+}
+
+.profile-page .page-hero p {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-page .section-kicker {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.profile-page .profile-layout {
+    max-width: 900px;
+    margin: 0 auto;
+    grid-template-columns: 1fr !important;
+    gap: 1.1rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.55);
+    border-radius: 28px;
+    box-shadow: var(--shadow-md);
+    padding: 1.4rem;
+}
+
+.profile-page .profile-layout > .profile-card {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+
+.profile-page .profile-summary-grid {
+    display: none;
+}
+
+.profile-page .profile-main-card {
+    padding-top: 0.25rem !important;
+}
+
+.profile-page .profile-card .profile-name,
+.profile-page .profile-card .profile-role-badge {
+    text-align: center;
+}
+
+.profile-page .profile-card .profile-details {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.profile-page .profile-card .profile-details p,
+.profile-page .profile-card .profile-details span {
+    color: #5f768b !important;
+}
+
+.profile-page .profile-card .profile-details strong,
+.profile-page .profile-card label,
+.profile-page .change-pw-section h4 {
+    color: #0f466e !important;
+}
+
+.profile-page .profile-card .btn-row {
+    justify-content: center;
+}
+
+.contact-page .contact-support-grid {
+    display: none !important;
+}
+
+.contact-page .contact-shell {
+    gap: 1.1rem;
+}
+
+.contact-page .contact-grid {
+    max-width: 820px;
+    margin: 0 auto;
+    grid-template-columns: 1fr !important;
+    gap: 1.1rem;
+}
+
+.contact-page .contact-page-header {
+    max-width: 820px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-page .contact-form-card,
+.contact-page .contact-admin-card {
+    padding: 1.4rem !important;
+}
+
+.contact-page .contact-form-card h2,
+.contact-page .contact-admin-card h3,
+.contact-page .contact-form-card label {
+    color: #0f466e !important;
+}
+
+.contact-page .contact-form-card p,
+.contact-page .contact-admin-card .ticket-meta,
+.contact-page .contact-admin-card .ticket-msg,
+.contact-page .contact-admin-card .no-tickets {
+    color: #61798f !important;
+}
+
+.contact-page .contact-form-card input,
+.contact-page .contact-form-card textarea,
+.contact-page .contact-form-card select {
+    color: #123f63 !important;
+}
+
+[data-theme="dark"] .dashboard-page .btn-secondary-soft {
+    background: rgba(34,211,238,0.14) !important;
+    border-color: rgba(34,211,238,0.22) !important;
+    color: #c8f4ff !important;
+}
+
+[data-theme="dark"] .profile-page .profile-layout,
+[data-theme="dark"] .profile-page .page-hero {
+    background: rgba(8,18,32,0.92) !important;
+    border-color: rgba(34,211,238,0.1) !important;
+}
+
+@media (max-width: 768px) {
+    .profile-page .profile-layout {
+        padding: 1rem;
+    }
+
+    .dashboard-page .dashboard-status-item {
+        align-items: flex-start;
+    }
+}
