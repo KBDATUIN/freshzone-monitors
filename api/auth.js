@@ -18,7 +18,20 @@ function sanitizeStr(val, maxLen = 100) {
 }
 
 function isValidEmail(email) {
-    return /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/.test(email);
+    return /^[^@\s]{1,64}@[^@\s]{1,255}\.[^@\s]{2,}$/.test(email);
+}
+
+function isGmailAddress(email) {
+    return /^[^\s@]{1,64}@(?:gmail\.com|googlemail\.com)$/i.test(email);
+}
+
+function isLikelyFakeGmail(email) {
+    return /^[^\s@]{1,64}@(gmail|googlemail)\.[a-z]{2,}$/i.test(email)
+        && !isGmailAddress(email);
+}
+
+function getEmailDomain(email) {
+    return String(email || '').split('@')[1]?.toLowerCase() || '';
 }
 
 function isValidPassword(pw) {
@@ -142,6 +155,8 @@ router.post('/send-otp', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid position.' });
         if (!isValidPassword(password))
             return res.status(400).json({ success: false, message: 'Password must be at least 8 characters with at least one letter and one number.' });
+        if (isLikelyFakeGmail(email))
+            return res.status(400).json({ success: false, message: 'Please enter a real Gmail address ending in @gmail.com.' });
 
         // Check if email already registered
         const [existing] = await db.query('SELECT id FROM accounts WHERE email = ? OR employee_id = ?', [email, employeeId]);

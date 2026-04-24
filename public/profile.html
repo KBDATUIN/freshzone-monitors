@@ -375,10 +375,17 @@
             </button>
         </div>
 
+            <div class="profile-divider" style="margin:1.5rem 0 1rem;"></div>
+            <div class="profile-delete-section" style="text-align:left;">
+                <h4 style="margin-bottom:0.5rem;color:var(--danger);">Delete Account</h4>
+                <p style="margin:0 0 1rem;color:#7f1d1d;line-height:1.5;">Deleting your profile will remove your account from the database permanently. This cannot be undone.</p>
+                <button class="btn-danger" id="delete-account-btn" onclick="deleteAccount()" style="width:auto;padding:0.7rem 1.5rem;font-size:0.86rem;">
+                    Delete My Account
+                </button>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- ── CROP MODAL ──────────────────────────────────────────── -->
 <div id="crop-modal" role="dialog" aria-modal="true" aria-label="Crop your photo">
     <div class="crop-modal-card">
         <h3 class="crop-modal-title"><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg> Crop Your Photo</h3>
@@ -682,6 +689,29 @@
             showNotification('Profile updated successfully!', 'success');
         } else {
             showNotification(data?.message || 'Failed to update profile.', 'error');
+        }
+    }
+
+    async function deleteAccount() {
+        if (!confirm('This will permanently delete your FreshZone account from the database. Continue?')) return;
+
+        const btn = document.getElementById('delete-account-btn');
+        if (btn) { btn.textContent = 'Deleting…'; btn.disabled = true; }
+
+        try {
+            const data = await apiFetch('/profile', { method: 'DELETE' });
+            if (data && data.success) {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('fz-token');
+                showNotification('Account deleted. Redirecting to login…', 'success', 3000);
+                setTimeout(() => window.location.href = 'auth.html', 1200);
+            } else {
+                showNotification(data?.message || 'Failed to delete account.', 'error');
+                if (btn) { btn.textContent = 'Delete My Account'; btn.disabled = false; }
+            }
+        } catch (err) {
+            showNotification('Connection error deleting account. Try again.', 'error');
+            if (btn) { btn.textContent = 'Delete My Account'; btn.disabled = false; }
         }
     }
 
