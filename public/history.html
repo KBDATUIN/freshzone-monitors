@@ -566,12 +566,45 @@
         async function loadStats() {
             try {
                 const data = await apiFetch('/history/stats');
-                if (data && data.success) {
-                    setStatAnimated('stat-today',    data.stats.today);
-                    setStatAnimated('stat-total',    data.stats.total);
-                    setStatAnimated('stat-resolved', data.stats.resolved);
+                if (data && data.success && data.stats) {
+                    setHistoryStats(data.stats);
+                    return;
                 }
-            } catch(err) {}
+            } catch(err) {
+                // silently fall back to derived stats from the loaded history records
+            }
+            setHistoryStats();
+        }
+
+        function setHistoryStats(stats = {}) {
+            const fallback = computeHistoryStats();
+            let today    = Number.isFinite(stats.today)    ? stats.today    : fallback.today;
+            let total    = Number.isFinite(stats.total)    ? stats.total    : fallback.total;
+            let resolved = Number.isFinite(stats.resolved) ? stats.resolved : fallback.resolved;
+            if (fallback.total > 0 && total === 0) total = fallback.total;
+            if (fallback.resolved > 0 && resolved === 0) resolved = fallback.resolved;
+            if (fallback.today > 0 && today === 0) today = fallback.today;
+            setStatAnimated('stat-today', today);
+            setStatAnimated('stat-total', total);
+            setStatAnimated('stat-resolved', resolved);
+        }
+
+        function computeHistoryStats() {
+            const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+            let todayCount = 0;
+            let resolvedCount = 0;
+            allRecords.forEach(r => {
+                if (r.detected_at) {
+                    const detectedDate = new Date(r.detected_at).toLocaleDateString('en-CA', { timeZone: 'Asia/Manila' });
+                    if (detectedDate === today) todayCount += 1;
+                }
+                if (r.status === 'Cleared' || r.resolved_at) resolvedCount += 1;
+            });
+            return {
+                today: todayCount,
+                total: allRecords.length,
+                resolved: resolvedCount,
+            };
         }
 
         function renderTable() {
