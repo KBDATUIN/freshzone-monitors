@@ -137,14 +137,15 @@ app.get('*', (req, res) => {
 cron.schedule('*/5 * * * *', async () => {
     try {
         const [pending] = await db.query(
-            `SELECT pn.*, de.location_name, de.pm2_5_value, de.aqi_category
+            `SELECT pn.*, de.location_name, de.pm2_5_value, de.aqi_category, sr.pm1_0 AS pm1_for_email
              FROM push_notifications pn
              LEFT JOIN detection_events de ON de.id = pn.event_id
+             LEFT JOIN sensor_readings sr ON sr.id = de.reading_id
              WHERE pn.send_status = 'pending' LIMIT 10`
         );
         for (const notif of pending) {
             try {
-                await sendAlertEmail(notif.recipient_email, notif.recipient_name, notif.location_name, notif.pm2_5_value, notif.aqi_category);
+                await sendAlertEmail(notif.recipient_email, notif.recipient_name, notif.location_name, notif.pm1_for_email, notif.aqi_category);
                 await db.query("UPDATE push_notifications SET send_status='sent', sent_at=NOW() WHERE id=?", [notif.id]);
             } catch (err) {
                 await db.query("UPDATE push_notifications SET error_message=? WHERE id=?", [err.message, notif.id]);
@@ -156,8 +157,9 @@ cron.schedule('*/5 * * * *', async () => {
 cron.schedule('*/5 * * * *', async () => {
     try {
         const [unacked] = await db.query(
-            `SELECT de.*, sn.location_name FROM detection_events de
+            `SELECT de.*, sn.location_name, sr.pm1_0 AS pm1_for_email FROM detection_events de
              JOIN sensor_nodes sn ON sn.id = de.node_id
+             LEFT JOIN sensor_readings sr ON sr.id = de.reading_id
              WHERE de.event_status = 'Detected'
              AND de.detected_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
              AND (de.last_escalated_at IS NULL OR de.last_escalated_at < DATE_SUB(NOW(), INTERVAL 10 MINUTE))`
@@ -168,7 +170,7 @@ cron.schedule('*/5 * * * *', async () => {
                     "SELECT full_name, email FROM accounts WHERE position = 'Administrator' AND is_active = 1"
                 );
                 for (const admin of admins) {
-                    await sendAlertEmail(admin.email, admin.full_name, event.location_name, event.pm2_5_value, event.aqi_category);
+                    await sendAlertEmail(admin.email, admin.full_name, event.location_name, event.pm1_for_email, event.aqi_category);
                 }
                 await db.query("UPDATE detection_events SET last_escalated_at=NOW() WHERE id=?", [event.id]);
                 console.log(`[escalation] Re-notified for event #${event.id}`);

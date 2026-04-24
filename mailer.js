@@ -7,7 +7,16 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 console.log('[mailer] Using Resend for email delivery');
 
-async function sendAlertEmail(to, name, location, pm25, category) {
+function formatPm1(pm1) {
+    if (pm1 === null || pm1 === undefined || pm1 === '') return '—';
+    const n = Number(pm1);
+    if (Number.isNaN(n)) return '—';
+    return n.toFixed(1);
+}
+
+/** Alert emails show PM1.0 only (dashboard still shows PM1 / PM2.5 / PM10). */
+async function sendAlertEmail(to, name, location, pm1, category) {
+    const pm1Str = formatPm1(pm1);
     const html = `
     <div style="font-family:Inter,sans-serif;max-width:600px;margin:0 auto;background:#f8f9fa;border-radius:12px;overflow:hidden;">
       <div style="background:#e74c3c;padding:24px 32px;">
@@ -20,8 +29,8 @@ async function sendAlertEmail(to, name, location, pm25, category) {
         <div style="background:#fff5f5;border-left:5px solid #e74c3c;border-radius:8px;padding:16px 20px;margin:20px 0;">
           <p style="margin:0 0 8px;color:#c0392b;font-weight:700;font-size:15px;">Detection Details</p>
           <p style="margin:4px 0;color:#555;font-size:14px;">📍 <strong>Location:</strong> ${location}</p>
-          <p style="margin:4px 0;color:#555;font-size:14px;">💨 <strong>PM2.5:</strong> ${pm25} µg/m³</p>
-          <p style="margin:4px 0;color:#555;font-size:14px;">📊 <strong>AQI:</strong> ${category}</p>
+          <p style="margin:4px 0;color:#555;font-size:14px;">💨 <strong>PM1.0:</strong> ${pm1Str} µg/m³</p>
+          <p style="margin:4px 0;color:#555;font-size:14px;">📊 <strong>AQI category:</strong> ${category}</p>
           <p style="margin:4px 0;color:#555;font-size:14px;">🕐 <strong>Time:</strong> ${new Date().toLocaleString('en-PH', { timeZone: 'Asia/Manila' })}</p>
         </div>
       </div>

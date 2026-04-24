@@ -141,6 +141,10 @@ router.post('/', async (req, res) => {
                          WHERE position = 'Administrator' AND is_active = 1`
                     );
 
+                    const pm1ForEmail = pm1_0 !== undefined && pm1_0 !== null && !Number.isNaN(Number(pm1_0))
+                        ? Number(pm1_0)
+                        : null;
+
                     for (const admin of admins) {
                         await db.query(
                             `INSERT INTO push_notifications
@@ -150,7 +154,7 @@ router.post('/', async (req, res) => {
                              `🚨 Vape/Smoke Detected — ${node.location_name}`]
                         );
                         try {
-                            await sendAlertEmail(admin.email, admin.full_name, node.location_name, pm2_5, category);
+                            await sendAlertEmail(admin.email, admin.full_name, node.location_name, pm1ForEmail, category);
                             await db.query(
                                 `UPDATE push_notifications SET send_status='sent', sent_at=NOW()
                                  WHERE recipient_email=? AND event_id=? AND send_status='pending'`,
@@ -166,9 +170,10 @@ router.post('/', async (req, res) => {
                     }
 
                     try {
+                        const pm1Push = pm1ForEmail != null ? `${pm1ForEmail.toFixed(1)}` : '—';
                         await sendPushToAll(
                             '🚨 Vape/Smoke Detected!',
-                            `Alert at ${node.location_name} — PM2.5: ${pm2_5} µg/m³ (${category})`,
+                            `Alert at ${node.location_name} — PM1.0: ${pm1Push} µg/m³ (${category})`,
                             '/dashboard.html'
                         );
                     } catch (pushErr) {
