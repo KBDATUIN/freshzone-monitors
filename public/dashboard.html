@@ -143,7 +143,9 @@
             cursor:pointer; margin-top:8px; font-family:sans-serif;
         }
         
-        .push-toggle-icon { font-size: 0.9rem; line-height: 1; }
+        .push-toggle-wrap { display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none; }
+        .push-toggle-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:1; flex-shrink:0; color:var(--gray); }
+        .push-toggle-icon svg { width:18px; height:18px; display:block; }
         .push-toggle-switch {
             position: relative;
             width: 44px;
@@ -170,11 +172,19 @@
         }
         .push-toggle-switch.active .push-toggle-knob { transform: translateX(20px); }
         .push-toggle-label {
+            display:inline-flex;
+            align-items:center;
             font-size: 0.72rem;
             font-weight: 700;
             color: var(--secondary, #00c896);
             letter-spacing: 0.04em;
             min-width: 22px;
+        }
+        @media (max-width: 640px) {
+            .push-toggle-wrap { gap:6px; }
+            .push-toggle-label { font-size:0.68rem; min-width:auto; }
+            .push-toggle-icon { width:16px; height:16px; }
+            .push-toggle-icon svg { width:16px; height:16px; }
         }
 
         /* ── DASHBOARD MASTHEAD (matches History + global .fz-masthead) ── */
