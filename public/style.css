@@ -236,11 +236,10 @@ nav {
     will-change:transform;
 }
 .push-toggle-switch.active .push-toggle-knob { transform:translateX(19px); }
-.push-toggle-label { display:inline-flex; align-items:center; font-size:0.7rem; font-weight:700; color:#94a3b8; min-width:22px; transition:color 0.3s; letter-spacing:0.04em; }
+.push-toggle-label { display:none !important; }
 .push-toggle-switch.active ~ .push-toggle-label { color:var(--secondary); }
 @media (max-width:640px) {
     .push-toggle-wrap { gap:6px; }
-    .push-toggle-label { font-size:0.68rem; min-width:auto; }
     .push-toggle-icon { width:16px; height:16px; }
     .push-toggle-icon svg { width:16px; height:16px; }
 }
