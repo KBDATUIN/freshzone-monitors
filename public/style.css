@@ -218,9 +218,9 @@ nav {
 .dark-toggle svg, .dark-toggle .btn-icon { width:17px; height:17px; pointer-events:none; }
 
 /* Push toggle */
-.push-toggle-wrap { display:flex; align-items:center; gap:7px; cursor:pointer; user-select:none; }
-.push-toggle-icon { line-height:1; flex-shrink:0; color:var(--gray); }
-.push-toggle-icon svg { width:16px; height:16px; display:block; }
+.push-toggle-wrap { display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none; }
+.push-toggle-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:1; flex-shrink:0; color:var(--gray); }
+.push-toggle-icon svg { width:18px; height:18px; display:block; }
 .push-toggle-switch {
     position:relative; width:42px; height:23px;
     background:#cbd5e1; border-radius:99px; cursor:pointer;
@@ -236,8 +236,14 @@ nav {
     will-change:transform;
 }
 .push-toggle-switch.active .push-toggle-knob { transform:translateX(19px); }
-.push-toggle-label { font-size:0.7rem; font-weight:700; color:#94a3b8; min-width:22px; transition:color 0.3s; letter-spacing:0.04em; }
+.push-toggle-label { display:inline-flex; align-items:center; font-size:0.7rem; font-weight:700; color:#94a3b8; min-width:22px; transition:color 0.3s; letter-spacing:0.04em; }
 .push-toggle-switch.active ~ .push-toggle-label { color:var(--secondary); }
+@media (max-width:640px) {
+    .push-toggle-wrap { gap:6px; }
+    .push-toggle-label { font-size:0.68rem; min-width:auto; }
+    .push-toggle-icon { width:16px; height:16px; }
+    .push-toggle-icon svg { width:16px; height:16px; }
+}
 
 /* Hamburger */
 .hamburger {
