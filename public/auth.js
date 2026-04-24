@@ -85,7 +85,43 @@ function clearAllErrors() {
     document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
     document.querySelectorAll('.field-error-msg').forEach(el => el.textContent = '');
 }
-function isValidEmail(email) { return /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/.test(email) && email.length <= 320; }
+function isValidEmail(email) { return /^[^@\s]{1,64}@[^@\s]{1,255}\.[^@\s]{2,}$/.test(email) && email.length <= 320; }
+
+function isGmailAddress(email) {
+    return /^[^@\s]{1,64}@(?:gmail\.com|googlemail\.com)$/i.test(email);
+}
+
+function isLikelyFakeGmail(email) {
+    return /^[^@\s]{1,64}@(gmail|googlemail)\.[a-z]{2,}$/i.test(email)
+        && !isGmailAddress(email);
+}
+
+function updateSignupEmailStatus() {
+    const statusEl = document.getElementById('signup-email-status');
+    const email = document.getElementById('signup-email')?.value.trim();
+    if (!statusEl || !email) {
+        if (statusEl) statusEl.textContent = 'Enter your Gmail or school email address.';
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+        statusEl.textContent = 'Enter a valid email address.';
+        statusEl.style.color = '#ef4444';
+        return;
+    }
+    if (isLikelyFakeGmail(email)) {
+        statusEl.textContent = 'This looks like a fake Gmail domain. Use @gmail.com.';
+        statusEl.style.color = '#ef4444';
+        return;
+    }
+    if (isGmailAddress(email)) {
+        statusEl.textContent = 'Valid Gmail address — good to go.';
+        statusEl.style.color = '#22c55e';
+        return;
+    }
+    statusEl.textContent = 'Non-Gmail address detected. This is allowed, but only real Gmail domains are recognized as Gmail.';
+    statusEl.style.color = '#6b7280';
+}
 
 // ── PASSWORD STRENGTH ─────────────────────────────────────────
 function updateStrengthUI(inputId, barId, labelId) {
@@ -396,6 +432,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('signup-password')?.addEventListener('input', function() {
         updateStrengthUI('signup-password', 'signup-pw-bar', 'signup-pw-label');
     });
+    document.getElementById('signup-email')?.addEventListener('input', updateSignupEmailStatus);
+    updateSignupEmailStatus();
     document.getElementById('reset-new-password')?.addEventListener('input', function() {
         updateStrengthUI('reset-new-password', 'reset-pw-bar', 'reset-pw-label');
     });

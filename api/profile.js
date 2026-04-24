@@ -104,4 +104,20 @@ router.post('/change-password', authMiddleware, async (req, res) => {
     }
 });
 
+// ── DELETE /api/profile ───────────────────────────────────
+router.delete('/', authMiddleware, async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT email FROM accounts WHERE id = ? AND is_active = 1', [req.user.id]);
+        if (!rows.length)
+            return res.status(404).json({ success: false, message: 'Account not found.' });
+
+        await db.query('DELETE FROM login_attempts WHERE email = ?', [rows[0].email]);
+        await db.query('DELETE FROM accounts WHERE id = ?', [req.user.id]);
+
+        res.json({ success: true, message: 'Account deleted permanently.' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Server error.' });
+    }
+});
+
 module.exports = router;
