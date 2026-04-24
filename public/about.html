@@ -521,6 +521,7 @@
             const el = document.getElementById('nav-user-name');
             if (el && (user.full_name || user.name)) el.textContent = user.full_name || user.name;
         })();
+        initHotkeys('about');
     </script>
     <script src="/pwa.js" defer></script>
     <script defer src="enhance.js"></script>

@@ -124,12 +124,14 @@ function initHotkeys(pageKey) {
     const map = {
         dashboard: { H:'history.html', P:'profile.html', C:'contact.html' },
         history:   { M:'dashboard.html', P:'profile.html', C:'contact.html' },
+        about:     { M:'dashboard.html', H:'history.html', P:'profile.html', C:'contact.html' },
         profile:   { M:'dashboard.html', H:'history.html', C:'contact.html' },
         contact:   { M:'dashboard.html', H:'history.html', P:'profile.html' },
     };
     const labels = {
         dashboard: { H:'History', P:'Profile', C:'Contact' },
         history:   { M:'Dashboard', P:'Profile', C:'Contact' },
+        about:     { M:'Dashboard', H:'History', P:'Profile', C:'Contact' },
         profile:   { M:'Dashboard', H:'History', C:'Contact' },
         contact:   { M:'Dashboard', H:'History', P:'Profile' },
     };
