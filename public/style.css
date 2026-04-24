@@ -259,14 +259,22 @@ nav {
 
 /* ── MOBILE DRAWER — fixed alignment ────────────────────────── */
 .mobile-nav {
-    display:none;
+    display:block;
     position:fixed; top:0; left:0; width:100%; height:100%;
     background:rgba(0,0,0,0.45);
     z-index:9990;
     backdrop-filter:blur(6px);
     -webkit-backdrop-filter:blur(6px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity 0.3s ease, visibility 0.3s ease;
 }
-.mobile-nav.open { display:block; }
+.mobile-nav.open {
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
 .mobile-nav-drawer {
     position:fixed; top:0; right:0;
     width:min(280px,85vw); height:100%; height:100dvh;
@@ -535,8 +543,11 @@ tbody tr:hover { background:rgba(0,78,122,0.025); }
 
 /* Page hero */
 .page-hero { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
-.page-hero h1 { font-size:1.75rem; color:white; text-shadow:0 2px 12px rgba(0,0,0,0.15); }
-.page-hero p { color:rgba(255,255,255,0.85); font-size:0.9rem; margin-top:0.2rem; }
+/* Default: dark text for light hero panels (e.g. History). Pages with a dark hero can override. */
+.page-hero h1 { font-size:1.75rem; color:#04324d; text-shadow:none; }
+.page-hero p { color:#475569; font-size:0.9rem; margin-top:0.2rem; }
+[data-theme="dark"] .page-hero h1 { color:#e8f4fc; text-shadow:0 1px 14px rgba(0,0,0,0.35); }
+[data-theme="dark"] .page-hero p { color:#cbd5e1; }
 
 /* ── SMOKE ANIMATION ────────────────────────────────────────── */
 .smoke-container { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
@@ -1154,7 +1165,7 @@ p, small {
 
 /* === 11. PERFORMANCE SAFE === */
 * {
-    transition-property: background, color, box-shadow, transform, border;
+    transition-property: background, color, box-shadow, transform, border, opacity, visibility;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1748,24 +1759,26 @@ nav {
     font-size: 2.1rem !important;
     font-weight: 900 !important;
     letter-spacing: -0.04em !important;
-    background: linear-gradient(135deg, #003a5c, #00b4d8) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    background-clip: unset !important;
+    color: #003049 !important;
 }
 [data-theme="dark"] .stat-box h3 {
-    background: linear-gradient(135deg, #7dd3fc, #22d3ee) !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
+    color: #7dd3fc !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
 }
 .stat-box p {
     font-size: 0.7rem !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.08em !important;
-    color: #5b8fa8 !important;
+    color: #0c4a6e !important;
 }
-[data-theme="dark"] .stat-box p { color: #64748b !important; }
+[data-theme="dark"] .stat-box p { color: #cbd5e1 !important; }
 
 /* ── GLASS CARDS — subtle inner glow ───────────────────────────── */
 .glass-card, .card {
@@ -1793,6 +1806,8 @@ td {
     font-size: 0.86rem !important;
     font-weight: 400 !important;
 }
+.log-container td { color: #0f172a !important; }
+[data-theme="dark"] .log-container td { color: #e2e8f0 !important; }
 tbody tr:hover { transition: background 0.15s !important; }
 
 /* ── BUTTONS — sharper, more confident ──────────────────────────── */

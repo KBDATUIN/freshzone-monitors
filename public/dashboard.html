@@ -254,6 +254,8 @@
             font-family: monospace;
             text-align: center;
             letter-spacing: 0.03em;
+            white-space: pre-line;
+            line-height: 1.45;
         }
 
         .fz-alarm-pulse {
@@ -563,7 +565,9 @@
                     alarmShownFor.add(zoneCode);
                     showAlarmOverlay(
                         data.location_name || zoneCode,
+                        parseFloat(data.pm1_0 || 0).toFixed(1),
                         parseFloat(data.pm2_5 || 0).toFixed(1),
+                        parseFloat(data.pm10 || 0).toFixed(1),
                         data.aqi_value || '—'
                     );
                 }
@@ -831,13 +835,13 @@
         let alarmAudio = null;
         let alarmShownFor = new Set();
 
-        function showAlarmOverlay(locationName, pm25, aqi) {
+        function showAlarmOverlay(locationName, pm1, pm25, pm10, aqi) {
             const overlay = document.getElementById('fz-alarm-overlay');
             if (!overlay) return;
 
             document.getElementById('fz-alarm-location').textContent = ' ' + locationName;
             document.getElementById('fz-alarm-pm').textContent =
-                `PM2.5: ${pm25} µg/m³  |  AQI: ${aqi}`;
+                `PM1.0: ${pm1} µg/m³  |  PM2.5: ${pm25} µg/m³  |  PM10: ${pm10} µg/m³\nAQI: ${aqi}`;
 
             overlay.style.display = 'flex';
 
