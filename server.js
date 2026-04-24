@@ -157,12 +157,13 @@ cron.schedule('*/5 * * * *', async () => {
 cron.schedule('*/5 * * * *', async () => {
     try {
         const [unacked] = await db.query(
-            `SELECT de.*, sn.location_name, sr.pm1_0 AS pm1_for_email FROM detection_events de
+            `SELECT de.*, sn.location_name, sn.last_seen, sr.pm1_0 AS pm1_for_email FROM detection_events de
              JOIN sensor_nodes sn ON sn.id = de.node_id
              LEFT JOIN sensor_readings sr ON sr.id = de.reading_id
              WHERE de.event_status = 'Detected'
              AND de.detected_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-             AND (de.last_escalated_at IS NULL OR de.last_escalated_at < DATE_SUB(NOW(), INTERVAL 10 MINUTE))`
+             AND (de.last_escalated_at IS NULL OR de.last_escalated_at < DATE_SUB(NOW(), INTERVAL 10 MINUTE))
+             AND sn.last_seen >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)`
         );
         for (const event of unacked) {
             try {
