@@ -218,8 +218,8 @@ nav {
 .dark-toggle svg, .dark-toggle .btn-icon { width:17px; height:17px; pointer-events:none; }
 
 /* Push toggle */
-.push-toggle-wrap { display:inline-flex; align-items:center; gap:7px; cursor:pointer; user-select:none; }
-.push-toggle-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:1; flex-shrink:0; color:var(--gray); }
+.push-toggle-wrap { display:inline-flex; align-items:center; justify-content:center; gap:7px; cursor:pointer; user-select:none; min-height:38px; }
+.push-toggle-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; line-height:0; margin:0; flex-shrink:0; color:var(--gray); }
 .push-toggle-icon svg { width:18px; height:18px; display:block; }
 .push-toggle-switch {
     position:relative; width:42px; height:23px;
