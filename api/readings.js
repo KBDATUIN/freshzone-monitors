@@ -70,7 +70,7 @@ router.post('/', async (req, res) => {
 
         const node = nodes[0];
         const { aqi, category } = calculateAQI(pm2_5);
-        const smokeDetected = pm2_5 > 35.4;
+        const smokeDetected = pm1_0 > 12;
         const ledColor = smokeDetected ? 'red' : 'green';
 
         // --- Save reading ---
