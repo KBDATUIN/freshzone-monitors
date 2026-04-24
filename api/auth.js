@@ -40,6 +40,10 @@ function isValidPassword(pw) {
         && /[a-zA-Z]/.test(pw) && /[0-9]/.test(pw);
 }
 
+function isRealNamePart(value) {
+    return /^[A-Za-zÀ-ÖØ-öø-ÿ'’-]{2,}$/.test(value);
+}
+
 function isValidPhone(phone) {
     if (!phone) return true; // optional — for signup
     return /^[0-9+\-\s()]{7,20}$/.test(phone);
@@ -126,13 +130,14 @@ router.post('/login', async (req, res) => {
 
 // ── POST /api/auth/send-otp ───────────────────────────────────
 router.post('/send-otp', async (req, res) => {
-    const email    = sanitizeStr(req.body.email, 255);
-    const type     = sanitizeStr(req.body.type, 20);
-    const name     = sanitizeStr(req.body.name, 100);
+    const email     = sanitizeStr(req.body.email, 255);
+    const type      = sanitizeStr(req.body.type, 20);
+    const firstName = sanitizeStr(req.body.firstName, 50);
+    const lastName  = sanitizeStr(req.body.lastName, 50);
     const employeeId = sanitizeStr(req.body.employeeId, 30);
-    const contact  = sanitizeStr(req.body.contact, 20);
-    const position = sanitizeStr(req.body.position, 50);
-    const password = typeof req.body.password === 'string' ? req.body.password.slice(0, 128) : '';
+    const contact   = sanitizeStr(req.body.contact, 20);
+    const position  = sanitizeStr(req.body.position, 50);
+    const password  = typeof req.body.password === 'string' ? req.body.password.slice(0, 128) : '';
 
     if (!email || !type)
         return res.status(400).json({ success: false, message: 'Email and type are required.' });
@@ -145,8 +150,14 @@ router.post('/send-otp', async (req, res) => {
 
     // Validate signup fields
     if (type === 'signup') {
-        if (!name || name.length < 2)
-            return res.status(400).json({ success: false, message: 'Full name must be at least 2 characters.' });
+        if (!firstName || firstName.length < 2)
+            return res.status(400).json({ success: false, message: 'First name must be at least 2 letters.' });
+        if (!isRealNamePart(firstName))
+            return res.status(400).json({ success: false, message: 'Enter a real first name without digits or usernames.' });
+        if (!lastName || lastName.length < 2)
+            return res.status(400).json({ success: false, message: 'Last name must be at least 2 letters.' });
+        if (!isRealNamePart(lastName))
+            return res.status(400).json({ success: false, message: 'Enter a real last name without digits or usernames.' });
         if (!employeeId || employeeId.length < 5)
             return res.status(400).json({ success: false, message: 'Invalid employee ID.' });
         if (contact && !isValidPhone(contact))
@@ -185,14 +196,17 @@ router.post('/send-otp', async (req, res) => {
         const otp     = generateCode();
         const expires = Date.now() + 60 * 1000;
 
+        const signupUserData = type === 'signup' ? { firstName, lastName, employeeId, contact, position, password } : null;
+        const displayName = type === 'signup' ? `${firstName} ${lastName}`.trim() : 'User';
+
         otpStore.set(email, {
             otp, expires, type,
             attempts: 0, // Track wrong OTP attempts
-            userData: type === 'signup' ? { name, employeeId, contact, position, password } : null
+            userData: signupUserData
         });
 
         try {
-            await sendOTPEmail(email, name || 'User', otp, type);
+            await sendOTPEmail(email, displayName || 'User', otp, type);
             console.log(`[send-otp] Email sent to ${email}`);
         } catch (mailErr) {
             console.error('[send-otp] Email failed:', mailErr.message);
@@ -245,7 +259,8 @@ router.post('/verify-otp', async (req, res) => {
 
     try {
         if (stored.type === 'signup') {
-            const { name, employeeId, contact, position, password } = stored.userData;
+            const { firstName, lastName, employeeId, contact, position, password } = stored.userData;
+            const fullName = `${firstName} ${lastName}`;
 
             // Final duplicate check before insert
             const [dup] = await db.query('SELECT id FROM accounts WHERE email = ? OR employee_id = ?', [email, employeeId]);
@@ -256,7 +271,7 @@ router.post('/verify-otp', async (req, res) => {
             await db.query(
                 `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, date_joined)
                  VALUES (?, ?, ?, ?, ?, ?, NOW())`,
-                [employeeId, name, email, contact || null, position, hash]
+                [employeeId, fullName, email, contact || null, position, hash]
             );
             return res.json({ success: true, message: 'Account created successfully! You can now log in.' });
         }

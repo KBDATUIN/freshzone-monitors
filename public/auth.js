@@ -86,7 +86,9 @@ function clearAllErrors() {
     document.querySelectorAll('.field-error-msg').forEach(el => el.textContent = '');
 }
 function isValidEmail(email) { return /^[^@\s]{1,64}@[^@\s]{1,255}\.[^@\s]{2,}$/.test(email) && email.length <= 320; }
-
+function isRealNamePart(value) {
+    return /^[A-Za-zÀ-ÖØ-öø-ÿ'’-]{2,}$/.test(value);
+}
 function isGmailAddress(email) {
     return /^[^@\s]{1,64}@(?:gmail\.com|googlemail\.com)$/i.test(email);
 }
@@ -240,7 +242,8 @@ async function sendOTP(type) {
     let payload = { type };
 
     if (type === 'signup') {
-        const name       = document.getElementById('signup-name').value.trim();
+        const firstName  = document.getElementById('signup-first-name').value.trim();
+        const lastName   = document.getElementById('signup-last-name').value.trim();
         const employeeId = document.getElementById('signup-employeeid').value.trim();
         const email      = document.getElementById('signup-email').value.trim();
         const contact    = document.getElementById('signup-contact').value.trim();
@@ -248,7 +251,10 @@ async function sendOTP(type) {
         const password   = document.getElementById('signup-password').value.trim();
 
         let valid = true;
-        if (!name)                          { setError('signup-name',       'Full name is required.');       valid=false; }
+        if (!firstName)                     { setError('signup-first-name', 'First name is required.');           valid=false; }
+        else if (!isRealNamePart(firstName)) { setError('signup-first-name', 'Use a real first name only.');        valid=false; }
+        if (!lastName)                      { setError('signup-last-name',  'Last name is required.');            valid=false; }
+        else if (!isRealNamePart(lastName))  { setError('signup-last-name',  'Use a real last name only.');         valid=false; }
         if (!employeeId)                    { setError('signup-employeeid', 'Employee ID is required.');     valid=false; }
         else if (employeeId.length < 5)         { setError('signup-employeeid', 'Employee ID must be at least 5 characters.'); valid=false; }
         if (!email)                         { setError('signup-email',      'Email is required.');           valid=false; }
@@ -261,7 +267,7 @@ async function sendOTP(type) {
         if (!valid) return;
 
         currentEmail = email;
-        payload = { ...payload, email, name, employeeId, contact, position, password };
+        payload = { ...payload, email, firstName, lastName, employeeId, contact, position, password };
 
     } else if (type === 'reset') {
         const email = document.getElementById('reset-email').value.trim();
@@ -321,7 +327,8 @@ async function resendOTP(type) {
     try {
         const payload = { type, email: currentEmail };
         if (type === 'signup') {
-            payload.name       = document.getElementById('signup-name').value.trim();
+            payload.firstName  = document.getElementById('signup-first-name').value.trim();
+            payload.lastName   = document.getElementById('signup-last-name').value.trim();
             payload.employeeId = document.getElementById('signup-employeeid').value.trim();
             payload.contact    = document.getElementById('signup-contact').value.trim();
             payload.position   = document.getElementById('signup-position').value;
@@ -447,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // SIGNUP VIEW — all fields → Send OTP (or Verify if OTP shown)
-    ['signup-name','signup-employeeid','signup-email','signup-contact','signup-password'].forEach(id => {
+    ['signup-first-name','signup-last-name','signup-employeeid','signup-email','signup-contact','signup-password'].forEach(id => {
         document.getElementById(id)?.addEventListener('keydown', e => {
             if (e.key !== 'Enter') return;
             e.preventDefault();
