@@ -976,6 +976,10 @@ th { white-space:nowrap; }
     .nav-controls .hamburger { display:flex !important; }
     .nav-user  { display:none !important; }
     .nav-controls { gap:8px; }
+    .nav-controls > label.push-toggle-wrap,
+    .nav-controls > .push-toggle-wrap {
+        display:none !important;
+    }
 }
 @media (max-width:768px) {
     nav { padding:0 1rem; }
