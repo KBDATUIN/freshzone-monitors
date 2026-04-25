@@ -1,0 +1,530 @@
+/* ================================================================
+   FreshZone — Responsive Fix Layer
+   Fixes: horizontal scroll, mobile table, overflow issues
+   Applies to: all pages — loaded LAST after style-v3.css
+   ================================================================ */
+
+/* ── GLOBAL OVERFLOW PREVENTION ─────────────────────────────── */
+html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+}
+
+* { box-sizing: border-box; }
+
+/* ── CONTAINER CLAMP ─────────────────────────────────────────── */
+.container {
+    width: 100% !important;
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding: 2rem 1.5rem !important;
+    overflow-x: hidden !important;
+}
+
+/* ── NAV — prevent overflow ──────────────────────────────────── */
+nav {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+.nav-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 1.25rem !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 0 !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+}
+
+/* ── LOG CONTAINER (HISTORY TABLE WRAPPER) ───────────────────── */
+/* THIS IS THE KEY FIX: The table inside needs overflow-x:auto
+   but the body must NOT have overflow-x:hidden that fights it */
+.log-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: var(--radius-lg) !important;
+    border: 1px solid rgba(0,78,122,0.08) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+/* Table itself — allow natural scrolling inside container */
+.log-container table {
+    width: 100% !important;
+    min-width: 620px; /* allow horizontal scroll on mobile */
+    border-collapse: collapse !important;
+}
+
+/* ── TH CELL LAYOUT FIX ──────────────────────────────────────── */
+.th-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+/* ── STATS GRID — responsive ─────────────────────────────────── */
+.stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    width: 100% !important;
+}
+
+/* ── FILTER BAR — always vertical on mobile ──────────────────── */
+.filter-bar {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ── PAGE HERO — no overflow ─────────────────────────────────── */
+.page-hero {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* ── SENSOR GRID (DASHBOARD) ─────────────────────────────────── */
+.grid#sensor-grid {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ── LOCATION CARDS ──────────────────────────────────────────── */
+.location-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* ── PM VALUES WRAPPING FIX ──────────────────────────────────── */
+.pm-values {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+}
+
+/* ── DASHBOARD MASTHEAD ──────────────────────────────────────── */
+.dashboard-masthead {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+.dashboard-masthead__grid {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ── MODAL — prevent overflow ────────────────────────────────── */
+.modal-content-custom {
+    width: 90% !important;
+    max-width: 420px !important;
+    box-sizing: border-box !important;
+}
+
+/* ── SECTION / AQ GUIDE ──────────────────────────────────────── */
+.aq-guide {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+.aq-guide-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 1rem !important;
+    width: 100% !important;
+}
+.aqi-bands {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+}
+.aqi-band {
+    flex: 1 1 80px !important;
+    min-width: 80px !important;
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────── */
+footer {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MOBILE — max-width: 768px
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.6rem !important;
+    }
+
+    .stat-box {
+        padding: 0.85rem 0.65rem !important;
+    }
+    .stat-box h3 { font-size: 1.35rem !important; }
+    .stat-box p  { font-size: 0.65rem !important; }
+
+    .page-hero {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 1.25rem !important;
+    }
+
+    .dashboard-masthead {
+        text-align: center !important;
+    }
+    .dashboard-masthead__grid {
+        grid-template-columns: 1fr !important;
+    }
+    .dashboard-masthead__viz {
+        display: none !important; /* Hide rings on mobile to save space */
+    }
+
+    /* Filter bar stacks vertically */
+    .filter-inputs-row {
+        flex-direction: column !important;
+        gap: 0.6rem !important;
+    }
+    .filter-inputs-row .filter-group {
+        min-width: auto !important;
+        width: 100% !important;
+    }
+
+    /* Sensor cards full-width */
+    .grid#sensor-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Buttons in dashboard */
+    .btn-hero-history {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .aq-guide-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SMALL MOBILE — max-width: 600px
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.4rem !important;
+    }
+    .stat-box {
+        padding: 0.7rem 0.5rem !important;
+        border-radius: 10px !important;
+    }
+    .stat-box h3 { font-size: 1.2rem !important; }
+    .stat-box p  { font-size: 0.6rem !important; letter-spacing: 0.02em !important; }
+
+    /* Table: keep horizontal scroll on small phones — card layout at 480 */
+    .log-container {
+        border-radius: 12px !important;
+    }
+    .log-container table {
+        min-width: 560px !important;
+    }
+
+    /* Filter actions — 2-col grid */
+    .filter-actions-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+    }
+    .filter-danger-btn {
+        grid-column: 1 / -1 !important;
+    }
+
+    /* Session pill wraps */
+    .dashboard-hero-session {
+        font-size: 0.78rem !important;
+        padding: 0.45rem 0.85rem !important;
+        flex-wrap: wrap !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+
+    /* Live sensor strip wraps */
+    .live-sensor-strip {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CARD MODE TABLE — max-width: 480px
+   Transforms table into readable stacked cards
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+    /* Override min-width so the card layout takes over */
+    .log-container table {
+        min-width: 0 !important;
+        width: 100% !important;
+    }
+
+    .log-container,
+    .log-container table,
+    .log-container thead,
+    .log-container tbody,
+    .log-container th,
+    .log-container td,
+    .log-container tr {
+        display: block !important;
+    }
+
+    /* Hide header row visually (data-label pseudo-elements replace it) */
+    .log-container thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+
+    /* Each row becomes a card */
+    .log-container tbody tr {
+        background: var(--table-bg, rgba(240,252,255,0.98)) !important;
+        margin-bottom: 12px !important;
+        border-radius: 14px !important;
+        box-shadow: 0 2px 12px rgba(0,50,100,0.10) !important;
+        padding: 12px !important;
+        border: 1px solid rgba(0,100,160,0.10) !important;
+        transform: none !important; /* disable hover translateX on mobile */
+        animation: none !important;
+        opacity: 1 !important;
+    }
+    .log-container tbody tr.row-animate {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    [data-theme="dark"] .log-container tbody tr {
+        background: rgba(10, 22, 38, 0.98) !important;
+        border-color: rgba(34,211,238,0.10) !important;
+    }
+
+    .log-container td {
+        border: none !important;
+        position: relative !important;
+        padding: 7px 10px 7px 45% !important;
+        text-align: right !important;
+        border-bottom: 1px solid rgba(0,80,120,0.07) !important;
+        font-size: 0.82rem !important;
+        min-height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+    }
+    .log-container td:last-child {
+        border-bottom: none !important;
+    }
+
+    /* Label from data-label attribute */
+    .log-container td::before {
+        content: attr(data-label) !important;
+        position: absolute !important;
+        left: 10px !important;
+        width: 42% !important;
+        font-weight: 700 !important;
+        font-size: 0.65rem !important;
+        text-align: left !important;
+        color: var(--gray) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Empty state spans full width */
+    .empty-row td {
+        padding: 2rem 1rem !important;
+        text-align: center !important;
+        justify-content: center !important;
+    }
+    .empty-row td::before { display: none !important; }
+
+    /* Stats still 3-col */
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    /* Filter bar */
+    .filter-inputs-row { flex-direction: column !important; }
+    .filter-actions-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   VERY SMALL — max-width: 360px
+   ───────────────────────────────────────────────────────────── */
+@media (max-width: 360px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.3rem !important;
+    }
+    .stat-box h3 { font-size: 1rem !important; }
+    .stat-box p  { font-size: 0.55rem !important; }
+
+    .container { padding: 0.75rem !important; }
+
+    .log-container td {
+        padding: 7px 8px 7px 48% !important;
+        font-size: 0.78rem !important;
+    }
+}
+
+/* ── DARK MODE TABLE CARDS ───────────────────────────────────── */
+[data-theme="dark"] .log-container td { border-bottom-color: rgba(34,211,238,0.07) !important; }
+[data-theme="dark"] .log-container td::before { color: #64748b !important; }
+
+/* ── SAFE AREA INSETS (iPhone notch/home bar) ────────────────── */
+@supports (padding: env(safe-area-inset-bottom)) {
+    footer {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+    }
+    #fz-bottom-nav {
+        padding-bottom: env(safe-area-inset-bottom) !important;
+    }
+}
+
+/* ── BOTTOM NAV — proper safe area + z-index ─────────────────── */
+#fz-bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9000 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    box-sizing: border-box !important;
+}
+
+/* Prevent bottom nav from overlapping content */
+@media (max-width: 768px) {
+    body:has(#fz-bottom-nav) footer {
+        padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    body:has(#fz-bottom-nav) .container {
+        padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ── HERO / MASTHEAD — correct padding on mobile ─────────────── */
+.fz-masthead {
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ── GLASS CARDS — full width, no overflow ───────────────────── */
+.glass-card, .hero, .card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* ── FILTER BAR CONTAINER ────────────────────────────────────── */
+.filter-bar {
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+
+/* ── INPUT FIXES — prevent zoom on iOS ──────────────────────── */
+@media (max-width: 600px) {
+    input, select, textarea {
+        font-size: 16px !important; /* Prevents iOS zoom on focus */
+    }
+}
+
+/* ── NOTIFICATION TOAST — always centered on mobile ─────────── */
+@media (max-width: 600px) {
+    .notification {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) translateY(-12px) scale(0.98) !important;
+        width: calc(100vw - 1.5rem) !important;
+        max-width: calc(100vw - 1.5rem) !important;
+        min-width: 0 !important;
+        top: calc(env(safe-area-inset-top, 0px) + 0.75rem) !important;
+    }
+    .notification.show {
+        transform: translateX(-50%) translateY(0) scale(1) !important;
+    }
+}
+
+/* ── AQI GUIDE SECTION — prevent overflow ────────────────────── */
+.aq-guide {
+    overflow: hidden !important;
+}
+.live-sensor-strip {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+}
+.live-sensor-item {
+    flex: 1 1 180px !important;
+    min-width: 150px !important;
+    box-sizing: border-box !important;
+}
+
+/* ── HISTORY PAGE: STAT BOXES WITH ICONS ────────────────────── */
+.stat--alerts h3 { color: var(--danger) !important; }
+.stat--records h3 { color: var(--secondary) !important; }
+.stat--resolved h3 { color: var(--success) !important; }
+
+/* ── FIX: Row hover transform breaks mobile card layout ──────── */
+@media (max-width: 480px) {
+    tbody tr:hover { transform: none !important; }
+    tbody tr:hover td { background: transparent !important; }
+}
+
+/* ── SCROLLBAR STYLE ON LOG CONTAINER ───────────────────────── */
+.log-container::-webkit-scrollbar {
+    height: 4px !important;
+}
+.log-container::-webkit-scrollbar-track {
+    background: rgba(0,78,122,0.05) !important;
+    border-radius: 99px !important;
+}
+.log-container::-webkit-scrollbar-thumb {
+    background: rgba(0,78,122,0.25) !important;
+    border-radius: 99px !important;
+}
+[data-theme="dark"] .log-container::-webkit-scrollbar-thumb {
+    background: rgba(34,211,238,0.25) !important;
+}
+
+/* ── SWIPE HINT on table (mobile) ────────────────────────────── */
+@media (min-width: 481px) and (max-width: 700px) {
+    .log-container::after {
+        content: "← Swipe to see more →";
+        display: block !important;
+        text-align: center !important;
+        font-size: 0.7rem !important;
+        color: var(--gray) !important;
+        padding: 0.4rem !important;
+        opacity: 0.7 !important;
+        letter-spacing: 0.04em !important;
+    }
+}
