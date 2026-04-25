@@ -22,11 +22,11 @@ html, body {
     overflow-x: hidden !important;
 }
 
-/* ── NAV — prevent overflow ──────────────────────────────────── */
+/* ── NAV — prevent overflow but allow drawer to escape ──────── */
 nav {
     width: 100% !important;
     max-width: 100vw !important;
-    overflow: hidden !important;
+    overflow: visible !important;   /* must NOT be hidden — clips mobile drawer */
     box-sizing: border-box !important;
 }
 .nav-container {
@@ -527,4 +527,79 @@ footer {
         opacity: 0.7 !important;
         letter-spacing: 0.04em !important;
     }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HAMBURGER MENU — SMOOTH TRANSITION FIX
+   Fixes: double X button overlap, drawer animation, backdrop
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. Hide hamburger icon when mobile nav is open ───────────
+   Prevents the double-X problem: drawer has its own close btn,
+   so the hamburger morphed into X is redundant and overlapping */
+.mobile-nav.open ~ nav .hamburger,
+.hamburger.open {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.18s ease !important;
+}
+/* Keep it visible when closed */
+.hamburger:not(.open) {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transition: opacity 0.22s ease !important;
+}
+
+/* ── 2. Smooth backdrop fade ──────────────────────────────────
+   Backdrop fades in slightly before drawer slides, feels polished */
+.mobile-nav {
+    transition: opacity 0.28s ease, visibility 0.28s ease !important;
+    will-change: opacity;
+}
+
+/* ── 3. Smooth drawer slide ───────────────────────────────────
+   Single authoritative transition — overrides duplicates above */
+.mobile-nav-drawer {
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    will-change: transform;
+}
+
+/* ── 4. Stagger: links fade in after drawer arrives ──────────── */
+.mobile-nav-drawer a,
+.mobile-nav-close,
+.mobile-nav-divider {
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.mobile-nav.open .mobile-nav-drawer a,
+.mobile-nav.open .mobile-nav-close,
+.mobile-nav.open .mobile-nav-divider {
+    opacity: 1;
+    transform: translateX(0);
+}
+/* Stagger each link by index */
+.mobile-nav.open .mobile-nav-close       { transition-delay: 0.08s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(2) { transition-delay: 0.10s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(3) { transition-delay: 0.14s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(4) { transition-delay: 0.18s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(5) { transition-delay: 0.22s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(6) { transition-delay: 0.26s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(7) { transition-delay: 0.30s; }
+.mobile-nav.open .mobile-nav-drawer a:nth-child(8) { transition-delay: 0.34s; }
+.mobile-nav.open .mobile-nav-divider     { transition-delay: 0.28s; }
+
+/* ── 5. Mobile nav close button — larger tap target ──────────── */
+.mobile-nav-close {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 10px !important;
+    transition: background 0.18s, opacity 0.22s ease, transform 0.22s ease !important;
+}
+
+/* ── 6. Hamburger spans — smooth morph ───────────────────────── */
+.hamburger span {
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.22s ease,
+                background 0.2s ease !important;
 }

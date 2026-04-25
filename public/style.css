@@ -1212,10 +1212,7 @@ p, small {
     transform: translateY(-6px) rotate(-45deg);
 }
 
-/* drawer animation */
-.mobile-nav-drawer {
-    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-}
+/* drawer animation — authoritative version lives in style-fixes.css */
 
 /* === 10. LIVE ANIMATION === */
 @keyframes pulseLive {

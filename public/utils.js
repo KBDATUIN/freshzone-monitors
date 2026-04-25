@@ -72,16 +72,45 @@ function toggleDarkMode() {
 
 // ── MOBILE NAV ────────────────────────────────────────────────
 function openMobileNav() {
-    document.getElementById('mobile-nav')?.classList.add('open');
-    document.getElementById('hamburger')?.classList.add('open');
-    document.getElementById('hamburger')?.setAttribute('aria-expanded','true');
+    const nav = document.getElementById('mobile-nav');
+    const hamburger = document.getElementById('hamburger');
+    if (!nav) return;
+
+    // Prevent double-open
+    if (nav.classList.contains('open')) return;
+
+    nav.classList.add('open');
+    // Mark hamburger as open (CSS will hide it via opacity to remove double-X)
+    if (hamburger) {
+        hamburger.classList.add('open');
+        hamburger.setAttribute('aria-expanded', 'true');
+    }
+    // Lock scroll — use padding to prevent layout shift
+    const scrollbarW = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = 'hidden';
+    if (scrollbarW > 0) document.body.style.paddingRight = scrollbarW + 'px';
+
+    // Focus the close button inside drawer for accessibility
+    requestAnimationFrame(() => {
+        document.querySelector('.mobile-nav-close')?.focus();
+    });
 }
+
 function closeMobileNav() {
-    document.getElementById('mobile-nav')?.classList.remove('open');
-    document.getElementById('hamburger')?.classList.remove('open');
-    document.getElementById('hamburger')?.setAttribute('aria-expanded','false');
+    const nav = document.getElementById('mobile-nav');
+    const hamburger = document.getElementById('hamburger');
+    if (!nav) return;
+
+    nav.classList.remove('open');
+    if (hamburger) {
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        // Return focus to hamburger after close
+        requestAnimationFrame(() => hamburger.focus());
+    }
+    // Restore scroll
     document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
 }
 
 // Close mobile nav on Escape
