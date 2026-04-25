@@ -278,26 +278,21 @@ footer {
         grid-column: 1 / -1 !important;
     }
 
-    /* Session pill — always one line on mobile, just smaller font */
+    /* Session pill — one line, scales down on mobile, never overflows */
     .dashboard-hero-session {
-        font-size: 0.72rem !important;
-        padding: 0.4rem 0.8rem 0.4rem 0.6rem !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        border-radius: 999px !important;
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.85rem 0.4rem 0.65rem !important;
         max-width: 100% !important;
-    }
-    .dashboard-hero-session #hero-session-text {
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: unset !important;
+        overflow: hidden !important;
     }
     .dashboard-hero-session svg {
         width: 13px !important;
         height: 13px !important;
-        margin-top: 0 !important;
+    }
+    .dashboard-hero-session #hero-session-text {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 
     /* Live sensor strip — already 1-col grid from 768px query; just tighten gap */

@@ -202,8 +202,9 @@
             border: 1px solid rgba(0, 100, 150, 0.14);
             font-size: 0.86rem; font-weight: 600; color: #0c4a6e; font-family: 'Outfit', sans-serif;
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-            max-width: 100%; box-sizing: border-box; width: fit-content;
-            white-space: nowrap;
+            box-sizing: border-box;
+            max-width: 100%;
+            overflow: hidden;
         }
         [data-theme="dark"] .dashboard-hero-session {
             background: rgba(0, 0, 0, 0.25);
@@ -211,14 +212,10 @@
             color: #e2e8f0; box-shadow: none;
         }
         .dashboard-hero-session svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
-        .dashboard-hero-session #hero-session-text { white-space: nowrap; }
-        @media (max-width: 600px) {
-            .dashboard-hero-session { font-size: 0.72rem; padding: 0.4rem 0.8rem 0.4rem 0.6rem; }
-            .dashboard-hero-session svg { width: 13px; height: 13px; }
-        }
-        @media (max-width: 400px) {
-            .dashboard-hero-session { font-size: 0.65rem; padding: 0.35rem 0.7rem 0.35rem 0.55rem; }
-            .dashboard-hero-session svg { width: 12px; height: 12px; }
+        .dashboard-hero-session #hero-session-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .dashboard-masthead__grid {
             display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: center;
