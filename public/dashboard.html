@@ -202,9 +202,7 @@
             border: 1px solid rgba(0, 100, 150, 0.14);
             font-size: 0.86rem; font-weight: 600; color: #0c4a6e; font-family: 'Outfit', sans-serif;
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
-            box-sizing: border-box;
-            max-width: 100%;
-            overflow: hidden;
+            box-sizing: border-box; max-width: 100%; overflow: hidden;
         }
         [data-theme="dark"] .dashboard-hero-session {
             background: rgba(0, 0, 0, 0.25);
@@ -213,9 +211,7 @@
         }
         .dashboard-hero-session svg { width: 15px; height: 15px; flex-shrink: 0; opacity: 0.8; }
         .dashboard-hero-session #hero-session-text {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
         }
         .dashboard-masthead__grid {
             display: grid; grid-template-columns: 1fr; gap: 1.25rem; align-items: center;
