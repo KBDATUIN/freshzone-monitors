@@ -241,16 +241,14 @@ async function ensureSecurityTables() {
     await db.query(
         `CREATE TABLE IF NOT EXISTS device_key_store (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            node_id INT NOT NULL,
+            node_id BIGINT NOT NULL,
             key_id VARCHAR(64) NOT NULL,
             secret_key VARCHAR(255) NOT NULL,
             is_active TINYINT(1) NOT NULL DEFAULT 1,
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             UNIQUE KEY uniq_node_key (node_id, key_id),
-            CONSTRAINT fk_device_key_store_node
-                FOREIGN KEY (node_id) REFERENCES sensor_nodes(id)
-                ON DELETE CASCADE
+            INDEX idx_device_key_store_node_id (node_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
     );
 
