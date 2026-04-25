@@ -76,9 +76,6 @@ nav {
     background: rgba(240,252,255,0.97) !important;
     border: 1px solid rgba(255,255,255,0.6) !important;
     box-shadow: 0 6px 28px rgba(0,40,100,0.14), 0 1px 4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8) !important;
-    overflow: hidden !important;
-    box-sizing: border-box !important;
-    max-width: 100% !important;
 }
 [data-theme="dark"] .glass-card,
 [data-theme="dark"] .hero,
@@ -89,8 +86,8 @@ nav {
 
 /* ── HERO — readable text ───────────────────────────────────── */
 .hero { text-align: center; }
-.hero h1 { color: #002c4a !important; font-weight: 800 !important; font-size: 1.65rem !important; letter-spacing: -0.03em !important; word-break: break-word !important; overflow-wrap: break-word !important; max-width: 100% !important; }
-.hero p, .hero > p { color: #3a6a85 !important; font-size: 0.95rem !important; word-break: break-word !important; overflow-wrap: break-word !important; }
+.hero h1 { color: #002c4a !important; font-weight: 800 !important; font-size: 1.65rem !important; letter-spacing: -0.03em !important; }
+.hero p, .hero > p { color: #3a6a85 !important; font-size: 0.95rem !important; }
 [data-theme="dark"] .hero h1 { color: #e2f0f8 !important; }
 [data-theme="dark"] .hero p { color: #94a3b8 !important; }
 
