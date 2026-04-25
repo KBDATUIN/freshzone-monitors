@@ -182,8 +182,12 @@
         /* ── DASHBOARD MASTHEAD (matches History + global .fz-masthead) ── */
         .dashboard-masthead .dashboard-masthead__main { position: relative; z-index: 1; }
         .dashboard-hero-eyebrow {
-            font-size: 0.7rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+            font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
             color: #0369a1; margin: 0 0 0.45rem; font-family: 'Outfit', sans-serif;
+            word-break: break-word; overflow-wrap: break-word; max-width: 100%;
+        }
+        @media (max-width: 480px) {
+            .dashboard-hero-eyebrow { letter-spacing: 0.06em; font-size: 0.65rem; }
         }
         [data-theme="dark"] .dashboard-hero-eyebrow { color: #38bdf8; }
         .dashboard-hero-tagline {
@@ -505,7 +509,7 @@
             <div class="dashboard-masthead__grid">
                 <div class="dashboard-masthead__main">
                     <p class="dashboard-hero-eyebrow">Clear air · Campus monitoring</p>
-                    <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
+                    <h1 style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.4rem;word-break:break-word;overflow-wrap:break-word;">Campus Vape Aerosol Detector <span class="live-badge" style="flex-shrink:0;font-size:0.72rem;"><span class="live-dot"></span>LIVE</span></h1>
                     <p class="dashboard-hero-tagline" id="hero-tagline">Live PM1.0, PM2.5 &amp; PM10 readings from sensors in the 4th Floor comfort rooms.</p>
                     <p class="dashboard-hero-session" id="hero-session" role="status">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
