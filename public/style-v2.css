@@ -505,7 +505,9 @@ input:focus, select:focus, textarea:focus{
   -webkit-backdrop-filter: blur(20px) saturate(170%) !important;
   backdrop-filter: blur(20px) saturate(170%) !important;
   border: 1px solid rgba(255,255,255,.55) !important;
-  overflow: hidden !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  -webkit-overflow-scrolling: touch !important;
 }
 [data-theme="dark"] .log-container{ background: linear-gradient(160deg, rgba(10,22,38,.85), rgba(6,16,28,.75)) !important; border-color: rgba(125,249,255,.12) !important; }
 table thead th{
