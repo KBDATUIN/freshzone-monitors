@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
@@ -696,6 +696,25 @@
 
     <script src="utils.js"></script>
     <script>
+        // â”€â”€ TIMESTAMP FORMATTER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        const _phFmt = new Intl.DateTimeFormat('en-PH', {
+            timeZone: 'Asia/Manila',
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: true
+        });
+        function formatTS(raw) {
+            if (!raw) return '-';
+            const d = (raw instanceof Date) ? raw : new Date(raw);
+            if (isNaN(d)) return '-';
+            const sec = Math.floor((Date.now() - d.getTime()) / 1000);
+            const rel = sec < 60 ? sec + 's ago'
+                      : sec < 3600  ? Math.floor(sec / 60)    + 'm ago'
+                      : sec < 86400 ? Math.floor(sec / 3600)  + 'h ago'
+                      :               Math.floor(sec / 86400) + 'd ago';
+            return _phFmt.format(d) + ' (' + rel + ')';
+        }
+
         // ── AUTH GUARD ─────────────────────────────────────────
         const user = JSON.parse(localStorage.getItem('currentUser'));
         if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; }
@@ -747,14 +766,14 @@
                 aqiBadge.textContent   = 'AQI: —';
                 aqiBadge.className     = 'aqi-badge aqi-offline';
                 pmDiv.innerHTML        = '';
-                if (data && data.last_seen) {
-                    const lastSeen = new Date(data.last_seen).toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila' });
-                    const secAgo = Math.floor((Date.now() - new Date(data.last_seen).getTime()) / 1000);
-                    const durStr = secAgo < 60 ? `${secAgo}s ago` : secAgo < 3600 ? `${Math.floor(secAgo/60)}m ago` : `${Math.floor(secAgo/3600)}h ago`;
-                    ts.textContent = `Last seen: ${lastSeen} (${durStr})`;
-                } else {
-                    ts.textContent = 'No data received';
-                }
+                ts.textContent = data.last_seen ? ('Last seen: ' + formatTS(data.last_seen)) : 'No data received';
+
+
+
+
+
+
+
                 if (ackBtn) ackBtn.style.display = 'none';
                 return;
             }
@@ -763,7 +782,7 @@
             const aqi      = data.aqi_value;
             const category = data.aqi_category || 'Good';
             const pm25     = parseFloat(data.pm2_5 || 0).toFixed(1);
-            const recordedAt = data.recorded_at ? new Date(data.recorded_at).toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila' }) : '—';
+            const recordedAt = data.recorded_at ? formatTS(data.recorded_at) : '-';
             const openStatus = openEventStatusByZone[zoneCode] || null;
 
             // Update status
@@ -839,11 +858,11 @@
                 <span class="pm-chip">PM10: ${parseFloat(data.pm10 || 0).toFixed(1)} µg/m³</span>
             `;
 
-            const secondsAgo = data.recorded_at
-                ? Math.floor((Date.now() - new Date(data.recorded_at).getTime()) / 1000)
-                : null;
-            const freshness = secondsAgo === null ? '' : secondsAgo < 15 ? '' : secondsAgo < 30 ? ' · delayed' : ' · stale';
-            ts.textContent = `Last reading: ${recordedAt}${freshness}`;
+
+
+
+
+            ts.textContent = 'Last reading: ' + recordedAt;
         }
 
         // ── FETCH LIVE SENSOR DATA ─────────────────────────────
@@ -860,7 +879,7 @@
 
                 const bar = document.getElementById('last-updated-bar');
                 if (bar) {
-                    bar.textContent = `Last updated: ${new Date().toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila' })} — Auto-refreshes every 5 seconds`;
+                    bar.textContent = 'Last updated: ' + formatTS(new Date()) + ' \u2014 Auto-refreshes every 5 seconds';
                     bar.style.color = '';
                 }
             } catch(err) {
