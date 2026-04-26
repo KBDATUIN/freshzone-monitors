@@ -169,6 +169,9 @@ router.post('/send-otp', async (req, res) => {
     if (!['signup', 'reset'].includes(type))
         return res.status(400).json({ success: false, message: 'Invalid OTP type.' });
 
+    if (type === 'signup' && !['Administrator', 'Staff / Teachers'].includes(position))
+        return res.status(400).json({ success: false, message: 'Invalid position.' });
+
     // Validate signup fields
     if (type === 'signup') {
         if (!firstName || firstName.length < 2)
