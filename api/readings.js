@@ -127,7 +127,7 @@ router.post('/', verifyNodeHmac, async (req, res) => {
                     const [cleanReadings] = await db.query(
                         `SELECT id FROM sensor_readings
                          WHERE node_id = ? AND smoke_detected = 0
-                           AND recorded_at > ?
+                           AND recorded_at >= ?
                          LIMIT 1`,
                         [node.id, lastCleared[0].resolved_at]
                     );
