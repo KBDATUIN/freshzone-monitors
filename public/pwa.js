@@ -218,7 +218,15 @@ function dismissIOSInstall() {
 // ── SERVICE WORKER ────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('[PWA] Service Worker registered:', registration.scope);
+                // Check for updates periodically
+                setInterval(() => registration.update(), 60000);
+            })
+            .catch(err => {
+                console.error('[PWA] Service Worker registration failed:', err);
+            });
     });
     
     // Listen for messages from service worker

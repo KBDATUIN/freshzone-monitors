@@ -11,6 +11,7 @@ const CACHE_NAME = 'freshzone-v4';
 const OFFLINE_PAGE = '/offline.html';
 
 // Static assets to pre-cache (core app shell)
+// IMPORTANT: offline.html MUST be cached for offline to work!
 const STATIC_ASSETS = [
     '/',
     '/auth.html',
@@ -19,7 +20,7 @@ const STATIC_ASSETS = [
     '/profile.html',
     '/contact.html',
     '/about.html',
-    '/offline.html',
+    OFFLINE_PAGE,  // Cache the offline page
     '/style.css',
     '/style-v2.css',
     '/style-v3.css',
@@ -168,15 +169,80 @@ async function handleNavigation(request) {
         return networkResponse;
     } catch (error) {
         // Network failed, try cache
-        const cachedResponse = await caches.match(request);
+        console.log('[SW] Network failed for navigation, trying cache:', request.url);
         
+        // First try to find the specific page in cache
+        const cachedResponse = await caches.match(request);
         if (cachedResponse) {
+            console.log('[SW] Found cached page:', request.url);
             return cachedResponse;
         }
         
-        // No cached page - return offline page
-        console.log('[SW] Serving offline page for:', request.url);
-        return caches.match(OFFLINE_PAGE);
+        // If not found, try to serve the offline page
+        console.log('[SW] No cached page found, serving offline page for:', request.url);
+        
+        // Try multiple ways to get the offline page
+        const offlineResponse = await caches.match(OFFLINE_PAGE) 
+            || await caches.match('/offline.html')
+            || await caches.match('offline.html');
+        
+        if (offlineResponse) {
+            console.log('[SW] Serving offline page');
+            return offlineResponse;
+        }
+        
+        // Last resort: create a simple offline response
+        console.log('[SW] No offline page cached either, creating fallback');
+        return new Response(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>FreshZone — Offline</title>
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        background: linear-gradient(135deg, #004e7a, #00b4d8);
+                        min-height: 100vh;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .container {
+                        text-align: center;
+                        color: white;
+                        max-width: 400px;
+                    }
+                    h1 { font-size: 2rem; margin-bottom: 10px; }
+                    p { opacity: 0.9; line-height: 1.6; }
+                    button {
+                        background: white;
+                        color: #004e7a;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 10px;
+                        font-size: 1rem;
+                        font-weight: bold;
+                        cursor: pointer;
+                        margin-top: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>You're Offline</h1>
+                    <p>Check your internet connection and try again.</p>
+                    <button onclick="location.reload()">Retry Connection</button>
+                </div>
+            </body>
+            </html>
+        `, {
+            status: 200,
+            headers: { 'Content-Type': 'text/html' }
+        });
     }
 }
 
