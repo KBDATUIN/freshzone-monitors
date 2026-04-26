@@ -1,6 +1,6 @@
 /**
  * FreshZone Cookie Consent Manager
- * Shows a consent banner first and only opens preferences when explicitly requested.
+ * Keeps consent isolated from auth/session cookies used elsewhere in the app.
  */
 
 (function () {
@@ -9,25 +9,52 @@
     const CONSENT_KEY = 'cookie-consent';
     const ANALYTICS_KEY = 'analytics-enabled';
     const PREFERENCES_KEY = 'preference-cookies';
+    const CONSENT_COOKIE = 'fz_cookie_consent';
+    const ANALYTICS_COOKIE = 'fz_cookie_analytics';
+    const PREFERENCES_COOKIE = 'fz_cookie_preferences';
     const ROOT_ID = 'fz-cookie-root';
     const STYLE_ID = 'fz-cookie-style';
+    const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
     let previousBodyOverflow = '';
 
     const markup = `
         <div id="${ROOT_ID}" hidden>
             <section id="cookie-consent-banner" class="fz-cookie-banner" role="dialog" aria-modal="false" aria-labelledby="fz-cookie-title">
+                <button type="button" id="cookie-dismiss-btn" class="fz-cookie-close-btn" aria-label="Close cookie banner">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+
                 <div class="fz-cookie-copy">
-                    <p class="fz-cookie-eyebrow">Privacy choices</p>
-                    <h2 id="fz-cookie-title">FreshZone uses essential cookies to keep your session secure.</h2>
+                    <h2 id="fz-cookie-title">Cookies</h2>
                     <p class="fz-cookie-text">
-                        Optional cookies help us remember your preferences and improve the experience. Read our
-                        <a href="privacy.html#cookies">Privacy Policy</a>
-                        for details.
+                        We use cookies and similar technologies to help personalise content, tailor and measure ads,
+                        and provide a better experience. By clicking accept, you agree to this, as outlined in our
+                        <a href="privacy.html#cookies">Cookies Policy</a>.
                     </p>
+
+                    <div class="fz-cookie-actions">
+                        <button type="button" id="cookie-accept-btn" class="fz-cookie-btn fz-cookie-btn-primary">Accept</button>
+                        <button type="button" id="cookie-preferences-btn" class="fz-cookie-btn fz-cookie-btn-secondary">Preferences</button>
+                    </div>
                 </div>
-                <div class="fz-cookie-actions">
-                    <button type="button" id="cookie-accept-btn" class="fz-cookie-btn fz-cookie-btn-primary">Accept all</button>
-                    <button type="button" id="cookie-essentials-btn" class="fz-cookie-btn fz-cookie-btn-secondary">Essentials only</button>
+
+                <div class="fz-cookie-art" aria-hidden="true">
+                    <span class="fz-cookie-biscuit">
+                        <span class="fz-cookie-chip chip-1"></span>
+                        <span class="fz-cookie-chip chip-2"></span>
+                        <span class="fz-cookie-chip chip-3"></span>
+                        <span class="fz-cookie-chip chip-4"></span>
+                        <span class="fz-cookie-chip chip-5"></span>
+                        <span class="fz-cookie-chip chip-6"></span>
+                        <span class="fz-cookie-chip chip-7"></span>
+                        <span class="fz-cookie-chip chip-8"></span>
+                        <span class="fz-cookie-chip chip-9"></span>
+                        <span class="fz-cookie-chip chip-10"></span>
+                        <span class="fz-cookie-chip chip-11"></span>
+                        <span class="fz-cookie-chip chip-12"></span>
+                    </span>
                 </div>
             </section>
 
@@ -38,14 +65,18 @@
                             <p class="fz-cookie-eyebrow">Cookie preferences</p>
                             <h2 id="fz-cookie-modal-title">Choose what FreshZone can store on this device.</h2>
                         </div>
-                        <button type="button" id="cookie-modal-close" class="fz-cookie-icon-btn" aria-label="Close cookie preferences">x</button>
+                        <button type="button" id="cookie-modal-close" class="fz-cookie-icon-btn" aria-label="Close cookie preferences">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
                     </div>
 
                     <div class="fz-cookie-pref-list">
                         <article class="fz-cookie-pref-card fz-cookie-pref-locked">
                             <div class="fz-cookie-pref-copy">
                                 <h3>Essential cookies</h3>
-                                <p>Required for login, security, and core page behavior. These are always on.</p>
+                                <p>Required for login, security, CSRF protection, and core page behavior. These are always on.</p>
                             </div>
                             <span class="fz-cookie-pill">Always active</span>
                         </article>
@@ -53,7 +84,7 @@
                         <article class="fz-cookie-pref-card">
                             <div class="fz-cookie-pref-copy">
                                 <h3>Preference cookies</h3>
-                                <p>Remember settings like theme mode and device-level UI choices.</p>
+                                <p>Remember settings like theme mode and device-level interface choices.</p>
                             </div>
                             <label class="fz-cookie-switch" for="preference-toggle">
                                 <input type="checkbox" id="preference-toggle" />
@@ -89,18 +120,17 @@
             #${ROOT_ID}[hidden] { display: none !important; }
             .fz-cookie-banner,
             .fz-cookie-modal {
-                color: var(--text, #003049);
-                background: linear-gradient(165deg, rgba(240, 252, 255, 0.98), rgba(223, 245, 255, 0.98));
-                border: 1px solid rgba(0, 103, 150, 0.16);
-                box-shadow: 0 24px 60px rgba(0, 43, 73, 0.18);
-                backdrop-filter: blur(18px);
-                -webkit-backdrop-filter: blur(18px);
+                color: #1b2430;
+                background: rgba(255, 255, 255, 0.97);
+                border: 2px solid rgba(31, 41, 55, 0.82);
+                box-shadow: 12px 12px 0 rgba(15, 23, 42, 0.12), 0 24px 48px rgba(15, 23, 42, 0.16);
             }
             [data-theme="dark"] .fz-cookie-banner,
             [data-theme="dark"] .fz-cookie-modal {
-                background: linear-gradient(165deg, rgba(8, 22, 40, 0.98), rgba(10, 28, 48, 0.98));
-                border-color: rgba(34, 211, 238, 0.14);
-                box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+                color: #e2f0f8;
+                background: rgba(10, 20, 36, 0.98);
+                border-color: rgba(125, 211, 252, 0.28);
+                box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.24), 0 24px 48px rgba(0, 0, 0, 0.38);
             }
             .fz-cookie-banner {
                 position: fixed;
@@ -109,25 +139,34 @@
                 bottom: max(1rem, env(safe-area-inset-bottom));
                 z-index: 10000;
                 display: grid;
+                grid-template-columns: minmax(0, 1fr);
                 gap: 1rem;
-                max-width: 1040px;
+                align-items: center;
+                max-width: 820px;
                 margin: 0 auto;
-                padding: 1.15rem;
-                border-radius: 24px;
+                padding: 1.65rem 1.75rem;
+                border-radius: 18px;
+            }
+            .fz-cookie-copy,
+            .fz-cookie-modal-head,
+            .fz-cookie-pref-copy {
+                min-width: 0;
             }
             .fz-cookie-copy h2,
             .fz-cookie-pref-copy h3,
             .fz-cookie-modal-head h2 {
                 margin: 0;
-                font-family: 'Syne', 'Space Grotesk', sans-serif;
-                line-height: 1.2;
+                color: inherit;
+                font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+                line-height: 1.18;
             }
             .fz-cookie-copy h2 {
-                font-size: clamp(1rem, 2.3vw, 1.25rem);
+                font-size: clamp(1.7rem, 2.4vw, 1.95rem);
+                font-weight: 800;
             }
             .fz-cookie-eyebrow {
                 margin: 0 0 0.45rem;
-                font-size: 0.72rem;
+                font-size: 0.74rem;
                 font-weight: 800;
                 letter-spacing: 0.12em;
                 text-transform: uppercase;
@@ -137,21 +176,30 @@
             .fz-cookie-pref-copy p,
             .fz-cookie-helper {
                 margin: 0;
-                color: var(--text-muted, #5f7485);
-                line-height: 1.65;
-                font-size: 0.93rem;
+                color: #4b5563;
+                font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+                font-size: 1rem;
+                line-height: 1.55;
             }
             [data-theme="dark"] .fz-cookie-text,
             [data-theme="dark"] .fz-cookie-pref-copy p,
             [data-theme="dark"] .fz-cookie-helper {
-                color: var(--text-muted, #94a3b8);
+                color: #a7b4c2;
+            }
+            .fz-cookie-text {
+                max-width: 31rem;
+                margin-top: 0.9rem;
             }
             .fz-cookie-text a {
                 color: var(--primary, #004e7a);
                 font-weight: 700;
                 text-decoration: none;
             }
-            .fz-cookie-text a:hover {
+            [data-theme="dark"] .fz-cookie-text a {
+                color: #7dd3fc;
+            }
+            .fz-cookie-text a:hover,
+            .fz-cookie-text a:focus-visible {
                 text-decoration: underline;
             }
             .fz-cookie-actions,
@@ -160,40 +208,119 @@
                 gap: 0.75rem;
                 flex-wrap: wrap;
             }
+            .fz-cookie-actions {
+                margin-top: 1.15rem;
+            }
             .fz-cookie-btn,
-            .fz-cookie-icon-btn {
+            .fz-cookie-icon-btn,
+            .fz-cookie-close-btn {
                 border: none;
                 cursor: pointer;
                 font: inherit;
             }
             .fz-cookie-btn {
-                min-height: 46px;
-                padding: 0.8rem 1.1rem;
-                border-radius: 14px;
-                font-size: 0.92rem;
-                font-weight: 700;
-                transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease;
+                width: auto;
+                min-width: 132px;
+                min-height: 48px;
+                margin: 0;
+                padding: 0.82rem 1.2rem;
+                border-radius: 12px;
+                font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+                font-size: 0.95rem;
+                font-weight: 800;
+                letter-spacing: 0;
+                text-transform: none;
+                transition: transform 0.18s ease, filter 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+                box-shadow: none;
+                position: relative;
+                overflow: visible;
+            }
+            .fz-cookie-btn::after,
+            .fz-cookie-icon-btn::after,
+            .fz-cookie-close-btn::after {
+                display: none !important;
             }
             .fz-cookie-btn:hover,
-            .fz-cookie-icon-btn:hover {
+            .fz-cookie-btn:focus-visible,
+            .fz-cookie-icon-btn:hover,
+            .fz-cookie-icon-btn:focus-visible,
+            .fz-cookie-close-btn:hover,
+            .fz-cookie-close-btn:focus-visible {
                 transform: translateY(-1px);
-                filter: brightness(1.04);
+                filter: brightness(1.02);
             }
             .fz-cookie-btn-primary {
                 color: #fff;
-                background: linear-gradient(135deg, var(--primary, #004e7a), var(--secondary, #00b4d8));
-                box-shadow: 0 12px 24px rgba(0, 120, 170, 0.22);
+                background: #050505;
             }
             .fz-cookie-btn-secondary {
-                color: var(--text, #003049);
-                background: rgba(255, 255, 255, 0.7);
-                border: 1px solid rgba(0, 78, 122, 0.14);
+                color: #111827;
+                background: #eef0f3;
+                border: 1px solid #d7dce3;
             }
             [data-theme="dark"] .fz-cookie-btn-secondary {
-                color: var(--text, #e2f0f8);
-                background: rgba(255, 255, 255, 0.05);
-                border-color: rgba(34, 211, 238, 0.14);
+                color: #e2f0f8;
+                background: rgba(255, 255, 255, 0.06);
+                border-color: rgba(125, 211, 252, 0.16);
             }
+            .fz-cookie-close-btn {
+                position: absolute;
+                top: 0.95rem;
+                right: 0.95rem;
+                width: 2.25rem;
+                height: 2.25rem;
+                margin: 0;
+                padding: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                color: #1f2937;
+                background: transparent;
+                box-shadow: none;
+            }
+            [data-theme="dark"] .fz-cookie-close-btn {
+                color: #cbd5e1;
+            }
+            .fz-cookie-close-btn svg,
+            .fz-cookie-icon-btn svg {
+                width: 1.1rem;
+                height: 1.1rem;
+                display: block;
+                pointer-events: none;
+            }
+            .fz-cookie-art {
+                display: grid;
+                place-items: center;
+                padding-right: 0.5rem;
+            }
+            .fz-cookie-biscuit {
+                position: relative;
+                display: block;
+                width: 9rem;
+                aspect-ratio: 1;
+                border-radius: 50%;
+                background: #f7b267;
+                box-shadow: inset -10px -10px 0 rgba(255, 255, 255, 0.1);
+            }
+            .fz-cookie-chip {
+                position: absolute;
+                width: 0.58rem;
+                height: 0.58rem;
+                border-radius: 50%;
+                background: rgba(110, 74, 52, 0.8);
+            }
+            .chip-1 { top: 18%; left: 29%; }
+            .chip-2 { top: 14%; left: 50%; }
+            .chip-3 { top: 20%; left: 69%; }
+            .chip-4 { top: 34%; left: 22%; }
+            .chip-5 { top: 28%; left: 44%; }
+            .chip-6 { top: 40%; left: 61%; }
+            .chip-7 { top: 53%; left: 20%; }
+            .chip-8 { top: 49%; left: 42%; }
+            .chip-9 { top: 57%; left: 67%; }
+            .chip-10 { top: 70%; left: 31%; }
+            .chip-11 { top: 66%; left: 51%; }
+            .chip-12 { top: 77%; left: 58%; }
             .fz-cookie-modal-shell {
                 position: fixed;
                 inset: 0;
@@ -206,9 +333,9 @@
                 -webkit-backdrop-filter: blur(8px);
             }
             .fz-cookie-modal {
-                width: min(100%, 560px);
+                width: min(100%, 580px);
                 padding: 1.35rem;
-                border-radius: 26px;
+                border-radius: 22px;
             }
             .fz-cookie-modal-head {
                 display: flex;
@@ -221,20 +348,22 @@
                 font-size: clamp(1.05rem, 2.4vw, 1.35rem);
             }
             .fz-cookie-icon-btn {
+                width: 2.35rem;
+                height: 2.35rem;
+                margin: 0;
+                padding: 0;
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 2.25rem;
-                height: 2.25rem;
                 border-radius: 999px;
-                color: var(--text, #003049);
-                background: rgba(255, 255, 255, 0.7);
+                color: inherit;
+                background: rgba(255, 255, 255, 0.76);
                 border: 1px solid rgba(0, 78, 122, 0.12);
+                box-shadow: none;
             }
             [data-theme="dark"] .fz-cookie-icon-btn {
-                color: var(--text, #e2f0f8);
                 background: rgba(255, 255, 255, 0.06);
-                border-color: rgba(34, 211, 238, 0.12);
+                border-color: rgba(125, 211, 252, 0.16);
             }
             .fz-cookie-pref-list {
                 display: grid;
@@ -246,13 +375,21 @@
                 justify-content: space-between;
                 gap: 1rem;
                 padding: 1rem;
-                border-radius: 18px;
-                background: rgba(255, 255, 255, 0.64);
+                border-radius: 16px;
+                background: rgba(244, 248, 252, 0.92);
                 border: 1px solid rgba(0, 103, 150, 0.1);
             }
             [data-theme="dark"] .fz-cookie-pref-card {
                 background: rgba(255, 255, 255, 0.04);
-                border-color: rgba(34, 211, 238, 0.08);
+                border-color: rgba(125, 211, 252, 0.08);
+            }
+            .fz-cookie-pref-copy h3 {
+                font-size: 1rem;
+                font-weight: 800;
+            }
+            .fz-cookie-pref-copy p {
+                margin-top: 0.3rem;
+                font-size: 0.92rem;
             }
             .fz-cookie-pref-locked {
                 align-items: flex-start;
@@ -317,26 +454,43 @@
             .fz-cookie-modal-actions .fz-cookie-btn {
                 flex: 1 1 180px;
             }
-            @media (min-width: 820px) {
+            @media (min-width: 700px) {
                 .fz-cookie-banner {
                     grid-template-columns: minmax(0, 1fr) auto;
-                    align-items: center;
-                    padding: 1.25rem 1.35rem;
+                    padding-right: 1.3rem;
                 }
-                .fz-cookie-actions {
-                    justify-content: flex-end;
+            }
+            @media (max-width: 699px) {
+                .fz-cookie-art {
+                    order: -1;
+                    padding-right: 0;
+                    padding-top: 0.4rem;
+                }
+                .fz-cookie-biscuit {
+                    width: 7.35rem;
                 }
             }
             @media (max-width: 640px) {
                 .fz-cookie-banner,
                 .fz-cookie-modal {
-                    border-radius: 22px;
+                    border-radius: 18px;
                 }
                 .fz-cookie-banner {
                     left: max(0.75rem, env(safe-area-inset-left));
                     right: max(0.75rem, env(safe-area-inset-right));
                     bottom: max(0.75rem, env(safe-area-inset-bottom));
-                    padding: 1rem;
+                    padding: 1.15rem;
+                    box-shadow: 8px 8px 0 rgba(15, 23, 42, 0.12), 0 20px 40px rgba(15, 23, 42, 0.16);
+                }
+                [data-theme="dark"] .fz-cookie-banner,
+                [data-theme="dark"] .fz-cookie-modal {
+                    box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.24), 0 20px 40px rgba(0, 0, 0, 0.36);
+                }
+                .fz-cookie-copy h2 {
+                    font-size: 1.55rem;
+                }
+                .fz-cookie-text {
+                    font-size: 0.95rem;
                 }
                 .fz-cookie-actions,
                 .fz-cookie-modal-actions {
@@ -357,35 +511,119 @@
         </style>
     `;
 
-    function readBool(key, fallbackValue) {
-        const value = localStorage.getItem(key);
-        if (value === null) return fallbackValue;
-        return value === 'true';
+    function canUseStorage(storage) {
+        try {
+            const key = '__fz_storage_test__';
+            storage.setItem(key, '1');
+            storage.removeItem(key);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    const storageAvailable = canUseStorage(window.localStorage);
+
+    function storageGet(key) {
+        if (!storageAvailable) return null;
+        try {
+            return localStorage.getItem(key);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function storageSet(key, value) {
+        if (!storageAvailable) return;
+        try {
+            localStorage.setItem(key, value);
+        } catch (error) {
+            // Ignore storage write failures and keep the UI operational.
+        }
+    }
+
+    function getCookie(name) {
+        const encodedName = encodeURIComponent(name) + '=';
+        const parts = document.cookie ? document.cookie.split('; ') : [];
+        for (let index = 0; index < parts.length; index += 1) {
+            if (parts[index].indexOf(encodedName) === 0) {
+                return decodeURIComponent(parts[index].slice(encodedName.length));
+            }
+        }
+        return null;
+    }
+
+    function setCookie(name, value, maxAgeSeconds) {
+        document.cookie = [
+            encodeURIComponent(name) + '=' + encodeURIComponent(value),
+            'path=/',
+            'max-age=' + String(maxAgeSeconds),
+            'SameSite=Lax'
+        ].join('; ');
+    }
+
+    function clearCookie(name) {
+        document.cookie = encodeURIComponent(name) + '=; path=/; max-age=0; SameSite=Lax';
+    }
+
+    function readBool(cookieName, storageKey, fallbackValue) {
+        const cookieValue = getCookie(cookieName);
+        if (cookieValue !== null) return cookieValue === 'true';
+
+        const storageValue = storageGet(storageKey);
+        if (storageValue === null) return fallbackValue;
+        return storageValue === 'true';
     }
 
     function getConsent() {
-        return localStorage.getItem(CONSENT_KEY);
+        return getCookie(CONSENT_COOKIE) || storageGet(CONSENT_KEY);
     }
 
     function isAnalyticsEnabled() {
-        return readBool(ANALYTICS_KEY, false);
+        return readBool(ANALYTICS_COOKIE, ANALYTICS_KEY, false);
     }
 
     function arePreferenceCookiesEnabled() {
-        return readBool(PREFERENCES_KEY, true);
-    }
-
-    function setAnalyticsEnabled(enabled) {
-        localStorage.setItem(ANALYTICS_KEY, String(Boolean(enabled)));
-        if (enabled) initializeAnalytics();
-    }
-
-    function setPreferenceCookiesEnabled(enabled) {
-        localStorage.setItem(PREFERENCES_KEY, String(Boolean(enabled)));
+        return readBool(PREFERENCES_COOKIE, PREFERENCES_KEY, true);
     }
 
     function initializeAnalytics() {
+        if (window.__freshZoneAnalyticsInitialized) return;
+        window.__freshZoneAnalyticsInitialized = true;
         console.log('[Cookie Consent] Analytics initialized');
+    }
+
+    function setAnalyticsEnabled(enabled) {
+        const normalized = String(Boolean(enabled));
+        storageSet(ANALYTICS_KEY, normalized);
+
+        if (enabled) {
+            setCookie(ANALYTICS_COOKIE, normalized, COOKIE_MAX_AGE);
+            initializeAnalytics();
+        } else {
+            clearCookie(ANALYTICS_COOKIE);
+        }
+    }
+
+    function setPreferenceCookiesEnabled(enabled) {
+        const normalized = String(Boolean(enabled));
+        storageSet(PREFERENCES_KEY, normalized);
+
+        if (enabled) {
+            setCookie(PREFERENCES_COOKIE, normalized, COOKIE_MAX_AGE);
+        } else {
+            clearCookie(PREFERENCES_COOKIE);
+        }
+    }
+
+    function emitConsentChange() {
+        window.dispatchEvent(new CustomEvent('freshzone:cookie-consent-changed', {
+            detail: {
+                consent: getConsent(),
+                analyticsEnabled: isAnalyticsEnabled(),
+                preferenceCookiesEnabled: arePreferenceCookiesEnabled()
+            }
+        }));
     }
 
     function ensureUI() {
@@ -401,28 +639,37 @@
             banner: document.getElementById('cookie-consent-banner'),
             modal: document.getElementById('cookie-settings-modal'),
             analyticsToggle: document.getElementById('analytics-toggle'),
-            preferenceToggle: document.getElementById('preference-toggle'),
+            preferenceToggle: document.getElementById('preference-toggle')
         };
     }
 
     function bindUI() {
         const acceptBtn = document.getElementById('cookie-accept-btn');
-        const essentialsBtn = document.getElementById('cookie-essentials-btn');
+        const preferencesBtn = document.getElementById('cookie-preferences-btn');
+        const dismissBtn = document.getElementById('cookie-dismiss-btn');
         const closeBtn = document.getElementById('cookie-modal-close');
         const saveBtn = document.getElementById('cookie-modal-save');
         const saveEssentialsBtn = document.getElementById('cookie-save-essentials');
         const modal = document.getElementById('cookie-settings-modal');
 
         acceptBtn.addEventListener('click', acceptAllCookies);
-        essentialsBtn.addEventListener('click', function () {
-            showSettings({ fromEssentials: true });
+        preferencesBtn.addEventListener('click', function () {
+            showSettings({ fromBanner: true });
         });
+        dismissBtn.addEventListener('click', saveEssentialsOnly);
         closeBtn.addEventListener('click', hideSettings);
         saveBtn.addEventListener('click', savePreferencesFromModal);
         saveEssentialsBtn.addEventListener('click', saveEssentialsOnly);
 
         modal.addEventListener('click', function (event) {
             if (event.target === modal) hideSettings();
+        });
+
+        document.addEventListener('click', function (event) {
+            const trigger = event.target.closest('[data-cookie-preferences]');
+            if (!trigger) return;
+            event.preventDefault();
+            showSettings();
         });
     }
 
@@ -446,16 +693,16 @@
         syncRootVisibility();
     }
 
-    function syncToggles(defaultToEssentials) {
-        const { analyticsToggle, preferenceToggle } = ensureUI();
-        analyticsToggle.checked = defaultToEssentials ? false : isAnalyticsEnabled();
-        preferenceToggle.checked = defaultToEssentials ? true : arePreferenceCookiesEnabled();
+    function syncToggles(defaultToExistingValues) {
+        const ui = ensureUI();
+        ui.analyticsToggle.checked = defaultToExistingValues ? isAnalyticsEnabled() : false;
+        ui.preferenceToggle.checked = defaultToExistingValues ? arePreferenceCookiesEnabled() : true;
     }
 
     function showSettings(options) {
         const ui = ensureUI();
         ui.root.hidden = false;
-        syncToggles(Boolean(options && options.fromEssentials));
+        syncToggles(!(options && options.fromBanner));
         ui.modal.hidden = false;
         previousBodyOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
@@ -469,7 +716,9 @@
     }
 
     function persistConsent(type) {
-        localStorage.setItem(CONSENT_KEY, type);
+        storageSet(CONSENT_KEY, type);
+        setCookie(CONSENT_COOKIE, type, COOKIE_MAX_AGE);
+        emitConsentChange();
     }
 
     function acceptAllCookies() {
@@ -507,6 +756,7 @@
             showBanner();
             return;
         }
+
         if (isAnalyticsEnabled()) {
             initializeAnalytics();
         }
@@ -524,5 +774,7 @@
         arePreferenceCookiesEnabled: arePreferenceCookiesEnabled,
         setAnalyticsEnabled: setAnalyticsEnabled,
         showSettings: showSettings,
+        acceptAll: acceptAllCookies,
+        saveEssentialsOnly: saveEssentialsOnly
     };
 })();

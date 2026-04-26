@@ -92,6 +92,9 @@
             padding: 0.9rem 1rem;
             border-radius: 20px;
             margin-bottom: 1rem;
+            position: sticky;
+            top: 1rem;
+            z-index: 20;
         }
         .legal-brand {
             display: inline-flex;
@@ -120,6 +123,8 @@
             justify-content: center;
             gap: 0.45rem;
             min-height: 42px;
+            width: auto;
+            margin: 0;
             padding: 0.7rem 1rem;
             border-radius: 999px;
             font-size: 0.9rem;
@@ -128,6 +133,17 @@
             border: 1px solid rgba(0, 99, 144, 0.14);
             color: var(--text);
             background: rgba(255, 255, 255, 0.74);
+            box-shadow: none;
+            transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+        .legal-link::after,
+        .legal-theme-btn::after {
+            display: none !important;
+        }
+        .legal-link:hover,
+        .legal-theme-btn:hover {
+            transform: translateY(-1px);
+            filter: none;
         }
         .legal-link-primary {
             color: #fff;
@@ -143,6 +159,17 @@
         }
         .legal-theme-btn {
             cursor: pointer;
+        }
+        .legal-action-icon {
+            width: 1rem;
+            height: 1rem;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .legal-action-icon svg {
+            width: 100%;
+            height: 100%;
+            display: block;
         }
         .legal-hero {
             position: relative;
@@ -211,6 +238,8 @@
         .legal-section {
             border-radius: 24px;
             padding: clamp(1.15rem, 2vw, 1.5rem);
+            position: relative;
+            overflow: hidden;
         }
         .legal-section h2,
         .legal-section h3,
@@ -277,14 +306,56 @@
             border-radius: 24px;
             padding: 1.3rem;
             margin-top: 1rem;
-            background: linear-gradient(135deg, rgba(0, 78, 122, 0.16), rgba(0, 180, 216, 0.12));
+            position: relative;
+            overflow: hidden;
+            background: rgba(239, 249, 255, 0.97);
         }
         [data-theme="dark"] .legal-callout {
-            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(14, 165, 233, 0.08));
+            background: rgba(8, 22, 40, 0.97);
+        }
+        .legal-callout::before,
+        .legal-section::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--secondary), #7dd3fc);
+            opacity: 0.85;
+        }
+        .legal-section > *,
+        .legal-callout > * {
+            position: relative;
+            z-index: 1;
         }
         .legal-callout h2 {
             font-size: 1.15rem;
             margin-bottom: 0.55rem;
+        }
+        .legal-inline-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: auto;
+            margin: 0.85rem 0 0;
+            padding: 0.78rem 1rem;
+            border: 1px solid rgba(0, 99, 144, 0.14);
+            border-radius: 999px;
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.78);
+            font-weight: 700;
+            box-shadow: none;
+        }
+        [data-theme="dark"] .legal-inline-action {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(34, 211, 238, 0.12);
+            color: var(--text);
+        }
+        .legal-inline-action::after {
+            display: none !important;
+        }
+        .legal-inline-action:hover {
+            transform: translateY(-1px);
+            filter: none;
         }
         .legal-callout a,
         .legal-section a,
@@ -342,9 +413,33 @@
                 <span>FreshZone Legal Center</span>
             </a>
             <div class="legal-actions">
-                <a href="terms.html" class="legal-link">Terms of Service</a>
-                <a href="dashboard.html" class="legal-link legal-link-primary">Return to Dashboard</a>
-                <button type="button" class="legal-theme-btn" id="theme-toggle">Toggle theme</button>
+                <a href="terms.html" class="legal-link">
+                    <span class="legal-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 4.75H17A2.25 2.25 0 0 1 19.25 7v10A2.25 2.25 0 0 1 17 19.25H7A2.25 2.25 0 0 1 4.75 17V7A2.25 2.25 0 0 1 7 4.75Z" stroke="currentColor" stroke-width="1.8"/>
+                            <path d="M8.5 9.25H15.5M8.5 12H15.5M8.5 14.75H13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </span>
+                    <span>Terms of Service</span>
+                </a>
+                <a href="dashboard.html" class="legal-link legal-link-primary">
+                    <span class="legal-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M4.75 12.25L12 5l7.25 7.25" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7.75 10.75V18.25H16.25V10.75" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                    <span>Return to Dashboard</span>
+                </a>
+                <button type="button" class="legal-theme-btn" id="theme-toggle">
+                    <span class="legal-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3.75V5.5M12 18.5V20.25M5.64 5.64L6.88 6.88M17.12 17.12L18.36 18.36M3.75 12H5.5M18.5 12H20.25M5.64 18.36L6.88 17.12M17.12 6.88L18.36 5.64" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                            <circle cx="12" cy="12" r="3.35" stroke="currentColor" stroke-width="1.7"/>
+                        </svg>
+                    </span>
+                    <span>Toggle theme</span>
+                </button>
             </div>
         </div>
 
@@ -490,6 +585,15 @@
                 <p>
                     The consent banner appears first. Cookie preferences are opened only when the user chooses the essentials-only route or later requests settings. Disabling essential cookies may prevent secure use of the platform.
                 </p>
+                <button type="button" class="legal-inline-action" data-cookie-preferences>
+                    <span class="legal-action-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M10 4.75H5.75V10M14 19.25H18.25V14M18.25 10V5.75H14M5.75 14V18.25H10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                        </svg>
+                    </span>
+                    <span>Manage cookie preferences</span>
+                </button>
             </section>
 
             <section class="legal-section">
