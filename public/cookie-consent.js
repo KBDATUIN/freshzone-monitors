@@ -19,12 +19,26 @@
     const markup = `
         <div id="${ROOT_ID}" hidden>
             <section id="cookie-consent-card" class="fz-cookie-card" role="dialog" aria-modal="false" aria-labelledby="fz-cookie-title">
+                <button type="button" id="cookie-close-btn" class="fz-cookie-close" aria-label="Close cookie notice">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+
                 <div class="fz-cookie-main">
-                    <button type="button" id="cookie-close-btn" class="fz-cookie-close" aria-label="Close cookie notice">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                            <path d="M6 6L18 18M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </button>
+                    <div class="fz-cookie-copy">
+                        <h2 id="fz-cookie-title">Cookies</h2>
+                        <p class="fz-cookie-text">
+                            We use cookies and similar technologies to personalize your experience, remember settings,
+                            and keep FreshZone running smoothly. By clicking accept, you agree as outlined in our
+                            <a href="privacy.html#cookies">Cookies Policy</a>.
+                        </p>
+
+                        <div class="fz-cookie-actions">
+                            <button type="button" id="cookie-accept-btn" class="fz-cookie-btn fz-cookie-btn-primary">Accept</button>
+                            <button type="button" id="cookie-preferences-btn" class="fz-cookie-btn fz-cookie-btn-secondary" aria-expanded="false">Preferences</button>
+                        </div>
+                    </div>
 
                     <div class="fz-cookie-art" aria-hidden="true">
                         <span class="fz-cookie-circle">
@@ -41,20 +55,6 @@
                             <span class="fz-cookie-chip c11"></span>
                             <span class="fz-cookie-chip c12"></span>
                         </span>
-                    </div>
-
-                    <div class="fz-cookie-copy">
-                        <h2 id="fz-cookie-title">Cookies</h2>
-                        <p class="fz-cookie-text">
-                            We use cookies and similar technologies to personalize your experience, remember settings,
-                            and keep FreshZone running smoothly. By clicking accept, you agree as outlined in our
-                            <a href="privacy.html#cookies">Cookies Policy</a>.
-                        </p>
-
-                        <div class="fz-cookie-actions">
-                            <button type="button" id="cookie-accept-btn" class="fz-cookie-btn fz-cookie-btn-primary">Accept</button>
-                            <button type="button" id="cookie-preferences-btn" class="fz-cookie-btn fz-cookie-btn-secondary" aria-expanded="false">Preferences</button>
-                        </div>
                     </div>
                 </div>
 
@@ -112,27 +112,26 @@
             #${ROOT_ID}[hidden] { display: none !important; }
             .fz-cookie-card {
                 position: fixed;
-                left: max(1rem, env(safe-area-inset-left));
+                left: max(1.25rem, env(safe-area-inset-left));
                 bottom: max(1rem, env(safe-area-inset-bottom));
                 z-index: 10000;
-                width: min(calc(100vw - 2rem), 540px);
+                width: min(calc(100vw - 2.5rem), 620px);
                 margin: 0;
-                padding: 1.2rem 1.25rem;
-                border-radius: 18px;
+                padding: 1.55rem 1.6rem 1.5rem;
+                border-radius: 22px;
                 background: #ffffff;
                 color: #1f2937;
                 border: 2px solid rgba(15, 23, 42, 0.72);
                 box-shadow: 12px 12px 0 rgba(15, 23, 42, 0.12);
                 display: grid;
-                gap: 0.95rem;
+                gap: 1rem;
             }
             .fz-cookie-main {
                 display: grid;
-                grid-template-columns: 92px minmax(0, 1fr);
-                gap: 1rem;
-                align-items: start;
+                grid-template-columns: minmax(0, 1fr) 150px;
+                gap: 1.25rem;
+                align-items: center;
                 min-width: 0;
-                position: relative;
             }
             .fz-cookie-copy h2,
             .fz-cookie-panel-head h3,
@@ -143,7 +142,7 @@
                 line-height: 1.15;
             }
             .fz-cookie-copy h2 {
-                font-size: clamp(1.2rem, 2vw, 1.6rem);
+                font-size: clamp(1.55rem, 2.4vw, 1.95rem);
                 font-weight: 800;
             }
             .fz-cookie-text,
@@ -157,8 +156,8 @@
             }
             .fz-cookie-text {
                 max-width: 100%;
-                margin-top: 0.45rem;
-                font-size: 0.9rem;
+                margin-top: 0.8rem;
+                font-size: 0.95rem;
             }
             .fz-cookie-text a {
                 color: var(--primary, #004e7a);
@@ -176,7 +175,7 @@
                 flex-wrap: wrap;
             }
             .fz-cookie-actions {
-                margin-top: 0.8rem;
+                margin-top: 1rem;
             }
             .fz-cookie-btn,
             .fz-cookie-close {
@@ -186,13 +185,13 @@
             }
             .fz-cookie-btn {
                 width: auto;
-                min-width: 126px;
-                min-height: 44px;
+                min-width: 138px;
+                min-height: 50px;
                 margin: 0;
-                padding: 0.72rem 1rem;
+                padding: 0.8rem 1.2rem;
                 border-radius: 12px;
                 font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
-                font-size: 0.9rem;
+                font-size: 0.95rem;
                 font-weight: 800;
                 letter-spacing: 0;
                 box-shadow: none;
@@ -213,10 +212,10 @@
             }
             .fz-cookie-close {
                 position: absolute;
-                top: 0;
-                left: 0;
-                width: 2rem;
-                height: 2rem;
+                top: 0.95rem;
+                right: 0.95rem;
+                width: 2.2rem;
+                height: 2.2rem;
                 padding: 0;
                 margin: 0;
                 display: inline-flex;
@@ -227,7 +226,6 @@
                 border: 1px solid #e5e7eb;
                 box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
                 border-radius: 999px;
-                z-index: 1;
             }
             .fz-cookie-close svg {
                 width: 1rem;
@@ -237,15 +235,13 @@
             }
             .fz-cookie-art {
                 display: flex;
-                align-items: flex-end;
+                align-items: center;
                 justify-content: center;
-                width: 92px;
-                min-height: 100%;
-                padding-top: 2.2rem;
+                width: 150px;
             }
             .fz-cookie-circle {
                 position: relative;
-                width: 5.85rem;
+                width: 7.4rem;
                 aspect-ratio: 1;
                 border-radius: 50%;
                 background: #f6b266;
@@ -270,8 +266,7 @@
             .c11 { top: 65%; left: 50%; }
             .c12 { top: 77%; left: 57%; }
             .fz-cookie-panel {
-                grid-column: 1 / -1;
-                padding-top: 0.25rem;
+                padding-top: 0.3rem;
                 border-top: 1px solid #e5eaf0;
             }
             .fz-cookie-panel-head h3 {
@@ -374,25 +369,19 @@
             @media (max-width: 699px) {
                 .fz-cookie-main {
                     grid-template-columns: 1fr;
-                    gap: 0.85rem;
+                    gap: 0.95rem;
                 }
                 .fz-cookie-close {
-                    top: 0;
-                    left: 0;
+                    top: 0.8rem;
+                    right: 0.8rem;
                 }
                 .fz-cookie-art {
                     width: auto;
-                    min-height: auto;
-                    padding-top: 0;
-                    justify-content: flex-start;
-                    padding-left: 0.15rem;
+                    justify-content: center;
                     order: 2;
                 }
-                .fz-cookie-copy {
-                    padding-left: 2.25rem;
-                }
                 .fz-cookie-circle {
-                    width: 5.5rem;
+                    width: 6rem;
                 }
             }
             @media (max-width: 640px) {
@@ -400,15 +389,16 @@
                     left: max(0.75rem, env(safe-area-inset-left));
                     bottom: max(0.75rem, env(safe-area-inset-bottom));
                     width: min(calc(100vw - 1.5rem), 420px);
-                    padding: 1rem;
+                    padding: 1.1rem 1rem 1rem;
                     border-radius: 18px;
                     box-shadow: 8px 8px 0 rgba(15, 23, 42, 0.12);
                 }
                 .fz-cookie-copy h2 {
-                    font-size: 1.22rem;
+                    font-size: 1.35rem;
                 }
                 .fz-cookie-text {
-                    font-size: 0.88rem;
+                    margin-top: 0.65rem;
+                    font-size: 0.9rem;
                 }
                 .fz-cookie-actions,
                 .fz-cookie-panel-actions {
