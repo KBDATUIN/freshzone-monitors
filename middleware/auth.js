@@ -13,6 +13,10 @@ function authMiddleware(req, res, next) {
         return res.status(401).json({ success: false, message: 'Access denied. No token provided.' });
     }
 
+    if (process.env.NODE_ENV === 'production' && !cookieToken && bearerToken) {
+        return res.status(401).json({ success: false, message: 'Token must be sent via cookie in production.' });
+    }
+
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
