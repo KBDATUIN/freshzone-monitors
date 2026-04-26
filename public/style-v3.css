@@ -399,7 +399,7 @@ button {
 [data-theme="dark"] .ticket-item .ticket-subject { color: #7dd3fc !important; }
 
 /* ── FOOTER ─────────────────────────────────────────────────── */
-footer { color: rgba(255,255,255,0.58) !important; font-size: 0.82rem !important; }
+footer, .site-footer { color: rgba(255,255,255,0.84) !important; font-size: 0.82rem !important; }
 
 /* ── HOTKEY BADGE ───────────────────────────────────────────── */
 .hotkey-badge { background: rgba(0,100,160,0.14) !important; border-color: rgba(0,180,216,0.28) !important; color: #00b4d8 !important; }
