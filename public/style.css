@@ -1027,7 +1027,11 @@ th { white-space:nowrap; }
     .auth-trust-badge { font-size:0.67rem; padding:3px 10px; }
 }
 @media (max-width:480px) {
-    .auth-container { padding:1rem 1rem 1.5rem; }
+    .auth-container { padding: 1rem 1rem 1.5rem; }
+    /* Improved readability for small screens */
+    body { font-size: 15px; }
+    .container { padding: 1rem 0.75rem; }
+    .glass-card { padding: 1.5rem 1rem; }
     footer { padding:1rem; font-size:0.75rem; }
     button, input, select { font-size:16px; }
     .log-container table,.log-container thead,.log-container tbody,

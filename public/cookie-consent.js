@@ -11,23 +11,39 @@
 
     // Cookie consent banner HTML template
     const bannerHTML = `
-        <div id="cookie-consent-banner" class="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card-bg, #fff);border-top:1px solid var(--border-color, #e0e0e0);padding:1rem 1.5rem;z-index:10000;box-shadow:0 -4px 20px rgba(0,0,0,0.1);">
+        <div id="cookie-consent-banner" class="cookie-banner" style="display:none;position:fixed;bottom:1.5rem;left:1.5rem;right:1.5rem;background:var(--card-bg, rgba(255,255,255,0.95));backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:1.25rem;z-index:10000;box-shadow:var(--shadow-lg);">
             <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-                <p style="margin:0;font-size:1rem;color:var(--text);flex:1;min-width:280px;font-weight:500;">
-                    🍪 We use cookies to enhance your experience.
-                </p>
+                <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:280px;">
+                    <span style="font-size:1.5rem;">🍪</span>
+                    <p style="margin:0;font-size:0.9rem;color:var(--dark);font-weight:500;line-height:1.4;">
+                        We use cookies to ensure you get the best experience on FreshZone. By clicking "Accept", you agree to our <a href="privacy.html" style="color:var(--secondary);text-decoration:none;font-weight:700;">Privacy Policy</a>.
+                    </p>
+                </div>
                 <div style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;">
-                    <button id="cookie-accept-btn" style="padding:0.6rem 1.5rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:background 0.2s;">Got it!</button>
-                    <button id="cookie-decline-btn" style="padding:0.6rem 1.5rem;background:transparent;color:var(--gray);border:1px solid var(--border-color, #e0e0e0);border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">Essential Only</button>
+                    <button id="cookie-accept-btn" style="padding:0.65rem 1.5rem;background:linear-gradient(135deg, var(--primary), var(--secondary));color:white;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;box-shadow:var(--shadow-sm);transition:all 0.2s;">Accept All</button>
+                    <button id="cookie-decline-btn" style="padding:0.65rem 1.5rem;background:rgba(0,0,0,0.05);color:var(--gray);border:1px solid rgba(0,0,0,0.1);border-radius:10px;font-weight:600;cursor:pointer;font-size:0.85rem;transition:all 0.2s;">Essential Only</button>
                 </div>
             </div>
         </div>
     `;
 
+    const modalStyles = `
+        <style>
+            @media (max-width: 600px) {
+                #cookie-consent-banner {
+                    bottom: 0.75rem !important; left: 0.75rem !important; right: 0.75rem !important;
+                    padding: 1rem !important;
+                }
+                #cookie-accept-btn { width: 100% !important; order: 1; }
+                #cookie-decline-btn { width: 100% !important; order: 2; }
+            }
+        </style>
+    `;
+
     // Settings modal HTML
     const settingsModalHTML = `
-        <div id="cookie-settings-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:10001;display:flex;align-items:center;justify-content:center;padding:1rem;">
-            <div style="background:var(--card-bg, #fff);border-radius:16px;padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div id="cookie-settings-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);z-index:10001;align-items:center;justify-content:center;padding:1rem;">
+            <div style="background:var(--card-bg, #fff);border-radius:20px;padding:2rem;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-xl);border:1px solid var(--border);">
                 <h2 style="margin:0 0 1.5rem;color:var(--primary);font-size:1.4rem;">Cookie Preferences</h2>
                 
                 <div style="margin-bottom:1.5rem;">
@@ -135,6 +151,7 @@
     function showBanner() {
         // Inject styles
         document.head.insertAdjacentHTML('beforeend', toggleStyles);
+        document.head.insertAdjacentHTML('beforeend', modalStyles);
         
         // Add banner to body
         document.body.insertAdjacentHTML('beforeend', bannerHTML);
@@ -161,8 +178,9 @@
         });
 
         // Decline non-essential cookies
-        // FIXED: Now triggers the detailed preferences modal instead of silent decline
         declineBtn.addEventListener('click', function() {
+            // Pre-set checkboxes based on current state before showing modal
+            setAnalyticsEnabled(false); // Default for "Essential Only"
             analyticsToggle.checked = isAnalyticsEnabled();
             preferenceToggle.checked = localStorage.getItem('preference-cookies') !== 'false';
             modal.style.display = 'flex';
