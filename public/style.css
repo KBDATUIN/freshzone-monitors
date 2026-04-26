@@ -11,6 +11,8 @@
     --accent:     #0ecfef;
     --light:      #90e0ef;
     --dark:       #003049;
+    --text:       #003049;
+    --text-muted: #5f7485;
     --gray:       #6c757d;
     --gray-light: #94a3b8;
     --bg:         #daeeff;
@@ -46,6 +48,8 @@
     --secondary:  #7dd3fc;
     --accent:     #38bdf8;
     --dark:       #e2f0f8;
+    --text:       #e2f0f8;
+    --text-muted: #94a3b8;
     --gray:       #94a3b8;
     --gray-light: #475569;
     --card-bg:    rgba(13,22,35,0.98);
