@@ -293,7 +293,55 @@
             .dashboard-masthead { text-align: left; }
             .dashboard-masthead .flex-btn-container { justify-content: flex-start; }
         }
-        @media (max-width: 767px) { .dashboard-masthead { text-align: center; } }
+        @media (max-width: 767px) {
+            .dashboard-masthead { text-align: center; }
+            .dashboard-hero-eyebrow {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: clamp(0.58rem, 2.2vw, 0.7rem);
+            }
+            .dashboard-masthead h1 {
+                font-size: clamp(1.15rem, 5vw, 1.6rem) !important;
+                justify-content: center;
+                flex-wrap: nowrap !important;
+            }
+            .dashboard-hero-tagline {
+                font-size: clamp(0.8rem, 3vw, 0.95rem);
+            }
+            .btn-hero-history {
+                width: 100%;
+                justify-content: center;
+                white-space: nowrap;
+            }
+            .flex-btn-container {
+                width: 100%;
+            }
+            .hero.fz-masthead.dashboard-masthead {
+                padding: 1.5rem 1.25rem 1.25rem !important;
+            }
+            #sensor-grid {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+                padding: 0 !important;
+            }
+            .location-card {
+                min-width: 0 !important;
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+            .dashboard-masthead__viz { display: none !important; }
+        }
+        @media (max-width: 420px) {
+            .dashboard-masthead h1 {
+                font-size: clamp(1rem, 4.5vw, 1.3rem) !important;
+                flex-wrap: wrap !important;
+            }
+            .dashboard-hero-eyebrow {
+                font-size: 0.58rem;
+                letter-spacing: 0.1em;
+            }
+        }
 
         /* FULL-SCREEN ALARM OVERLAY ─────────────────────── */
         #fz-alarm-overlay {
@@ -543,14 +591,14 @@
             <div class="dashboard-masthead__grid">
                 <div class="dashboard-masthead__main">
                     <p class="dashboard-hero-eyebrow">Clear air · Campus monitoring</p>
-                    <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
+                    <h1 style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.4rem;line-height:1.2;">Campus Vape Aerosol Detector <span class="live-badge" style="flex-shrink:0;white-space:nowrap;"><span class="live-dot"></span>LIVE</span></h1>
                     <p class="dashboard-hero-tagline" id="hero-tagline">Live PM1.0, PM2.5 &amp; PM10 readings from sensors in the 4th Floor comfort rooms.</p>
-                    <p class="dashboard-hero-session" id="hero-session" role="status">
+                    <p class="dashboard-hero-session" id="hero-session" role="status" style="max-width:100%;overflow:visible;flex-wrap:wrap;">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span id="hero-session-text">Loading session…</span>
+                        <span id="hero-session-text" style="white-space:normal;overflow:visible;text-overflow:unset;">Loading session…</span>
                     </p>
                     <div class="flex-btn-container">
-                        <a href="history.html" class="btn-hero-history">View detection history <span aria-hidden="true">→</span></a>
+                        <a href="history.html" class="btn-hero-history" style="white-space:nowrap;width:100%;justify-content:center;">View detection history <span aria-hidden="true">→</span></a>
                     </div>
                 </div>
                 <div class="dashboard-masthead__viz" aria-hidden="true">
