@@ -98,7 +98,7 @@
 [data-theme="dark"] .location-card { background:#0a1928; }
 [data-theme="dark"] .location-card small { color:#94a3b8; }
 [data-theme="dark"] .stat-box p { color:#94a3b8; }
-[data-theme="dark"] .auth-footer { color:rgba(255,255,255,0.5); }
+[data-theme="dark"] .auth-footer { color:rgba(255,255,255,0.82); }
 [data-theme="dark"] .profile-access { background:rgba(34,211,238,0.1); }
 [data-theme="dark"] .pm-chip { background:rgba(34,211,238,0.06); border-color:rgba(34,211,238,0.14); color:#94a3b8; }
 [data-theme="dark"] .filter-bar { background:rgba(13,22,35,0.98); border-color:rgba(34,211,238,0.12); }
@@ -798,8 +798,13 @@ tbody tr:hover { background:rgba(0,78,122,0.025); }
 
 /* Auth footer */
 .auth-footer {
-    margin-top:1.25rem; text-align:center; color:rgba(255,255,255,0.55);
-    font-size:0.76rem;
+    margin-top: 1.25rem;
+    text-align: center;
+    color: rgba(255,255,255,0.82);
+    font-size: 0.82rem;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
 /* Email/mobile banner override */
@@ -914,7 +919,33 @@ tbody tr:hover { background:rgba(0,78,122,0.025); }
 .notification.warning { background:linear-gradient(135deg, #d97706, #b45309); }
 
 /* ── FOOTER ──────────────────────────────────────────────────── */
-footer { text-align:center; padding:2rem; color:var(--footer-color); font-size:0.85rem; opacity:0.85; }
+footer,
+.site-footer {
+    text-align: center;
+    padding: 1.6rem 1rem 2rem;
+    color: rgba(255,255,255,0.84);
+    font-size: 0.85rem;
+    opacity: 1;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+footer p,
+.site-footer p {
+    margin: 0;
+    line-height: 1.7;
+}
+footer a,
+.site-footer a,
+.auth-footer a {
+    color: rgba(255,255,255,0.94) !important;
+    text-decoration: none;
+}
+footer a:hover,
+.site-footer a:hover,
+.auth-footer a:hover {
+    text-decoration: underline;
+}
 
 /* ── SESSION WARNING ─────────────────────────────────────────── */
 #session-warning {
@@ -1036,7 +1067,7 @@ th { white-space:nowrap; }
     body { font-size: 15px; }
     .container { padding: 1rem 0.75rem; }
     .glass-card { padding: 1.5rem 1rem; }
-    footer { padding:1rem; font-size:0.75rem; }
+    footer, .site-footer { padding:1rem; font-size:0.75rem; }
     button, input, select { font-size:16px; }
     .log-container table,.log-container thead,.log-container tbody,
     .log-container th,.log-container td,.log-container tr { display:block; }
