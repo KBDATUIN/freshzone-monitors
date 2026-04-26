@@ -52,7 +52,11 @@ router.post('/', verifyNodeHmac, async (req, res) => {
     const pm10   = req.body.pm10   !== undefined ? Number(req.body.pm10)   : undefined;
 
     // --- Validation ---
-    if (!node_code || typeof node_code !== 'string' || node_code.trim().length === 0 || node_code.length > 50) {
+    if (!node_code || typeof node_code !== 'string' || node_code.trim().length === 0) {
+        logger.warn({ body: req.body }, 'Reading rejected: Missing node_code');
+        return res.status(400).json({ success: false, message: 'Invalid node_code.' });
+    }
+    if (node_code.length > 50) {
         return res.status(400).json({ success: false, message: 'Invalid node_code.' });
     }
     if (!isValidReading(pm2_5, 0, 1000)) {
@@ -129,7 +133,7 @@ router.post('/', verifyNodeHmac, async (req, res) => {
                          WHERE node_id = ? AND smoke_detected = 0
                            AND recorded_at >= ?
                          LIMIT 1`,
-                        [node.id, lastCleared[0].resolved_at]
+                        [node.id, new Date(lastCleared[0].resolved_at)]
                     );
                     shouldCreateEvent = cleanReadings.length > 0;
                 }
@@ -179,9 +183,9 @@ router.post('/', verifyNodeHmac, async (req, res) => {
                     try {
                         const pm1Push = pm1ForEmail != null ? `${pm1ForEmail.toFixed(1)}` : '—';
                         await sendPushToAll(
-                            '🚨 Vape/Smoke Detected!',
-                            `Alert at ${node.location_name} — PM1.0: ${pm1Push} µg/m³ (${category})`,
-                            '/dashboard.html'
+                            `🚨 Alert: ${node.location_name}`,
+                            `Vape/Smoke detected! PM1.0: ${pm1Push} (${category})`,
+                            'dashboard.html'
                         );
                     } catch (pushErr) {
                         console.warn('[push] Web push failed:', pushErr.message);
