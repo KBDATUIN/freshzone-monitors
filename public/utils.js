@@ -2,18 +2,28 @@
 //  utils.js — FreshZone shared utilities
 // ============================================================
 
-const API = 'https://freshzone-production.up.railway.app';
+// Dynamic API discovery to handle localhost vs production environments
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : 'https://freshzone-production.up.railway.app';
+
 let csrfTokenCache = null;
 
 async function ensureCsrfToken() {
     if (csrfTokenCache) return csrfTokenCache;
-    const res = await fetch(`${API}/api/auth/csrf-token`, {
-        method: 'GET',
-        credentials: 'include',
-    });
-    const data = await res.json();
-    if (data?.csrfToken) {
-        csrfTokenCache = data.csrfToken;
+    try {
+        const res = await fetch(`${API}/api/auth/csrf-token`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!res.ok) throw new Error('CSRF request failed');
+        const data = await res.json();
+        if (data?.csrfToken) {
+            csrfTokenCache = data.csrfToken;
+        }
+    } catch (err) {
+        console.error('[PWA] CSRF Fetch Error:', err.message);
+        // Fallback or retry logic could go here
     }
     return csrfTokenCache;
 }

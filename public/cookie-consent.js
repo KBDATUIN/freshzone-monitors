@@ -13,14 +13,12 @@
     const bannerHTML = `
         <div id="cookie-consent-banner" class="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card-bg, #fff);border-top:1px solid var(--border-color, #e0e0e0);padding:1rem 1.5rem;z-index:10000;box-shadow:0 -4px 20px rgba(0,0,0,0.1);">
             <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-                <p style="margin:0;font-size:0.9rem;color:var(--text);flex:1;min-width:280px;">
-                    🍪 We use cookies to enhance your experience. Essential cookies are required for authentication.
-                    <a href="privacy.html#cookies" style="color:var(--primary);text-decoration:underline;">Learn more</a>
+                <p style="margin:0;font-size:1rem;color:var(--text);flex:1;min-width:280px;font-weight:500;">
+                    🍪 We use cookies to enhance your experience.
                 </p>
                 <div style="display:flex;gap:0.75rem;flex-shrink:0;flex-wrap:wrap;">
-                    <button id="cookie-accept-btn" style="padding:0.6rem 1.5rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:background 0.2s;">Accept All</button>
+                    <button id="cookie-accept-btn" style="padding:0.6rem 1.5rem;background:var(--primary);color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:background 0.2s;">Got it!</button>
                     <button id="cookie-decline-btn" style="padding:0.6rem 1.5rem;background:transparent;color:var(--gray);border:1px solid var(--border-color, #e0e0e0);border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">Essential Only</button>
-                    <button id="cookie-settings-btn" style="padding:0.6rem 1.5rem;background:transparent;color:var(--primary);border:1px solid var(--primary);border-radius:8px;font-weight:600;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">Settings</button>
                 </div>
             </div>
         </div>
@@ -145,7 +143,6 @@
         const banner = document.getElementById('cookie-consent-banner');
         const acceptBtn = document.getElementById('cookie-accept-btn');
         const declineBtn = document.getElementById('cookie-decline-btn');
-        const settingsBtn = document.getElementById('cookie-settings-btn');
         const modal = document.getElementById('cookie-settings-modal');
         const modalCancel = document.getElementById('cookie-modal-cancel');
         const modalSave = document.getElementById('cookie-modal-save');
@@ -164,18 +161,11 @@
         });
 
         // Decline non-essential cookies
+        // FIXED: Now triggers the detailed preferences modal instead of silent decline
         declineBtn.addEventListener('click', function() {
-            saveConsent('declined');
-            setAnalyticsEnabled(false);
-            localStorage.setItem('preference-cookies', 'false');
-            banner.style.display = 'none';
-        });
-
-        // Open settings modal
-        settingsBtn.addEventListener('click', function() {
-            // Load current preferences
             analyticsToggle.checked = isAnalyticsEnabled();
             preferenceToggle.checked = localStorage.getItem('preference-cookies') !== 'false';
+            modal.style.display = 'flex';
             modal.style.display = 'flex';
         });
 
