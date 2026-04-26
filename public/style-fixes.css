@@ -1064,3 +1064,152 @@ html, body {
     width: 100% !important;
   }
 }
+
+/* ================================================================
+   FINAL MOBILE OPTIMIZATION — appended last, highest specificity
+   Fixes: sensor-grid columns, h1+badge inline, button wrapping,
+   hero padding, and all mobile alignment issues
+   ================================================================ */
+
+/* ── SENSOR GRID — responsive columns without inline style ───── */
+#sensor-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 1.25rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* ── H1 + LIVE BADGE — keep badge on same line as title ───────── */
+h1:has(.live-badge) {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+}
+/* Fallback for browsers that don't support :has() */
+.dashboard-masthead h1 {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: wrap !important;
+}
+.live-badge {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* ── HERO BUTTON — never wrap text ───────────────────────────── */
+.btn-hero-history {
+    white-space: nowrap !important;
+    text-align: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.35rem !important;
+}
+
+/* ================================================================
+   MOBILE BREAKPOINTS — clean single source of truth
+   ================================================================ */
+@media (max-width: 767px) {
+    /* Hero card — compact, no excess bottom padding */
+    .hero.fz-masthead.dashboard-masthead,
+    .fz-masthead.dashboard-masthead {
+        padding: 1.5rem 1.25rem 1.25rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+        border-radius: 1.25rem !important;
+        box-sizing: border-box !important;
+        text-align: center !important;
+    }
+
+    /* Eyebrow — single line, never wrap */
+    .dashboard-hero-eyebrow {
+        white-space: nowrap !important;
+        font-size: clamp(0.6rem, 2.5vw, 0.75rem) !important;
+        letter-spacing: 0.07em !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* H1 — scale to fit, flex so badge stays inline */
+    .dashboard-masthead h1 {
+        font-size: clamp(1.2rem, 5.5vw, 1.75rem) !important;
+        line-height: 1.2 !important;
+        justify-content: center !important;
+        flex-wrap: nowrap !important;
+        gap: 0.4rem !important;
+    }
+
+    /* Tagline — readable on small screens */
+    .dashboard-hero-tagline {
+        font-size: clamp(0.78rem, 3.2vw, 0.95rem) !important;
+        line-height: 1.5 !important;
+    }
+
+    /* Session pill — show full text, centered */
+    .dashboard-hero-session {
+        justify-content: center !important;
+        max-width: 100% !important;
+        width: auto !important;
+    }
+    #hero-session-text {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+    }
+
+    /* Button — full width, single line */
+    .flex-btn-container {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+    .btn-hero-history {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 0.85rem 1rem !important;
+    }
+
+    /* Hide the decorative rings to save space */
+    .dashboard-masthead__viz {
+        display: none !important;
+    }
+
+    /* Grid: single column on mobile */
+    #sensor-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+        padding: 0 !important;
+    }
+
+    /* Cards: full width, no min-width fighting */
+    .location-card {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Last updated bar */
+    #last-updated-bar {
+        font-size: 0.72rem !important;
+        text-align: center !important;
+        padding: 0 0.5rem !important;
+        line-height: 1.5 !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-masthead h1 {
+        font-size: clamp(1.1rem, 5vw, 1.4rem) !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    .dashboard-hero-eyebrow {
+        font-size: 0.6rem !important;
+    }
+}
