@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
@@ -528,6 +528,127 @@
             .nav-controls .hamburger { display: flex !important; }
             .nav-user { display: none !important; }
         }
+    </style>
+
+    <style id="fz-mobile-fix">
+    /* ── MOBILE OPTIMIZATION — loads last, highest priority ── */
+
+    /* Fix: hero padding on mobile (beats style.css 2.25rem !important) */
+    @media (max-width: 767px) {
+        .hero, .hero.fz-masthead, .hero.fz-masthead.dashboard-masthead,
+        .glass-card.hero, .card.hero {
+            padding: 1.4rem 1.1rem 1.2rem !important;
+        }
+
+        /* Eyebrow: single line */
+        .dashboard-hero-eyebrow {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            font-size: 0.65rem !important;
+            letter-spacing: 0.12em !important;
+            display: block !important;
+            width: 100% !important;
+        }
+
+        /* H1: flex so LIVE badge never drops to own line */
+        .dashboard-masthead h1,
+        .hero h1 {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-wrap: nowrap !important;
+            gap: 0.4rem !important;
+            font-size: clamp(1.1rem, 5vw, 1.5rem) !important;
+            line-height: 1.2 !important;
+            white-space: normal !important;
+        }
+
+        /* LIVE badge: never shrink or wrap */
+        .live-badge {
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            font-size: 0.68rem !important;
+        }
+
+        /* Tagline */
+        .dashboard-hero-tagline {
+            font-size: 0.82rem !important;
+            line-height: 1.5 !important;
+            margin-top: 0.4rem !important;
+        }
+
+        /* Session pill: show full name, no truncation */
+        .dashboard-hero-session {
+            font-size: 0.78rem !important;
+            padding: 0.4rem 0.75rem !important;
+            margin: 0.6rem 0 0.8rem !important;
+            max-width: 100% !important;
+            overflow: visible !important;
+            display: inline-flex !important;
+            flex-wrap: nowrap !important;
+        }
+        #hero-session-text {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            min-width: 0 !important;
+        }
+
+        /* Button: full width, single line, never wrap */
+        .btn-hero-history {
+            width: 100% !important;
+            white-space: nowrap !important;
+            justify-content: center !important;
+            font-size: 0.88rem !important;
+            padding: 0.7rem 1rem !important;
+        }
+        .flex-btn-container {
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Hide decorative rings */
+        .dashboard-masthead__viz {
+            display: none !important;
+        }
+
+        /* Sensor grid: 1 column, no side gaps */
+        #sensor-grid {
+            grid-template-columns: 1fr !important;
+            gap: 0.85rem !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+        }
+
+        /* Cards: full width */
+        .location-card {
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Container: tight padding */
+        .container {
+            padding: 0.75rem 0.85rem !important;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .dashboard-masthead h1,
+        .hero h1 {
+            font-size: clamp(0.95rem, 4.5vw, 1.2rem) !important;
+        }
+        .dashboard-hero-eyebrow {
+            font-size: 0.58rem !important;
+        }
+        .hero, .hero.fz-masthead, .hero.fz-masthead.dashboard-masthead {
+            padding: 1.1rem 0.9rem 1rem !important;
+        }
+    }
     </style>
 </head>
 <body>
