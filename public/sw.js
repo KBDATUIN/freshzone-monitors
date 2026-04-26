@@ -7,7 +7,7 @@
 //    - HTML pages: Network-first with offline page fallback
 // ============================================================
 
-const CACHE_NAME = 'freshzone-v4';
+const CACHE_NAME = 'freshzone-v5';
 const OFFLINE_PAGE = '/offline.html';
 
 // Static assets to pre-cache (core app shell)
@@ -26,6 +26,7 @@ const STATIC_ASSETS = [
     '/style-v3.css',
     '/style-fixes.css',
     '/pwa.css',
+    '/cookie-consent.js',
     '/utils.js',
     '/auth.js',
     '/role-guard.js',
