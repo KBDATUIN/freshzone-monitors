@@ -335,8 +335,9 @@ router.post('/verify-otp', async (req, res) => {
 router.get('/csrf-token', ensureCsrfCookie, csrfTokenHandler);
 
 router.get('/session', async (req, res) => {
-    const token = req.cookies?.[JWT_COOKIE_NAME];
-    if (!token) return res.status(401).json({ success: false, message: 'No active session.' });
+    const token = req.cookies?.[JWT_COOKIE_NAME] ||
+        (req.headers['authorization']?.startsWith('Bearer ') ? req.headers['authorization'].slice(7) : null);
+    if (!token) return res.status(200).json({ loggedIn: false });
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const [rows] = await db.query(
@@ -344,10 +345,10 @@ router.get('/session', async (req, res) => {
              FROM accounts WHERE id = ? AND is_active = 1 LIMIT 1`,
             [decoded.id]
         );
-        if (!rows.length) return res.status(401).json({ success: false, message: 'Session not valid.' });
-        return res.json({ success: true, user: rows[0] });
+        if (!rows.length) return res.status(200).json({ loggedIn: false, reason: 'invalid_token' });
+        return res.status(200).json({ loggedIn: true, success: true, user: rows[0] });
     } catch (err) {
-        return res.status(401).json({ success: false, message: 'Session expired.' });
+        return res.status(200).json({ loggedIn: false, reason: 'invalid_token' });
     }
 });
 
