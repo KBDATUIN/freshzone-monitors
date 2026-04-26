@@ -47,7 +47,7 @@ async function hydrateSessionUser() {
         try {
             const res = await fetch(`${API}/api/auth/session`, { credentials: 'include' });
             const data = await res.json();
-            if (res.ok && data?.success && data.user) {
+            if (data?.loggedIn && data.user) {
                 localStorage.setItem('currentUser', JSON.stringify(data.user));
                 return data.user;
             }
