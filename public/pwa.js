@@ -1,6 +1,6 @@
 // ============================================================
-//  pwa.js — FreshZone PWA
-//  Splash (once only) + Install Prompt + Page Transitions
+//  pwa.js — FreshZone PWA v2
+//  Splash (once only) + Install Prompt + Page Transitions + iOS Support
 // ============================================================
 
 // ── SPLASH SCREEN — only on very first app open ───────────────
@@ -29,7 +29,7 @@
         <div class="fz-splash-inner">
             <img src="/logo1.png" alt="FreshZone" class="fz-splash-logo">
             <div class="fz-splash-name">FreshZone</div>
-            <div class="fz-splash-tagline">Vape &amp; Smoke Detection</div>
+            <div class="fz-splash-tagline">Vape & Smoke Detection</div>
             <div class="fz-splash-spinner"><div class="fz-spinner-ring"></div></div>
         </div>
     `;
@@ -53,6 +53,12 @@ window.addEventListener('beforeinstallprompt', (e) => {
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches
         || window.navigator.standalone === true;
     const dismissed = sessionStorage.getItem('fz-install-dismissed');
+
+    // Don't show install banner on iOS - show iOS-specific instructions instead
+    if (isIOS()) {
+        showIOSInstallInstructions();
+        return;
+    }
 
     if (!isStandalone && isMobile && !dismissed) {
         setTimeout(showInstallBanner, 4000);
@@ -96,6 +102,62 @@ function dismissInstall() {
     const b = document.getElementById('fz-install-banner');
     if (b) {
         b.classList.remove('fz-install-show');
+        setTimeout(() => b.remove(), 400);
+    }
+}
+
+// ── iOS INSTALL INSTRUCTIONS ───────────────────────────────────
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone === true;
+}
+
+function showIOSInstallInstructions() {
+    if (isStandalone() || sessionStorage.getItem('fz-ios-instructions-shown')) return;
+    
+    sessionStorage.setItem('fz-ios-instructions-shown', '1');
+    
+    // Create iOS install instruction banner
+    const banner = document.createElement('div');
+    banner.id = 'fz-ios-install-banner';
+    banner.innerHTML = `
+        <div class="fz-ios-install-content">
+            <div class="fz-ios-install-header">
+                <img src="/favicon_io/apple-touch-icon.png" alt="FreshZone" class="fz-ios-install-icon">
+                <div class="fz-ios-install-text">
+                    <strong>Install FreshZone on iOS</strong>
+                    <span>Tap <svg class="ios-share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> then "Add to Home Screen"</span>
+                </div>
+            </div>
+            <button class="fz-install-dismiss" onclick="dismissIOSInstall()" aria-label="Dismiss">✕</button>
+        </div>
+        <div class="fz-ios-steps">
+            <div class="fz-ios-step">
+                <span class="fz-ios-step-num">1</span>
+                <span>Tap the <strong>Share</strong> button in Safari</span>
+            </div>
+            <div class="fz-ios-step">
+                <span class="fz-ios-step-num">2</span>
+                <span>Scroll and tap <strong>"Add to Home Screen"</strong></span>
+            </div>
+            <div class="fz-ios-step">
+                <span class="fz-ios-step-num">3</span>
+                <span>Tap <strong>Add</strong> to install</span>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(banner);
+    requestAnimationFrame(() => banner.classList.add('fz-ios-install-show'));
+}
+
+function dismissIOSInstall() {
+    const b = document.getElementById('fz-ios-install-banner');
+    if (b) {
+        b.classList.remove('fz-ios-install-show');
         setTimeout(() => b.remove(), 400);
     }
 }
@@ -158,4 +220,98 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
     });
+    
+    // Listen for messages from service worker
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'SYNC_COMPLETE') {
+            console.log('[PWA] Background sync completed:', event.data);
+            // Show notification about sync completion
+            if (typeof showNotification === 'function') {
+                const msg = event.data.remaining === 0 
+                    ? `All ${event.data.synced} readings synced successfully!`
+                    : `${event.data.synced} readings synced, ${event.data.remaining} still pending`;
+                showNotification(msg, event.data.remaining === 0 ? 'success' : 'warning', 3000);
+            }
+        }
+    });
 }
+
+// ── BACKGROUND SYNC FOR OFFLINE READINGS ───────────────────────
+// Queue readings for background sync when offline
+window.FreshZoneSync = {
+    // Queue a reading for sync
+    queueReading: function(readingData) {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(registration => {
+                registration.active.postMessage({
+                    type: 'CACHE_READINGS',
+                    reading: readingData
+                });
+            }).catch(err => {
+                console.warn('[PWA] Failed to queue reading for sync:', err);
+            });
+        }
+    },
+    
+    // Register background sync
+    registerSync: async function() {
+        if ('serviceWorker' in navigator && 'sync' in window.SyncManager.prototype) {
+            try {
+                const registration = await navigator.serviceWorker.ready;
+                await registration.sync.register('sync-readings');
+                console.log('[PWA] Background sync registered');
+            } catch(err) {
+                console.log('[PWA] Background sync not available:', err);
+            }
+        }
+    }
+};
+
+// ── OFFLINE DETECTION ──────────────────────────────────────────
+(function initOfflineDetection() {
+    function handleOnline() {
+        document.body.classList.remove('fz-offline');
+        console.log('[PWA] Connection restored');
+        
+        // Try to sync any pending readings
+        if (window.FreshZoneSync) {
+            window.FreshZoneSync.registerSync();
+        }
+    }
+    
+    function handleOffline() {
+        document.body.classList.add('fz-offline');
+        console.log('[PWA] Connection lost');
+        
+        // Show offline notification
+        if (typeof showNotification === 'function') {
+            showNotification('You are offline. Changes will sync when reconnected.', 'warning', 4000);
+        }
+    }
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Check initial state
+    if (!navigator.onLine) {
+        handleOffline();
+    }
+})();
+
+// ── UPDATE DETECTION ───────────────────────────────────────────
+(function initUpdateDetection() {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            // Service worker updated
+            console.log('[PWA] App updated - refreshing...');
+            
+            // Show update notification
+            if (typeof showNotification === 'function') {
+                showNotification('App updated! Refreshing...', 'info', 2000);
+            }
+            
+            // Reload to get fresh content
+            setTimeout(() => window.location.reload(), 2000);
+        });
+    }
+})();
