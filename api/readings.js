@@ -228,7 +228,21 @@ router.post('/', verifyNodeHmac, async (req, res) => {
             led_color: ledColor
         });
 
-    } catch (err) {
+        // Push latest reading to all connected SSE clients
+        broadcastSSE({
+            node_code:     node.node_code,
+            location_name: node.location_name,
+            pm1_0:         pm1_0 ?? null,
+            pm2_5,
+            pm10:          pm10 ?? null,
+            aqi_value:     aqi,
+            aqi_category:  category,
+            smoke_detected: smokeDetected,
+            led_color:     ledColor,
+            recorded_at:   new Date().toISOString(),
+            node_active:   1,
+        });
+
         logger.error({ err }, '[readings POST] Error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
@@ -258,6 +272,26 @@ router.get('/live', authMiddleware, async (req, res) => {
         console.error('[readings GET /live] Error:', err.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
+});
+
+// ── GET /api/readings/stream ─────────────────────────────────
+// SSE endpoint — browsers connect here to receive real-time sensor pushes
+router.get('/stream', authMiddleware, (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const clientId = ++sseClientId;
+    sseClients.set(clientId, res);
+
+    // Send initial confirmation so the browser knows the stream is open
+    res.write('event: connected\ndata: {"clientId":' + clientId + '}\n\n');
+
+    // Clean up when the browser disconnects
+    req.on('close', () => {
+        sseClients.delete(clientId);
+    });
 });
 
 // ── GET /api/readings/open-events ────────────────────────────
