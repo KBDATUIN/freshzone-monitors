@@ -293,69 +293,7 @@
             .dashboard-masthead { text-align: left; }
             .dashboard-masthead .flex-btn-container { justify-content: flex-start; }
         }
-        @media (max-width: 767px) {
-            .dashboard-masthead { text-align: center; }
-            .dashboard-hero-eyebrow {
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: clamp(0.58rem, 2.2vw, 0.7rem);
-            }
-            .dashboard-masthead h1 {
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                flex-wrap: nowrap !important;
-                gap: 0.4rem !important;
-                font-size: clamp(1.1rem, 5vw, 1.5rem) !important;
-                line-height: 1.2 !important;
-            }
-            .dashboard-hero-tagline {
-                font-size: clamp(0.8rem, 3vw, 0.95rem);
-            }
-            .btn-hero-history {
-                width: 100%;
-                justify-content: center;
-                white-space: nowrap;
-            }
-            .flex-btn-container {
-                width: 100%;
-            }
-            .hero.fz-masthead.dashboard-masthead {
-                padding: 1.5rem 1.25rem 1.25rem !important;
-            }
-            #sensor-grid {
-                grid-template-columns: 1fr !important;
-                gap: 1rem !important;
-                padding: 0 !important;
-            }
-            .location-card {
-                min-width: 0 !important;
-                max-width: 100% !important;
-                width: 100% !important;
-            }
-            .dashboard-masthead__viz { display: none !important; }
-            .dashboard-hero-session {
-                max-width: 100% !important;
-                overflow: visible !important;
-                flex-wrap: wrap !important;
-            }
-            #hero-session-text {
-                white-space: normal !important;
-                overflow: visible !important;
-                text-overflow: unset !important;
-            }
-        }
-        @media (max-width: 420px) {
-            .dashboard-masthead h1 {
-                font-size: clamp(1rem, 4.5vw, 1.3rem) !important;
-                flex-wrap: wrap !important;
-            }
-            .dashboard-hero-eyebrow {
-                font-size: 0.58rem;
-                letter-spacing: 0.1em;
-            }
-        }
+        @media (max-width: 767px) { .dashboard-masthead { text-align: center; } }
 
         /* FULL-SCREEN ALARM OVERLAY ─────────────────────── */
         #fz-alarm-overlay {
@@ -543,8 +481,6 @@
             .nav-user { display: none !important; }
         }
     </style>
-
-
 </head>
 <body>
 
@@ -606,7 +542,7 @@
         <div class="hero fz-masthead dashboard-masthead animate-in">
             <div class="dashboard-masthead__grid">
                 <div class="dashboard-masthead__main">
-                    <p class="dashboard-hero-eyebrow">Clear air &middot; Campus monitoring</p>
+                    <p class="dashboard-hero-eyebrow">Clear air · Campus monitoring</p>
                     <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
                     <p class="dashboard-hero-tagline" id="hero-tagline">Live PM1.0, PM2.5 &amp; PM10 readings from sensors in the 4th Floor comfort rooms.</p>
                     <p class="dashboard-hero-session" id="hero-session" role="status">
@@ -630,7 +566,7 @@
 
         <div class="last-updated-bar" id="last-updated-bar">Fetching sensor data…</div>
 
-        <div class="grid" id="sensor-grid">
+        <div class="grid" id="sensor-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px,1fr));">
 
             <div class="location-card" id="card-zone1" role="region" aria-label="4th Floor Male CR status">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
