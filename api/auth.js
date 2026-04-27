@@ -315,8 +315,8 @@ router.post('/verify-otp', async (req, res) => {
 
             const hash = await bcrypt.hash(password, 12);
             await db.query(
-                `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, date_joined)
-                 VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+                `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
                 [employeeId, fullName, email, contact || null, position, hash]
             );
             return res.json({ success: true, message: 'Account created successfully! You can now log in.' });
