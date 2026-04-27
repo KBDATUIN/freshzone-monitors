@@ -2,7 +2,7 @@
 //  api/profile.js — View & update user profile, change password
 // ============================================================
 const express = require('express');
-const bcrypt  = require('bcrypt');
+const bcrypt  = require('bcryptjs');
 const router  = express.Router();
 const db      = require('../db');
 const { authMiddleware } = require('../middleware/auth');
