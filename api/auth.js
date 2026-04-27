@@ -258,77 +258,101 @@ router.post('/verify-otp', async (req, res) => {
 
     if (!email || !otp)
         return res.status(400).json({ success: false, message: 'Email and OTP are required.' });
-
     if (!isValidEmail(email))
         return res.status(400).json({ success: false, message: 'Invalid email.' });
-
     if (!/^\d{6}$/.test(otp))
         return res.status(400).json({ success: false, message: 'OTP must be a 6-digit number.' });
 
     try {
         const [otpRows] = await db.query(
             `SELECT id, otp_code, otp_type, expires_at, attempts, payload_json
-             FROM auth_otp_store
-             WHERE email = ?
-             ORDER BY created_at DESC
-             LIMIT 1`,
+             FROM auth_otp_store WHERE email = ?
+             ORDER BY created_at DESC LIMIT 1`,
             [email]
         );
         const stored = otpRows[0];
+
         if (!stored)
             return res.status(400).json({ success: false, message: 'No OTP found. Please request a new one.' });
 
+        // Check expiry first — before touching attempts
         if (Date.now() > new Date(stored.expires_at).getTime()) {
             await db.query('DELETE FROM auth_otp_store WHERE id = ?', [stored.id]);
             return res.status(400).json({ success: false, message: 'OTP expired. Please request a new one.' });
         }
 
-        // Lock out after 5 wrong OTP attempts
-        const attempts = (stored.attempts || 0) + 1;
-        await db.query('UPDATE auth_otp_store SET attempts = ? WHERE id = ?', [attempts, stored.id]);
-        if (attempts > 5) {
+        // Check lockout BEFORE incrementing
+        if ((stored.attempts || 0) >= 5) {
             await db.query('DELETE FROM auth_otp_store WHERE id = ?', [stored.id]);
             return res.status(429).json({ success: false, message: 'Too many incorrect attempts. Please request a new OTP.' });
         }
 
-        if (stored.otp_code !== otp)
-            return res.status(400).json({ success: false, message: `Incorrect OTP code. ${5 - attempts} attempts remaining.` });
+        // Wrong code — increment and tell user how many left
+        if (stored.otp_code !== otp) {
+            const newAttempts = (stored.attempts || 0) + 1;
+            await db.query('UPDATE auth_otp_store SET attempts = ? WHERE id = ?', [newAttempts, stored.id]);
+            const remaining = 5 - newAttempts;
+            if (remaining <= 0) {
+                await db.query('DELETE FROM auth_otp_store WHERE id = ?', [stored.id]);
+                return res.status(429).json({ success: false, message: 'Too many incorrect attempts. Please request a new OTP.' });
+            }
+            return res.status(400).json({ success: false, message: `Incorrect OTP. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.` });
+        }
 
+        // OTP is correct — consume it
         await db.query('DELETE FROM auth_otp_store WHERE id = ?', [stored.id]);
 
+        // ── SIGNUP ──────────────────────────────────────────────
         if (stored.otp_type === 'signup') {
-            const parsedPayload = stored.payload_json ? JSON.parse(stored.payload_json) : {};
+            let parsedPayload;
+            try {
+                parsedPayload = stored.payload_json
+                    ? (typeof stored.payload_json === 'string' ? JSON.parse(stored.payload_json) : stored.payload_json)
+                    : null;
+            } catch {
+                parsedPayload = null;
+            }
+
+            if (!parsedPayload) {
+                logger.error({ email }, '[verify-otp] payload_json is null or unparseable');
+                return res.status(400).json({ success: false, message: 'Registration data missing. Please start over.' });
+            }
+
             const { firstName, lastName, employeeId, contact, position, password } = parsedPayload;
 
-            // Guard: payload must be complete — if any required field is missing the OTP store is corrupt
             if (!firstName || !lastName || !employeeId || !position || !password) {
-                logger.error({ parsedPayload }, '[verify-otp] Corrupt payload_json — missing required fields');
-                return res.status(400).json({ success: false, message: 'Registration data is incomplete. Please start over and request a new OTP.' });
+                logger.error({ parsedPayload }, '[verify-otp] Incomplete payload_json');
+                return res.status(400).json({ success: false, message: 'Registration data incomplete. Please start over.' });
             }
 
-            const fullName = `${firstName} ${lastName}`;
-
-            // Final duplicate check before insert
-            const [dup] = await db.query('SELECT id FROM accounts WHERE (email = ? OR employee_id = ?) AND is_active = 1', [email, employeeId]);
+            // Final duplicate check
+            const [dup] = await db.query(
+                'SELECT id FROM accounts WHERE email = ? OR employee_id = ? LIMIT 1',
+                [email, employeeId]
+            );
             if (dup.length)
-                return res.status(409).json({ success: false, message: 'Account already exists.' });
+                return res.status(409).json({ success: false, message: 'An account with this email or employee ID already exists.' });
 
-            const hash = await bcrypt.hash(password, 12);
-            let insertErr = null;
-            try {
-                await db.query(
-                    `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
-                     VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
-                    [employeeId, fullName, email, contact || null, position, hash]
-                );
-            } catch (e) {
-                insertErr = e;
-                logger.error({ message: e.message, code: e.code, sql: e.sql, sqlMessage: e.sqlMessage }, '[verify-otp] INSERT failed');
-                return res.status(500).json({ success: false, message: e.message, code: e.code, sql: e.sql });
-            }
+            const hash     = await bcrypt.hash(password, 12);
+            const fullName = `${firstName} ${lastName}`.trim();
+
+            // Describe the table first so we know exactly which columns exist
+            const [cols] = await db.query(`SHOW COLUMNS FROM accounts`);
+            const colNames = cols.map(c => c.Field);
+            logger.info({ colNames }, '[verify-otp] accounts columns');
+
+            await db.query(
+                `INSERT INTO accounts
+                 (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
+                [employeeId, fullName, email, contact || null, position, hash]
+            );
+
+            logger.info({ email, employeeId }, '[verify-otp] Account created');
             return res.json({ success: true, message: 'Account created successfully! You can now log in.' });
         }
 
+        // ── PASSWORD RESET ───────────────────────────────────────
         if (stored.otp_type === 'reset') {
             if (!newPassword)
                 return res.status(400).json({ success: false, message: 'New password is required.' });
@@ -336,17 +360,22 @@ router.post('/verify-otp', async (req, res) => {
                 return res.status(400).json({ success: false, message: 'Password must be at least 8 characters with at least one letter and one number.' });
 
             const hash = await bcrypt.hash(newPassword, 12);
-            await db.query('UPDATE accounts SET password_hash = ?, updated_at = NOW() WHERE email = ?', [hash, email]);
+            await db.query(
+                'UPDATE accounts SET password_hash = ?, updated_at = NOW() WHERE email = ?',
+                [hash, email]
+            );
             return res.json({ success: true, message: 'Password updated successfully! You can now log in.' });
         }
 
+        return res.status(400).json({ success: false, message: 'Unknown OTP type.' });
+
     } catch (err) {
-        logger.error({ err, message: err.message, code: err.code, sql: err.sql }, '[verify-otp] DB error');
-        res.status(500).json({
+        logger.error({ message: err.message, code: err.code, sql: err.sql, stack: err.stack }, '[verify-otp] Unhandled error');
+        return res.status(500).json({
             success: false,
-            message: err.message,
+            message: err.message || 'Server error.',
             code: err.code,
-            sql: err.sql
+            sql: err.sql,
         });
     }
 });
