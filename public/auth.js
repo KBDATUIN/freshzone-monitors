@@ -313,6 +313,8 @@ async function sendOTP(type) {
         if (!valid) return;
 
         currentEmail = email;
+        sessionStorage.setItem('fz_otp_email', email);
+        sessionStorage.setItem('fz_otp_type', 'signup');
         payload = { ...payload, email, firstName, lastName, employeeId, contact, position, password };
 
     } else if (type === 'reset') {
@@ -320,6 +322,8 @@ async function sendOTP(type) {
         if (!email)              { setError('reset-email', 'Email is required.'); return; }
         if (!isValidEmail(email)){ setError('reset-email', 'Enter a valid email.'); return; }
         currentEmail = email;
+        sessionStorage.setItem('fz_otp_email', email);
+        sessionStorage.setItem('fz_otp_type', 'reset');
         payload = { ...payload, email };
     }
 
@@ -417,7 +421,10 @@ async function verifyOTP(type) {
     // Always read email from the form field — currentEmail may be lost on page reload
     const email = (type === 'signup'
         ? document.getElementById('signup-email')?.value.trim()
-        : document.getElementById('reset-email')?.value.trim()) || currentEmail;
+        : document.getElementById('reset-email')?.value.trim())
+        || currentEmail
+        || sessionStorage.getItem('fz_otp_email') || '';
+    console.log('[verifyOTP] type:', type, 'email:', email, 'currentEmail:', currentEmail);
 
     if (!otp || otp.length !== 6) {
         showNotification('Enter the 6-digit OTP code.', 'error');
