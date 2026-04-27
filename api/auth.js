@@ -157,7 +157,9 @@ router.post('/send-otp', async (req, res) => {
     const lastName  = sanitizeStr(req.body.lastName, 50);
     const employeeId = sanitizeStr(req.body.employeeId, 30);
     const contact   = sanitizeStr(req.body.contact, 20);
-    if (contact && !/^(\+63|0)9\d{9}$/.test(contact))
+    // Normalise contact: strip spaces/dashes then validate PH format
+    const contactNorm = contact.replace(/[\s\-]/g, '');
+    if (contact && !/^(\+63|0)9\d{9}$/.test(contactNorm))
         return res.status(400).json({ success: false, message: 'Invalid contact number. Use format 09XXXXXXXXX or +639XXXXXXXXX.' });
     const position  = sanitizeStr(req.body.position, 50);
     const password  = typeof req.body.password === 'string' ? req.body.password.slice(0, 128) : '';
@@ -220,7 +222,7 @@ router.post('/send-otp', async (req, res) => {
 
     try {
         const otp     = generateCode();
-        const expires = new Date(Date.now() + 60 * 1000);
+        const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
         const signupUserData = type === 'signup' ? { firstName, lastName, employeeId, contact, position, password } : null;
         const displayName = type === 'signup' ? `${firstName} ${lastName}`.trim() : 'User';
