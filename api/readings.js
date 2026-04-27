@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 //  api/readings.js — Sensor data from ESP32 + live dashboard
 // ============================================================
 const express  = require('express');
@@ -243,6 +243,7 @@ router.post('/', verifyNodeHmac, async (req, res) => {
             node_active:   1,
         });
 
+    } catch (err) {
         logger.error({ err }, '[readings POST] Error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
