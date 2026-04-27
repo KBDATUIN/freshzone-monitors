@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 let otpExpiry    = null;
 let otpCountdown = null;
 let currentEmail = "";
-const OTP_TTL    = 60 * 1000; // 60 seconds
+const OTP_TTL    = 10 * 60 * 1000; // 10 minutes
 
 // ── NOTIFICATION ──────────────────────────────────────────────
 function showNotification(message, type = 'info', duration = 3500) {
@@ -210,9 +210,14 @@ function startOTPCountdown(displayId, resendBtnId, type) {
             if (resendBtn) resendBtn.style.display = 'inline-block';
         } else {
             const s = Math.ceil(remaining / 1000);
+            const mins = Math.floor(s / 60);
+            const secs = s % 60;
+            const display_str = mins > 0
+                ? `OTP expires in ${mins}:${String(secs).padStart(2,'0')}`
+                : `OTP expires in ${secs}s`;
             if (display) {
-                display.textContent = `OTP expires in ${s}s`;
-                display.style.color = s <= 15 ? 'var(--danger)' : 'var(--gray)';
+                display.textContent = display_str;
+                display.style.color = s <= 60 ? 'var(--danger)' : 'var(--gray)';
             }
         }
     }, 500);
@@ -332,7 +337,7 @@ async function sendOTP(type) {
         const data = await res.json();
 
         if (data.success) {
-            showNotification('OTP sent to your email! Valid for 60 seconds.', 'success', 4000);
+            showNotification('OTP sent to your email! Valid for 10 minutes.', 'success', 4000);
 
             if (type === 'signup') {
                 document.getElementById('signup-otp-section').classList.remove('hidden');
@@ -386,7 +391,7 @@ async function resendOTP(type) {
         const data = await res.json();
 
         if (data.success) {
-            showNotification('New OTP sent! Valid for 60 seconds.', 'success', 4000);
+            showNotification('New OTP sent! Valid for 10 minutes.', 'success', 4000);
             const otpInputId = type === 'signup' ? 'signup-otp-input' : 'reset-otp-input';
             document.getElementById(otpInputId).value = '';
             startOTPCountdown(
