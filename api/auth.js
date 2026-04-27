@@ -314,11 +314,18 @@ router.post('/verify-otp', async (req, res) => {
                 return res.status(409).json({ success: false, message: 'Account already exists.' });
 
             const hash = await bcrypt.hash(password, 12);
-            await db.query(
-                `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
-                 VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
-                [employeeId, fullName, email, contact || null, position, hash]
-            );
+            let insertErr = null;
+            try {
+                await db.query(
+                    `INSERT INTO accounts (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
+                     VALUES (?, ?, ?, ?, ?, ?, 1, NOW(), NOW())`,
+                    [employeeId, fullName, email, contact || null, position, hash]
+                );
+            } catch (e) {
+                insertErr = e;
+                logger.error({ message: e.message, code: e.code, sql: e.sql, sqlMessage: e.sqlMessage }, '[verify-otp] INSERT failed');
+                return res.status(500).json({ success: false, message: e.message, code: e.code, sql: e.sql });
+            }
             return res.json({ success: true, message: 'Account created successfully! You can now log in.' });
         }
 
