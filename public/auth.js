@@ -414,9 +414,17 @@ async function verifyOTP(type) {
     const otpInput    = document.getElementById(type === 'signup' ? 'signup-otp-input' : 'reset-otp-input');
     const otp         = otpInput.value.trim();
     const newPassword = type === 'reset' ? document.getElementById('reset-new-password').value.trim() : undefined;
+    // Always read email from the form field — currentEmail may be lost on page reload
+    const email = (type === 'signup'
+        ? document.getElementById('signup-email')?.value.trim()
+        : document.getElementById('reset-email')?.value.trim()) || currentEmail;
 
     if (!otp || otp.length !== 6) {
         showNotification('Enter the 6-digit OTP code.', 'error');
+        return;
+    }
+    if (!email) {
+        showNotification('Email address is missing. Please go back and re-enter your details.', 'error');
         return;
     }
 
@@ -425,7 +433,7 @@ async function verifyOTP(type) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ email: currentEmail, otp, newPassword })
+            body: JSON.stringify({ email, otp, newPassword })
         });
         const data = await res.json();
 
