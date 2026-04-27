@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
@@ -302,9 +302,13 @@
                 font-size: clamp(0.58rem, 2.2vw, 0.7rem);
             }
             .dashboard-masthead h1 {
-                font-size: clamp(1.15rem, 5vw, 1.6rem) !important;
-                justify-content: center;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
                 flex-wrap: nowrap !important;
+                gap: 0.4rem !important;
+                font-size: clamp(1.1rem, 5vw, 1.5rem) !important;
+                line-height: 1.2 !important;
             }
             .dashboard-hero-tagline {
                 font-size: clamp(0.8rem, 3vw, 0.95rem);
@@ -331,6 +335,16 @@
                 width: 100% !important;
             }
             .dashboard-masthead__viz { display: none !important; }
+            .dashboard-hero-session {
+                max-width: 100% !important;
+                overflow: visible !important;
+                flex-wrap: wrap !important;
+            }
+            #hero-session-text {
+                white-space: normal !important;
+                overflow: visible !important;
+                text-overflow: unset !important;
+            }
         }
         @media (max-width: 420px) {
             .dashboard-masthead h1 {
@@ -530,126 +544,7 @@
         }
     </style>
 
-    <style id="fz-mobile-fix">
-    /* ── MOBILE OPTIMIZATION — loads last, highest priority ── */
 
-    /* Fix: hero padding on mobile (beats style.css 2.25rem !important) */
-    @media (max-width: 767px) {
-        .hero, .hero.fz-masthead, .hero.fz-masthead.dashboard-masthead,
-        .glass-card.hero, .card.hero {
-            padding: 1.4rem 1.1rem 1.2rem !important;
-        }
-
-        /* Eyebrow: single line */
-        .dashboard-hero-eyebrow {
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            font-size: 0.65rem !important;
-            letter-spacing: 0.12em !important;
-            display: block !important;
-            width: 100% !important;
-        }
-
-        /* H1: flex so LIVE badge never drops to own line */
-        .dashboard-masthead h1,
-        .hero h1 {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex-wrap: nowrap !important;
-            gap: 0.4rem !important;
-            font-size: clamp(1.1rem, 5vw, 1.5rem) !important;
-            line-height: 1.2 !important;
-            white-space: normal !important;
-        }
-
-        /* LIVE badge: never shrink or wrap */
-        .live-badge {
-            flex-shrink: 0 !important;
-            white-space: nowrap !important;
-            font-size: 0.68rem !important;
-        }
-
-        /* Tagline */
-        .dashboard-hero-tagline {
-            font-size: 0.82rem !important;
-            line-height: 1.5 !important;
-            margin-top: 0.4rem !important;
-        }
-
-        /* Session pill: show full name, no truncation */
-        .dashboard-hero-session {
-            font-size: 0.78rem !important;
-            padding: 0.4rem 0.75rem !important;
-            margin: 0.6rem 0 0.8rem !important;
-            max-width: 100% !important;
-            overflow: visible !important;
-            display: inline-flex !important;
-            flex-wrap: nowrap !important;
-        }
-        #hero-session-text {
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            min-width: 0 !important;
-        }
-
-        /* Button: full width, single line, never wrap */
-        .btn-hero-history {
-            width: 100% !important;
-            white-space: nowrap !important;
-            justify-content: center !important;
-            font-size: 0.88rem !important;
-            padding: 0.7rem 1rem !important;
-        }
-        .flex-btn-container {
-            width: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-
-        /* Hide decorative rings */
-        .dashboard-masthead__viz {
-            display: none !important;
-        }
-
-        /* Sensor grid: 1 column, no side gaps */
-        #sensor-grid {
-            grid-template-columns: 1fr !important;
-            gap: 0.85rem !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            width: 100% !important;
-        }
-
-        /* Cards: full width */
-        .location-card {
-            width: 100% !important;
-            min-width: 0 !important;
-            max-width: 100% !important;
-            box-sizing: border-box !important;
-        }
-
-        /* Container: tight padding */
-        .container {
-            padding: 0.75rem 0.85rem !important;
-        }
-    }
-
-    @media (max-width: 420px) {
-        .dashboard-masthead h1,
-        .hero h1 {
-            font-size: clamp(0.95rem, 4.5vw, 1.2rem) !important;
-        }
-        .dashboard-hero-eyebrow {
-            font-size: 0.58rem !important;
-        }
-        .hero, .hero.fz-masthead, .hero.fz-masthead.dashboard-masthead {
-            padding: 1.1rem 0.9rem 1rem !important;
-        }
-    }
-    </style>
 </head>
 <body>
 
@@ -711,15 +606,15 @@
         <div class="hero fz-masthead dashboard-masthead animate-in">
             <div class="dashboard-masthead__grid">
                 <div class="dashboard-masthead__main">
-                    <p class="dashboard-hero-eyebrow">Clear air · Campus monitoring</p>
-                    <h1 style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:0.4rem;line-height:1.2;">Campus Vape Aerosol Detector <span class="live-badge" style="flex-shrink:0;white-space:nowrap;"><span class="live-dot"></span>LIVE</span></h1>
+                    <p class="dashboard-hero-eyebrow">Clear air &middot; Campus monitoring</p>
+                    <h1>Campus Vape Aerosol Detector <span class="live-badge"><span class="live-dot"></span>LIVE</span></h1>
                     <p class="dashboard-hero-tagline" id="hero-tagline">Live PM1.0, PM2.5 &amp; PM10 readings from sensors in the 4th Floor comfort rooms.</p>
-                    <p class="dashboard-hero-session" id="hero-session" role="status" style="max-width:100%;overflow:visible;flex-wrap:wrap;">
+                    <p class="dashboard-hero-session" id="hero-session" role="status">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span id="hero-session-text" style="white-space:normal;overflow:visible;text-overflow:unset;">Loading session…</span>
+                        <span id="hero-session-text">Loading session…</span>
                     </p>
                     <div class="flex-btn-container">
-                        <a href="history.html" class="btn-hero-history" style="white-space:nowrap;width:100%;justify-content:center;">View detection history <span aria-hidden="true">→</span></a>
+                        <a href="history.html" class="btn-hero-history">View detection history <span aria-hidden="true">→</span></a>
                     </div>
                 </div>
                 <div class="dashboard-masthead__viz" aria-hidden="true">
