@@ -345,11 +345,6 @@ router.post('/verify-otp', async (req, res) => {
             const hash     = await bcrypt.hash(password, 12);
             const fullName = `${firstName} ${lastName}`.trim();
 
-            // Describe the table first so we know exactly which columns exist
-            const [cols] = await db.query(`SHOW COLUMNS FROM accounts`);
-            const colNames = cols.map(c => c.Field);
-            logger.info({ colNames }, '[verify-otp] accounts columns');
-
             await db.query(
                 `INSERT INTO accounts
                  (employee_id, full_name, email, contact_number, position, password_hash, is_active, date_joined, updated_at)
@@ -379,13 +374,11 @@ router.post('/verify-otp', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Unknown OTP type.' });
 
     } catch (err) {
-        logger.error({ message: err.message, code: err.code, sql: err.sql, stack: err.stack }, '[verify-otp] Unhandled error');
-        return res.status(500).json({
-            success: false,
-            message: err.message || 'Server error.',
-            code: err.code,
-            sql: err.sql,
-        });
+        logger.error({ message: err.message, code: err.code, sql: err.sql }, '[verify-otp] Unhandled error');
+        let message = 'Server error.';
+        if (err.code === 'ER_DUP_ENTRY') message = 'An account with this email or employee ID already exists.';
+        if (err.code === 'ER_BAD_NULL_ERROR') message = 'Missing required field.';
+        return res.status(500).json({ success: false, message });
     }
 });
 
