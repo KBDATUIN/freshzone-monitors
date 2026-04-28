@@ -586,7 +586,7 @@ footer {
 /* ── SWIPE HINT on table (mobile) ────────────────────────────── */
 @media (min-width: 481px) and (max-width: 700px) {
     .log-container::after {
-        content: "← Swipe to see more →";
+        content: "\2190 Swipe to see more \2192";
         display: block !important;
         text-align: center !important;
         font-size: 0.7rem !important;
@@ -763,31 +763,91 @@ footer {
     }
 }
 
-/* -- iOS SAFE AREA - mobile nav drawer ----------------------- */
+/* ── iOS SAFE AREA — mobile nav drawer ────────────────────── */
 .mobile-nav-drawer {
     padding-bottom: env(safe-area-inset-bottom, 16px) !important;
 }
 
-
-/* -- SCROLL AFFORDANCE - history table on mobile --------------- */
+/* ── HISTORY PAGE — mobile overrides ────────────────────────── */
+/* Force 3-col stats grid on all mobile sizes (inline style uses auto-fit
+   which collapses to 1-col when minmax(200px) can't fit 3 columns)     */
 @media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.6rem !important;
+    }
+    /* Tighter table cells on mobile */
+    .log-container th,
+    .log-container td {
+        padding: 0.65rem 0.75rem !important;
+        font-size: 0.82rem !important;
+    }
+    /* Page hero compact */
+    .page-hero {
+        padding: 1.1rem 1rem !important;
+    }
+    .page-hero h1 {
+        font-size: 1.25rem !important;
+    }
+    .page-hero p {
+        font-size: 0.82rem !important;
+    }
+    /* Filter bar full-width inputs */
+    .filter-inputs-row {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+    .filter-inputs-row .filter-group,
+    .filter-bar input,
+    .filter-bar select {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    /* Export/filter action buttons full-width */
+    .filter-actions-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+    }
+    .filter-danger-btn {
+        grid-column: 1 / -1 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        gap: 0.4rem !important;
+    }
+    .stat-box {
+        padding: 0.65rem 0.45rem !important;
+    }
+    .stat-box h3 {
+        font-size: 1.1rem !important;
+    }
+    .stat-box p {
+        font-size: 0.58rem !important;
+    }
+    .page-hero h1 {
+        font-size: 1.1rem !important;
+    }
+    .filter-actions-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ── SCROLL AFFORDANCE — history table on mobile (481–768px) ── */
+/* Only applies in the horizontal-scroll range, not card-mode (≤480px)
+   Uses box-shadow inset instead of ::after to avoid conflicts      */
+@media (min-width: 481px) and (max-width: 768px) {
     .log-container {
-        position: relative !important;
+        box-shadow:
+            inset -40px 0 24px -16px rgba(255,255,255,0.85),
+            var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06)) !important;
     }
-    .log-container::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 40px;
-        height: 100%;
-        background: linear-gradient(to right, transparent, rgba(255,255,255,0.85));
-        pointer-events: none;
-        border-radius: 0 var(--radius-lg, 16px) var(--radius-lg, 16px) 0;
-        transition: opacity 0.3s;
-    }
-    [data-theme="dark"] .log-container::after {
-        background: linear-gradient(to right, transparent, rgba(10,20,32,0.85));
+    [data-theme="dark"] .log-container {
+        box-shadow:
+            inset -40px 0 24px -16px rgba(10,20,32,0.90),
+            var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06)) !important;
     }
 }
 
