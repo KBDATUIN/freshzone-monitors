@@ -445,16 +445,12 @@
 <script src="utils.js"></script>
 <script>
     // Auth guard
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) {
-        hydrateSessionUser().then((user) => {
-            if (!user) {
-                alert('No user logged in!');
-                window.location.href = 'auth.html';
-            }
-        });
-    }
-
+    (async function initUser() {
+        const user = await hydrateSessionUser();
+        if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; return; }
+        window._fzCurrentUser = user;
+        loadProfile();
+    })();
     // ── CROPPER STATE ──────────────────────────────────────────
     let cropperInstance = null;
 
@@ -779,7 +775,6 @@
         document.getElementById('profile-pw-label').style.color    = lv.color;
     });
 
-    loadProfile();
     initHotkeys('profile');
 
     // Push notification state

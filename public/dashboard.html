@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
@@ -717,16 +717,23 @@
         }
 
         // ── AUTH GUARD ─────────────────────────────────────────
-        const user = JSON.parse(localStorage.getItem('currentUser'));
-        if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; }
+        let user = null;
+        let isAdmin = false;
+        let isStaff = false;
 
-        const isAdmin = user?.position === 'Administrator';
-        const isStaff = user?.position === 'Staff / Teachers';
-
-        // Show staff info bar
-        if (isStaff) {
-            document.getElementById('staff-info-bar').classList.add('visible');
-        }
+        (async function initUser() {
+            user = await hydrateSessionUser();
+            if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; return; }
+            window._fzCurrentUser = user;
+            isAdmin = user.position === 'Administrator';
+            isStaff = user.position === 'Staff / Teachers';
+            if (isStaff) document.getElementById('staff-info-bar')?.classList.add('visible');
+            const nameEl = document.getElementById('nav-user-name');
+            if (nameEl) nameEl.textContent = user.full_name || user.name || 'User';
+            const sessionText = document.getElementById('hero-session-text');
+            if (sessionText) sessionText.textContent = `Logged in as ${user.full_name || user.name} — ${user.position || 'User'}`;
+            pollAll();
+        })();
 
         // Zone code → card element mapping
         const ZONES = {
@@ -1170,20 +1177,11 @@
             await fetchLiveData();
             await fetchOpenEvents();
         }
-        pollAll();
         setInterval(pollAll, 5000);
 
         // ── HOTKEYS ────────────────────────────────────────────
 
 
-        // Show user name in nav + session line in hero (tagline stays descriptive)
-        if (user) {
-            const nameEl = document.getElementById('nav-user-name');
-            if (nameEl) nameEl.textContent = user.full_name || user.name || 'User';
-            const sessionText = document.getElementById('hero-session-text');
-            if (sessionText) {
-                sessionText.textContent = `Logged in as ${user.full_name || user.name} — ${user.position || 'User'}`;
-            }
         }
 
         initHotkeys('dashboard');

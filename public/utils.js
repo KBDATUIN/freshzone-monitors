@@ -24,7 +24,6 @@ async function apiFetch(endpoint, options = {}) {
     };
     const res = await fetch(`${API}/api${endpoint}`, { ...options, headers, credentials: 'include' });
     if (res.status === 401) {
-        localStorage.removeItem('currentUser');
         window.location.href = 'auth.html';
         return;
     }
@@ -32,15 +31,6 @@ async function apiFetch(endpoint, options = {}) {
 }
 
 async function hydrateSessionUser() {
-    const cachedUser = localStorage.getItem('currentUser');
-    if (cachedUser) {
-        try {
-            return JSON.parse(cachedUser);
-        } catch (err) {
-            localStorage.removeItem('currentUser');
-        }
-    }
-
     if (sessionUserPromise) return sessionUserPromise;
 
     sessionUserPromise = (async () => {
@@ -48,11 +38,9 @@ async function hydrateSessionUser() {
             const res = await fetch(`${API}/api/auth/session`, { credentials: 'include' });
             const data = await res.json();
             if (data?.loggedIn && data.user) {
-                localStorage.setItem('currentUser', JSON.stringify(data.user));
                 return data.user;
             }
         } catch (err) {}
-        localStorage.removeItem('currentUser');
         return null;
     })();
 
@@ -79,7 +67,6 @@ function confirmLogout() {
     apiFetch('/auth/logout', { method: 'POST' })
         .catch(() => null)
         .finally(() => {
-            localStorage.removeItem('currentUser');
             sessionUserPromise = null;
             closeLogoutModal();
             showNotification('Logged out successfully.', 'success');
@@ -180,12 +167,11 @@ function resetIdleTimer() {
         if (w) { w.style.display = 'block'; w.textContent = 'Session expiring in 2 minutes due to inactivity.'; }
     }, IDLE_LIMIT - WARN_BEFORE);
     _idleTimer = setTimeout(() => {
-        localStorage.removeItem('currentUser');
         window.location.href = 'auth.html';
     }, IDLE_LIMIT);
 }
 function initSessionTimeout() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
+    const user = window._fzCurrentUser || null;
     if (!user) return;
     ['click','keydown','mousemove','touchstart','scroll'].forEach(e =>
         document.addEventListener(e, resetIdleTimer, { passive: true }));
