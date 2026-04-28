@@ -435,8 +435,6 @@ async function verifyOTP(type) {
         : document.getElementById('reset-email')?.value.trim())
         || currentEmail
         || sessionStorage.getItem('fz_otp_email') || '';
-    console.log('[verifyOTP] type:', type, 'email:', email, 'currentEmail:', currentEmail);
-
     if (!otp || otp.length !== 6) {
         showNotification('Enter the 6-digit OTP code.', 'error');
         return;

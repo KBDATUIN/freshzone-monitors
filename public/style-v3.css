@@ -210,7 +210,10 @@ nav {
     background: rgba(238,251,255,0.98) !important;
     border: 1px solid rgba(0,100,160,0.12) !important;
     border-radius: 16px !important;
-    overflow: hidden !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-x: contain !important;
 }
 [data-theme="dark"] .log-container { background: rgba(10,20,36,0.98) !important; border-color: rgba(34,211,238,0.1) !important; }
 
@@ -431,6 +434,18 @@ footer, .site-footer { color: rgba(255,255,255,0.84) !important; font-size: 0.82
 }
 @media (max-width: 380px) {
     .filter-action-btn { min-width: 100% !important; }
+}
+
+/* ── MOBILE TABLE SCROLL HINT ──────────────────────────────── */
+@media (max-width: 768px) {
+    /* Scrollbar always visible on mobile so user knows it scrolls */
+    .log-container::-webkit-scrollbar { height: 5px !important; }
+    .log-container::-webkit-scrollbar-track { background: rgba(0,78,122,0.06) !important; border-radius: 99px !important; }
+    .log-container::-webkit-scrollbar-thumb { background: rgba(0,180,216,0.45) !important; border-radius: 99px !important; }
+    [data-theme="dark"] .log-container::-webkit-scrollbar-thumb { background: rgba(34,211,238,0.35) !important; }
+    /* Tighter table cells on mobile */
+    .log-container th,
+    .log-container td { padding: 0.6rem 0.7rem !important; font-size: 0.8rem !important; }
 }
 
 /* ── SECTION LABELS / KICKERS ───────────────────────────────── */
