@@ -868,3 +868,272 @@ footer {
     overscroll-behavior-x: contain !important;
 }
 
+
+
+/* ═══════════════════════════════════════════════════════════════
+   HOVER GLOW & SHADOW — Interactive Micro-interactions
+   Purely additive — only adds :hover/:focus states, no layout changes
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── CSS VARIABLES for glow colors ──────────────────────────── */
+:root {
+    --glow-cyan:   rgba(0, 180, 216, 0.45);
+    --glow-cyan-s: rgba(0, 180, 216, 0.22);
+    --glow-green:  rgba(22, 163, 74, 0.45);
+    --glow-red:    rgba(220, 38, 38, 0.45);
+    --glow-white:  rgba(255, 255, 255, 0.18);
+    --hover-lift:  cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-theme="dark"] {
+    --glow-cyan:   rgba(34, 211, 238, 0.50);
+    --glow-cyan-s: rgba(34, 211, 238, 0.25);
+    --glow-green:  rgba(74, 222, 128, 0.45);
+    --glow-red:    rgba(248, 113, 113, 0.45);
+}
+
+/* ── CARDS — glass-card, hero, card ─────────────────────────── */
+.glass-card:hover,
+.card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.18),
+        0 8px 32px var(--glow-cyan-s),
+        0 20px 56px rgba(0, 40, 100, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+    transition: transform 0.28s var(--hover-lift), box-shadow 0.28s ease !important;
+}
+[data-theme="dark"] .glass-card:hover,
+[data-theme="dark"] .card:hover {
+    box-shadow:
+        0 0 0 1px rgba(34, 211, 238, 0.22),
+        0 8px 32px rgba(34, 211, 238, 0.18),
+        0 20px 56px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ── SENSOR / LOCATION CARDS ─────────────────────────────────── */
+.location-card:hover {
+    transform: translateY(-5px) scale(1.008) !important;
+    box-shadow:
+        0 0 0 1.5px rgba(0, 180, 216, 0.28),
+        0 10px 36px var(--glow-cyan-s),
+        0 24px 60px rgba(0, 40, 100, 0.14) !important;
+    transition: transform 0.28s var(--hover-lift), box-shadow 0.28s ease !important;
+}
+[data-theme="dark"] .location-card:hover {
+    box-shadow:
+        0 0 0 1.5px rgba(34, 211, 238, 0.28),
+        0 10px 36px rgba(34, 211, 238, 0.20),
+        0 24px 60px rgba(0, 0, 0, 0.50) !important;
+}
+
+/* ── STAT BOXES ──────────────────────────────────────────────── */
+.stat-box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow:
+        0 0 0 1.5px rgba(0, 180, 216, 0.25),
+        0 8px 28px var(--glow-cyan-s),
+        0 18px 48px rgba(0, 40, 100, 0.14) !important;
+    transition: transform 0.28s var(--hover-lift), box-shadow 0.28s ease !important;
+}
+[data-theme="dark"] .stat-box:hover {
+    box-shadow:
+        0 0 0 1.5px rgba(34, 211, 238, 0.28),
+        0 8px 28px rgba(34, 211, 238, 0.20),
+        0 18px 48px rgba(0, 0, 0, 0.50) !important;
+}
+
+/* ── BUTTONS — primary / default ────────────────────────────── */
+button:not(.dark-toggle):not(.hamburger):not(.mobile-nav-close):not(.push-toggle-switch):not(.filter-inline-clear):not(.fz-bn-tab):not(.mobile-nav-logout):not(.auth-tab):hover {
+    transform: translateY(-3px) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.35),
+        0 6px 22px var(--glow-cyan),
+        0 12px 36px rgba(0, 78, 122, 0.28) !important;
+    filter: brightness(1.08) !important;
+    transition: transform 0.22s var(--hover-lift), box-shadow 0.22s ease, filter 0.18s ease !important;
+}
+button:not(.dark-toggle):not(.hamburger):not(.mobile-nav-close):not(.push-toggle-switch):not(.filter-inline-clear):not(.fz-bn-tab):not(.mobile-nav-logout):not(.auth-tab):active {
+    transform: translateY(-1px) scale(0.97) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* Success buttons */
+.btn-success:hover,
+.resolve-btn:hover {
+    box-shadow:
+        0 0 0 1px rgba(22, 163, 74, 0.35),
+        0 6px 22px var(--glow-green),
+        0 12px 36px rgba(22, 163, 74, 0.22) !important;
+}
+
+/* Danger buttons */
+.btn-danger:hover,
+.ack-btn:hover {
+    box-shadow:
+        0 0 0 1px rgba(220, 38, 38, 0.35),
+        0 6px 22px var(--glow-red),
+        0 12px 36px rgba(220, 38, 38, 0.22) !important;
+}
+
+/* ── NAV LINKS ───────────────────────────────────────────────── */
+.nav-links a:not(.active):hover {
+    box-shadow: 0 2px 14px rgba(0, 180, 216, 0.22) !important;
+    transition: all 0.2s ease !important;
+}
+.nav-links a.active {
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.30),
+        0 4px 18px var(--glow-cyan) !important;
+}
+
+/* ── FORM INPUTS ─────────────────────────────────────────────── */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):hover:not(:focus),
+select:hover:not(:focus),
+textarea:hover:not(:focus) {
+    border-color: rgba(0, 180, 216, 0.55) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.10) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):focus,
+select:focus,
+textarea:focus {
+    box-shadow:
+        0 0 0 3px rgba(0, 180, 216, 0.20),
+        0 0 18px rgba(0, 180, 216, 0.22) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* ── TABLE ROWS ──────────────────────────────────────────────── */
+tbody tr:hover {
+    background: rgba(0, 180, 216, 0.06) !important;
+    box-shadow: inset 3px 0 0 rgba(0, 180, 216, 0.45) !important;
+    transition: background 0.18s ease, box-shadow 0.18s ease !important;
+}
+[data-theme="dark"] tbody tr:hover {
+    background: rgba(34, 211, 238, 0.06) !important;
+    box-shadow: inset 3px 0 0 rgba(34, 211, 238, 0.45) !important;
+}
+
+/* ── TABLE HEADER CELLS ──────────────────────────────────────── */
+th:hover {
+    color: var(--secondary, #00b4d8) !important;
+    text-shadow: 0 0 12px rgba(0, 180, 216, 0.35) !important;
+    transition: color 0.18s ease, text-shadow 0.18s ease !important;
+}
+
+/* ── TAGS ────────────────────────────────────────────────────── */
+.tag:hover {
+    transform: translateY(-1px) scale(1.05) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12) !important;
+    transition: transform 0.18s var(--hover-lift), box-shadow 0.18s ease !important;
+}
+.tag-danger:hover  { box-shadow: 0 3px 12px rgba(220, 38, 38, 0.28) !important; }
+.tag-success:hover { box-shadow: 0 3px 12px rgba(22, 163, 74, 0.28) !important; }
+.tag-warning:hover { box-shadow: 0 3px 12px rgba(217, 119, 6, 0.28) !important; }
+.tag-info:hover    { box-shadow: 0 3px 12px rgba(29, 78, 216, 0.28) !important; }
+
+/* ── PM CHIPS ────────────────────────────────────────────────── */
+.pm-chip:hover {
+    transform: translateY(-1px) scale(1.04) !important;
+    border-color: rgba(0, 180, 216, 0.45) !important;
+    box-shadow: 0 3px 10px rgba(0, 180, 216, 0.22) !important;
+    transition: all 0.18s var(--hover-lift) !important;
+}
+
+/* ── AQI BADGES ──────────────────────────────────────────────── */
+.aqi-badge:hover,
+.aqi-good:hover,
+.aqi-moderate:hover,
+.aqi-alert:hover {
+    transform: scale(1.06) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14) !important;
+    transition: transform 0.18s var(--hover-lift), box-shadow 0.18s ease !important;
+}
+
+/* ── FILTER BAR ──────────────────────────────────────────────── */
+.filter-bar:hover {
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.14),
+        0 8px 28px rgba(0, 40, 100, 0.12) !important;
+    transition: box-shadow 0.25s ease !important;
+}
+
+/* ── LOG CONTAINER ───────────────────────────────────────────── */
+.log-container:hover {
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.14),
+        0 8px 28px rgba(0, 40, 100, 0.12) !important;
+    transition: box-shadow 0.25s ease !important;
+}
+
+/* ── PROFILE IMAGE ───────────────────────────────────────────── */
+.profile-img:hover {
+    transform: scale(1.06) rotate(-2deg) !important;
+    box-shadow:
+        0 0 0 4px rgba(0, 180, 216, 0.30),
+        0 12px 36px rgba(0, 180, 216, 0.35) !important;
+    transition: transform 0.35s var(--hover-lift), box-shadow 0.35s ease !important;
+}
+
+/* ── LOGO ────────────────────────────────────────────────────── */
+.logo:hover img {
+    filter: drop-shadow(0 4px 16px rgba(0, 180, 216, 0.55)) !important;
+    transition: transform 0.35s var(--hover-lift), filter 0.3s ease !important;
+}
+
+/* ── MOBILE DRAWER LINKS ─────────────────────────────────────── */
+.mobile-nav-drawer a:hover {
+    box-shadow: inset 3px 0 0 rgba(0, 180, 216, 0.6) !important;
+    transition: all 0.18s ease !important;
+}
+
+/* ── DARK TOGGLE ─────────────────────────────────────────────── */
+.dark-toggle:hover {
+    box-shadow: 0 0 12px rgba(0, 180, 216, 0.30) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* ── AUTH TRUST BADGES ───────────────────────────────────────── */
+.auth-trust-badge:hover {
+    box-shadow: 0 4px 16px rgba(0, 180, 216, 0.30) !important;
+    transition: all 0.22s var(--hover-lift) !important;
+}
+
+/* ── SECTION KICKER ──────────────────────────────────────────── */
+.section-kicker:hover {
+    box-shadow: 0 3px 12px rgba(0, 180, 216, 0.25) !important;
+    transform: translateY(-1px) !important;
+    transition: all 0.2s var(--hover-lift) !important;
+}
+
+/* ── INBOX TICKETS ───────────────────────────────────────────── */
+.inbox-ticket:hover,
+.ticket-item:hover {
+    transform: translateY(-3px) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.22),
+        0 8px 28px var(--glow-cyan-s) !important;
+    transition: transform 0.25s var(--hover-lift), box-shadow 0.25s ease !important;
+}
+
+/* ── FEATURE CARDS (contact page) ───────────────────────────── */
+.feature-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow:
+        0 0 0 1px rgba(0, 180, 216, 0.18),
+        0 8px 28px var(--glow-cyan-s) !important;
+    transition: transform 0.25s var(--hover-lift), box-shadow 0.25s ease !important;
+}
+
+/* ── LIVE BADGE ──────────────────────────────────────────────── */
+.live-badge:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 3px 10px rgba(34, 197, 94, 0.30) !important;
+    transition: all 0.18s var(--hover-lift) !important;
+}
+
+/* ── REDUCE MOTION — respect user preference ─────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *:hover { transform: none !important; }
+    *:hover { box-shadow: none !important; }
+}
