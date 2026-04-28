@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  utils.js — FreshZone shared utilities
 // ============================================================
 
@@ -18,10 +18,19 @@ let sessionUserPromise = null;
 
 // ── API HELPER ────────────────────────────────────────────────
 async function apiFetch(endpoint, options = {}) {
+    function getCsrfToken() {
+        const match = document.cookie.match(/(?:^|;\s*)fz_csrf=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+    const method = (options.method || 'GET').toUpperCase();
     const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {}),
     };
+    if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+        const token = getCsrfToken();
+        if (token) headers['x-csrf-token'] = token;
+    }
     const res = await fetch(`${API}/api${endpoint}`, { ...options, headers, credentials: 'include' });
     if (res.status === 401) {
         window.location.href = 'auth.html';
@@ -29,7 +38,6 @@ async function apiFetch(endpoint, options = {}) {
     }
     return res.json();
 }
-
 async function hydrateSessionUser() {
     if (sessionUserPromise) return sessionUserPromise;
 
