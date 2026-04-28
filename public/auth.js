@@ -1,4 +1,10 @@
 
+// ── CSRF TOKEN HELPER ────────────────────────────────────────
+function getCsrfToken() {
+    const m = document.cookie.match(/(?:^|;\s*)fz_csrf=([^;]+)/);
+    return m ? decodeURIComponent(m[1]) : '';
+}
+
 // ── AUTO LOGIN: check if already logged in ────────────────────
 (async function checkAutoLogin() {
     const user = await hydrateSessionUser();
@@ -249,7 +255,7 @@ async function login() {
     try {
         const res  = await fetch(`${API}/api/auth/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
             credentials: 'include',
             body: JSON.stringify({ email, password })
         });
@@ -339,7 +345,7 @@ async function sendOTP(type) {
     try {
         const res  = await fetch(`${API}/api/auth/send-otp`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
             credentials: 'include',
             body: JSON.stringify(payload)
         });
@@ -393,7 +399,7 @@ async function resendOTP(type) {
 
         const res  = await fetch(`${API}/api/auth/send-otp`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
             credentials: 'include',
             body: JSON.stringify(payload)
         });
@@ -443,7 +449,7 @@ async function verifyOTP(type) {
     try {
         const res  = await fetch(`${API}/api/auth/verify-otp`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'x-csrf-token': getCsrfToken() },
             credentials: 'include',
             body: JSON.stringify({ email, otp, newPassword })
         });
