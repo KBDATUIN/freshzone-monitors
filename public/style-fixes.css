@@ -768,3 +768,26 @@ footer {
     padding-bottom: env(safe-area-inset-bottom, 16px) !important;
 }
 
+
+/* -- SCROLL AFFORDANCE - history table on mobile --------------- */
+@media (max-width: 768px) {
+    .log-container {
+        position: relative !important;
+    }
+    .log-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.85));
+        pointer-events: none;
+        border-radius: 0 var(--radius-lg, 16px) var(--radius-lg, 16px) 0;
+        transition: opacity 0.3s;
+    }
+    [data-theme="dark"] .log-container::after {
+        background: linear-gradient(to right, transparent, rgba(10,20,32,0.85));
+    }
+}
+
