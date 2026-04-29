@@ -1603,34 +1603,53 @@ footer a:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   EYE BUTTON FIX
-   style.css base `button` rule sets margin-top:1rem and width:100%
-   which pushes .eye-btn out of the password input.
-   These overrides restore correct absolute positioning.
+   EYE BUTTON FIX — v2
+   The global button rule in style.css sets width:100% and
+   margin-top:1rem. We need the input-password-wrap parent
+   selector for higher specificity to fully override it.
    ═══════════════════════════════════════════════════════════════ */
-.eye-btn {
+.input-password-wrap {
+    position: relative !important;
+    display: block !important;
+    margin-top: 0.35rem !important;
+    overflow: visible !important;
+}
+.input-password-wrap input {
     margin-top: 0 !important;
-    width: 32px !important;
-    max-width: 32px !important;
-    min-width: unset !important;
+    padding-right: 2.8rem !important;
+    width: 100% !important;
+}
+.input-password-wrap .eye-btn,
+.input-password-wrap button.eye-btn {
+    /* Reset everything the global button rule sets */
     position: absolute !important;
     right: 0.75rem !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
+    margin-top: 0 !important;
+    margin: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+    min-height: 32px !important;
     padding: 0 !important;
+    border: none !important;
     border-radius: 6px !important;
     background: transparent !important;
-    border: none !important;
     box-shadow: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    z-index: 10 !important;
     cursor: pointer !important;
     color: var(--gray) !important;
+    z-index: 10 !important;
     filter: none !important;
+    flex-shrink: 0 !important;
+    transition: color 0.2s ease, background 0.2s ease !important;
 }
-.eye-btn:hover {
+.input-password-wrap .eye-btn:hover,
+.input-password-wrap button.eye-btn:hover {
     background: rgba(0,180,216,0.08) !important;
     color: var(--secondary) !important;
     transform: translateY(-50%) !important;
@@ -1638,8 +1657,14 @@ footer a:hover {
     filter: none !important;
     margin-top: 0 !important;
 }
-.eye-btn:active {
+.input-password-wrap .eye-btn:active,
+.input-password-wrap button.eye-btn:active {
     transform: translateY(-50%) scale(0.9) !important;
     margin-top: 0 !important;
 }
-.eye-btn::before, .eye-btn::after { display: none !important; }
+.input-password-wrap .eye-btn::before,
+.input-password-wrap .eye-btn::after,
+.input-password-wrap button.eye-btn::before,
+.input-password-wrap button.eye-btn::after {
+    display: none !important;
+}
