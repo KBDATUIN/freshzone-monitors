@@ -258,7 +258,7 @@ label { color: #003a5c !important; font-weight: 700 !important; font-size: 0.74r
 [data-theme="dark"] label { color: #94a3b8 !important; }
 
 /* ── BUTTONS ────────────────────────────────────────────────── */
-button {
+button:not(.eye-btn) {
     font-weight: 700 !important;
     border-radius: 11px !important;
     font-family: 'Plus Jakarta Sans', sans-serif !important;
