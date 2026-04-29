@@ -582,7 +582,7 @@ nav {
 .zone-card-header h3 { margin:0; font-size:1rem; font-weight:700; }
 
 /* ── BUTTONS ─────────────────────────────────────────────────── */
-button {
+button:not(.eye-btn) {
     width:100%; padding:0.82rem 1.25rem; margin-top:1rem;
     border:none; border-radius:var(--radius-md);
     background:linear-gradient(135deg, var(--primary), #006899);
@@ -593,14 +593,40 @@ button {
     display:inline-flex; align-items:center; justify-content:center; gap:7px;
     letter-spacing:0.01em;
 }
-button::after {
+button:not(.eye-btn)::after {
     content:''; position:absolute; inset:0;
     background:radial-gradient(circle at center,rgba(255,255,255,0.2),transparent 70%);
     opacity:0; transition:opacity 0.3s;
 }
-button:hover::after { opacity:1; }
-button:hover { transform:translateY(-3px); box-shadow:var(--btn-shadow-hover); filter:brightness(1.08); }
-button:active { transform:translateY(-1px) scale(0.98); transition:all 0.1s ease; }
+button:not(.eye-btn):hover::after { opacity:1; }
+button:not(.eye-btn):hover { transform:translateY(-3px); box-shadow:var(--btn-shadow-hover); filter:brightness(1.08); }
+button:not(.eye-btn):active { transform:translateY(-1px) scale(0.98); transition:all 0.1s ease; }
+
+/* ── EYE BUTTON — fully isolated from global button rules ──── */
+.eye-btn {
+    position:absolute !important;
+    right:0.6rem !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    width:36px !important; height:36px !important;
+    min-width:36px !important; max-width:36px !important;
+    min-height:36px !important; max-height:36px !important;
+    padding:0 !important; margin:0 !important;
+    border:none !important; border-radius:8px !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    display:flex !important; align-items:center !important; justify-content:center !important;
+    cursor:pointer !important;
+    color:var(--gray) !important;
+    z-index:10 !important;
+    overflow:visible !important;
+    filter:none !important;
+    flex-shrink:0 !important;
+    transition:color 0.25s ease, background 0.25s ease !important;
+}
+.eye-btn::before, .eye-btn::after { display:none !important; content:none !important; }
+.eye-btn:hover { transform:translateY(-50%) !important; background:rgba(0,180,216,0.10) !important; color:var(--secondary) !important; box-shadow:none !important; filter:none !important; }
+.eye-btn:active { transform:translateY(-50%) scale(0.88) !important; }
 .btn-primary { background:linear-gradient(135deg, var(--primary), #006899); }
 .btn-success { background:linear-gradient(135deg, #16a34a, #15803d) !important; box-shadow:0 4px 14px rgba(22,163,74,0.3) !important; }
 .btn-success:hover { filter:brightness(1.08) !important; }
@@ -1045,21 +1071,7 @@ tbody tr:hover { background:rgba(0,78,122,0.025); }
 /* ── PASSWORD EYE TOGGLE ─────────────────────────────────────── */
 .input-password-wrap { position:relative; margin-top:0.35rem; overflow:visible !important; }
 .input-password-wrap input { margin-top:0; padding-right:2.8rem; width:100%; }
-.eye-btn {
-    position:absolute !important; right:0.75rem !important; top:50% !important;
-    transform:translateY(-50%) !important;
-    width:32px !important; height:32px !important; min-width:unset !important;
-    padding:0 !important; margin:0 !important; border:none !important;
-    border-radius:0 !important; background:transparent !important;
-    box-shadow:none !important; text-transform:none !important;
-    display:flex !important; align-items:center !important; justify-content:center !important;
-    cursor:pointer !important; color:var(--gray) !important;
-    transition:color 0.2s !important; z-index:10 !important; overflow:visible !important;
-}
-.eye-btn::after,.eye-btn::before { display:none !important; }
-.eye-btn:hover { background:transparent !important; box-shadow:none !important; transform:translateY(-50%) !important; color:var(--secondary) !important; }
-.eye-btn:active { transform:translateY(-50%) !important; box-shadow:none !important; background:transparent !important; }
-.eye-icon,.eye-off-icon { width:20px !important; height:20px !important; pointer-events:none !important; display:block !important; flex-shrink:0 !important; }
+.eye-icon,.eye-off-icon { width:20px !important; height:20px !important; pointer-events:none !important; display:block !important; flex-shrink:0 !important; overflow:visible !important; }
 .eye-off-icon.hidden { display:none !important; }
 
 /* ── NOTIFICATIONS ───────────────────────────────────────────── */
@@ -1368,7 +1380,7 @@ button {
 }
 
 /* cleaner hover */
-button:hover {
+button:not(.eye-btn):hover {
     filter: brightness(1.05);
     box-shadow: var(--btn-shadow-hover);
 }
@@ -2112,11 +2124,11 @@ button {
     letter-spacing: 0.01em !important;
     transition: all 0.2s cubic-bezier(0.4,0,0.2,1) !important;
 }
-button:hover {
+button:not(.eye-btn):hover {
     transform: translateY(-2px) !important;
     filter: brightness(1.06) !important;
 }
-button:active {
+button:not(.eye-btn):active {
     transform: translateY(0) scale(0.99) !important;
     filter: brightness(0.98) !important;
 }
