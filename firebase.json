@@ -14,10 +14,6 @@
     ],
     "rewrites": [
       {
-        "source": "/api/**",
-        "destination": "https://freshzone-api.onrender.com/api/**"
-      },
-      {
         "source": "**",
         "destination": "/auth.html"
       }
