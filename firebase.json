@@ -5,6 +5,12 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "functions": [
+    {
+      "source": "functions",
+      "code": "functions"
+    }
+  ],
   "hosting": {
     "public": "public",
     "ignore": [
