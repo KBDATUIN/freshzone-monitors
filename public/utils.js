@@ -15,6 +15,7 @@ const API = (function() {
 })();
 
 let sessionUserPromise = null;
+let sessionUserCached = null;
 
 // ── API HELPER ────────────────────────────────────────────────
 async function apiFetch(endpoint, options = {}) {
@@ -38,17 +39,34 @@ async function apiFetch(endpoint, options = {}) {
     }
     return res.json();
 }
-async function hydrateSessionUser() {
-    if (sessionUserPromise) return sessionUserPromise;
+
+async function hydrateSessionUser(forceRefresh = false) {
+    // Return cached user if available and not forcing refresh
+    if (!forceRefresh && sessionUserCached) {
+        return sessionUserCached;
+    }
+    
+    // If there's already a pending request, wait for it
+    if (sessionUserPromise) {
+        return sessionUserPromise;
+    }
 
     sessionUserPromise = (async () => {
         try {
-            const res = await fetch(`${API}/api/auth/session`, { credentials: 'include' });
+            const res = await fetch(`${API}/api/auth/session`, { 
+                credentials: 'include',
+                cache: 'no-store'
+            });
             const data = await res.json();
             if (data?.loggedIn && data.user) {
+                sessionUserCached = data.user;
                 return data.user;
             }
-        } catch (err) {}
+            // Clear cached user on logout/invalid session
+            sessionUserCached = null;
+        } catch (err) {
+            sessionUserCached = null;
+        }
         return null;
     })();
 
@@ -75,7 +93,10 @@ function confirmLogout() {
     apiFetch('/auth/logout', { method: 'POST' })
         .catch(() => null)
         .finally(() => {
+            // Clear session cache
             sessionUserPromise = null;
+            sessionUserCached = null;
+            localStorage.removeItem('currentUser');
             closeLogoutModal();
             showNotification('Logged out successfully.', 'success');
             setTimeout(() => { window.location.href = 'auth.html'; }, 1200);

@@ -127,16 +127,29 @@ app.use(cors({
             'http://localhost:3000',
             'http://localhost:5500',
             'http://127.0.0.1:5500',
+            'http://127.0.0.1:3000',
         ].filter(Boolean);
-        if (!origin || allowed.includes(origin) || /ngrok/.test(origin) || /railway\.app/.test(origin)) {
+        
+        // Allow requests with no origin (like mobile apps or curl) or same-origin requests
+        if (!origin || allowed.includes(origin) || origin === 'null') {
             callback(null, true);
-        } else {
-            if (process.env.NODE_ENV !== 'production') {
-                callback(null, true);
-            } else {
-                callback(new Error('Origin not allowed by CORS policy.'));
-            }
+            return;
         }
+        
+        // Allow any subdomain of railway.app, ngrok.io, and onrender.com for dynamic deployments
+        if (/.*\.railway\.app$/.test(origin) || /.*\.onrender\.com$/.test(origin) || /ngrok\.io$/.test(origin)) {
+            callback(null, true);
+            return;
+        }
+        
+        // In development, allow all origins
+        if (process.env.NODE_ENV !== 'production') {
+            callback(null, true);
+            return;
+        }
+        
+        // Production: only allow explicitly listed origins
+        callback(new Error('Origin not allowed by CORS policy.'));
     },
     credentials: true,
 }));
