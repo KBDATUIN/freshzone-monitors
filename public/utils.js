@@ -7,11 +7,11 @@ const API = (function() {
     const h = window.location.hostname;
     const p = window.location.port;
     // Local dev on port 3000 — server running locally
-    if ((h === 'localhost' || h === '127.0.0.1') && p === '3000') return 'http://localhost:3000';
-    // Live Server / VS Code (port 5500/5501) — hit Railway backend
-    if ((h === 'localhost' || h === '127.0.0.1')) return 'https://freshzone-api.onrender.com';
-    // Production — same-origin (frontend and backend on freshzone.space)
-    return 'https://freshzone-api.onrender.com';
+    if ((h === 'localhost' || h === '127.0.0.1') && p === '3000') return 'http://localhost:5000';
+    // Live Server / VS Code (port 5500/5501) — use Firebase Functions
+    if ((h === 'localhost' || h === '127.0.0.1')) return 'https://us-central1-freshzone-509a9.cloudfunctions.net/app';
+    // Production — use Firebase Functions
+    return 'https://us-central1-freshzone-509a9.cloudfunctions.net/app';
 })();
 
 let sessionUserPromise = null;
