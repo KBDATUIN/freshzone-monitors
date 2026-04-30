@@ -261,7 +261,7 @@ async function login() {
         });
         const data = await res.json();
 
-        if (data.success) {
+if (data.success) {
             localStorage.setItem('currentUser', JSON.stringify(data.user));
             if (remember) localStorage.setItem('fz-remember', email);
             else          localStorage.removeItem('fz-remember');
@@ -279,7 +279,20 @@ async function login() {
             }
 
             showNotification('Login successful! Redirecting…', 'success');
-            setTimeout(() => location.href = 'dashboard.html', 1400);
+            
+            // Small delay to ensure session cookie is set before redirect
+            setTimeout(() => {
+                // Verify session is established before redirect
+                fetch(`${API}/api/auth/session`, { 
+                    credentials: 'include',
+                    cache: 'no-store'
+                }).then(() => {
+                    window.location.href = 'dashboard.html';
+                }).catch(() => {
+                    // Even if session check fails, proceed to dashboard
+                    window.location.href = 'dashboard.html';
+                });
+            }, 1500);
 
         } else {
             setError('login-password', data.message || 'Invalid credentials.');

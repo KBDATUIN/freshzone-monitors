@@ -1,4 +1,226 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "login_attempts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" },
+        { "fieldPath": "success", "order": "ASCENDING" },
+        { "fieldPath": "attempted_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "auth_otp_store",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" },
+        { "fieldPath": "otp_type", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "auth_otp_store",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "accounts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "email", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "accounts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "contact_number", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "accounts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "employee_id", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "accounts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "position", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "detection_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "event_status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "detection_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "event_status", "order": "ASCENDING" },
+        { "fieldPath": "resolved_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "detection_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "event_status", "order": "ASCENDING" },
+        { "fieldPath": "detected_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "detection_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "event_status", "order": "ASCENDING" },
+        { "fieldPath": "detected_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "detection_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "acknowledged_by", "order": "ASCENDING" },
+        { "fieldPath": "detected_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sensor_readings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "recorded_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sensor_readings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "smoke_detected", "order": "ASCENDING" },
+        { "fieldPath": "recorded_at", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "sensor_nodes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_code", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "push_subscriptions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "endpoint", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "push_subscriptions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "updated_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "push_notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "event_id", "order": "ASCENDING" },
+        { "fieldPath": "recipient_email", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "push_notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "recipient_email", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contact_tickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "contact_tickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ticket_status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "system_logs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "system_logs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "action", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "device_key_store",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "node_id", "order": "ASCENDING" },
+        { "fieldPath": "key_id", "order": "ASCENDING" },
+        { "fieldPath": "is_active", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "known_devices",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "device_login_alerts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "account_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "data_retention_audit",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

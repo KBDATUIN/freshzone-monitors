@@ -2,8 +2,81 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if false;
+    // Allow authenticated users to read their own profile
+    match /accounts/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow authenticated users to read sensor nodes
+    match /sensor_nodes/{nodeId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read sensor readings
+    match /sensor_readings/{readingId} {
+      allow read: if request.auth != null;
+    }
+    
+    // Allow authenticated users to read detection events
+    match /detection_events/{eventId} {
+      allow read, create: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+    
+    // Allow authenticated users for OTP operations
+    match /auth_otp_store/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Allow authenticated users for system logs
+    match /system_logs/{logId} {
+      allow read, create: if request.auth != null;
+    }
+    
+    // Allow authenticated users for push subscriptions
+    match /push_subscriptions/{subId} {
+      allow read, create, delete: if request.auth != null;
+    }
+    
+    // Allow authenticated users for push notifications
+    match /push_notifications/{notifId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+    }
+    
+    // Allow authenticated users for contact tickets
+    match /contact_tickets/{ticketId} {
+      allow read, create: if request.auth != null;
+      allow update: if request.auth != null && request.resource.data.account_id == request.auth.uid;
+    }
+    
+    // Allow authenticated users for login attempts (read only for admin)
+    match /login_attempts/{attemptId} {
+      allow read: if request.auth != null;
+      allow create: if true;
+    }
+    
+    // Allow authenticated users for data retention audit
+    match /data_retention_audit/{auditId} {
+      allow read, create: if request.auth != null;
+    }
+    
+    // Allow authenticated users for device key store
+    match /device_key_store/{keyId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+    }
+    
+    // Allow authenticated users for known devices
+    match /known_devices/{deviceId} {
+      allow read, create: if request.auth != null;
+      allow update, delete: if request.auth != null && request.resource.data.account_id == request.auth.uid;
+    }
+    
+    // Allow authenticated users for device login alerts
+    match /device_login_alerts/{alertId} {
+      allow read, create: if request.auth != null;
     }
   }
 }
