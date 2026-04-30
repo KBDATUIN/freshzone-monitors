@@ -9,9 +9,9 @@ const API = (function() {
     // Local dev on port 3000 — server running locally
     if ((h === 'localhost' || h === '127.0.0.1') && p === '3000') return 'http://localhost:3000';
     // Live Server / VS Code (port 5500/5501) — hit Railway backend
-    if ((h === 'localhost' || h === '127.0.0.1')) return 'https://freshzone-production.up.railway.app';
+    if ((h === 'localhost' || h === '127.0.0.1')) return 'https://freshzone-api.onrender.com';
     // Production — same-origin (frontend and backend on freshzone.space)
-    return '';
+    return 'https://freshzone-api.onrender.com';
 })();
 
 let sessionUserPromise = null;
