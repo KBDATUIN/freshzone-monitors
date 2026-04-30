@@ -26,7 +26,8 @@
 **Problem**: Session not properly established before redirecting to dashboard
 **Fix**:
 - Added delay before redirect (1500ms) to ensure session cookie is set
-- Added session verification before redirect
+- Added session verificati
+on before redirect
 - Redirect now waits for session to be established
 
 ### 5. CORS (server.js)
