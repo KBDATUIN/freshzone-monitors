@@ -1,0 +1,14 @@
+[debug] [2026-04-30T09:18:14.569Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2026-04-30T09:18:19.027Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2026-04-30T09:18:19.028Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-30T09:18:19.029Z] > authorizing via signed-in user (freshzone.alerts@gmail.com)
+[debug] [2026-04-30T09:18:19.031Z] Checked if tokens are valid: true, expires at: 1777542380656
+[debug] [2026-04-30T09:18:19.031Z] Checked if tokens are valid: true, expires at: 1777542380656
+[debug] [2026-04-30T09:18:19.032Z] [Firebase Plugin] User found:  freshzone.alerts@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2026-04-30T09:18:19.033Z] Checked if tokens are valid: true, expires at: 1777542380656
+[debug] [2026-04-30T09:18:19.034Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[info] [Firebase Plugin] Starting SQL Connect toolkit (version 3.4.5) on port 50001
+[info] i  dataconnect: downloading dataconnect-emulator-3.4.5.exe... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-3.4.5.exe..."}}
+[debug] [2026-04-30T09:18:19.388Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-windows-amd64-v3.4.5 
