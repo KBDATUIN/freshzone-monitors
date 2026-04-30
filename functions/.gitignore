@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Environment variables - NEVER commit this
+.env
+
+# Firebase
+.firebase/
+
+# Logs
+*.log
+
+serviceAccount.json
