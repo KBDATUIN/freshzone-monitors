@@ -1,0 +1,778 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FRESHZONE UI/UX v3.0 — "GLASSMORPHIC DARK TECH"
+   Cooler aesthetic: glass cards, neon accents, smooth animations,
+   floating elements, gradient meshes, cinematic transitions.
+   Safe additive layer — does NOT break existing JS/HTML structure.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   0. IMPORT COOL FONTS
+   ───────────────────────────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ─────────────────────────────────────────────────────────────────
+   1. DESIGN TOKENS — neon teal palette
+   ───────────────────────────────────────────────────────────────── */
+
+:root {
+    --v3-neon: #00d4e8 !important;
+    --v3-neon-dim: rgba(0, 212, 232, 0.15) !important;
+    --v3-neon-glow: 0 0 20px rgba(0, 212, 232, 0.4) !important;
+    --v3-red-neon: #ff4d4d !important;
+    --v3-red-glow: 0 0 20px rgba(255, 77, 77, 0.4) !important;
+    --v3-green-neon: #00e676 !important;
+    --v3-green-glow: 0 0 16px rgba(0, 230, 118, 0.35) !important;
+    --v3-glass: rgba(255, 255, 255, 0.06) !important;
+    --v3-glass-border: rgba(255, 255, 255, 0.1) !important;
+    --v3-glass-light: rgba(255, 255, 255, 0.85) !important;
+    --v3-glass-border-light: rgba(0, 180, 216, 0.18) !important;
+    --v3-mono: 'JetBrains Mono', 'Courier New', monospace !important;
+    --v3-sans: 'DM Sans', sans-serif !important;
+    --v3-ease: cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    --v3-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   2. NAV — floating glass bar
+   ───────────────────────────────────────────────────────────────── */
+
+nav {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(24px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+    border-bottom: 1px solid rgba(0, 212, 232, 0.15) !important;
+    box-shadow: 0 1px 0 rgba(0, 212, 232, 0.1), 0 4px 20px rgba(0, 30, 60, 0.06) !important;
+}
+
+[data-theme="dark"] nav {
+    background: rgba(8, 16, 32, 0.88) !important;
+    border-bottom: 1px solid rgba(0, 212, 232, 0.12) !important;
+    box-shadow: 0 1px 0 rgba(0, 212, 232, 0.08), 0 4px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Nav links — neon underline on hover */
+.nav-links a {
+    position: relative !important;
+    font-family: var(--v3-sans) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em !important;
+    transition: color 0.2s ease !important;
+    overflow: hidden !important;
+}
+
+.nav-links a::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, #00d4e8, transparent) !important;
+    border-radius: 2px !important;
+    transition: width 0.3s var(--v3-ease-smooth), left 0.3s var(--v3-ease-smooth) !important;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100% !important;
+    left: 0 !important;
+}
+
+.nav-links a.active {
+    color: #0090aa !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .nav-links a.active {
+    color: #00d4e8 !important;
+}
+
+/* Nav user dot — neon pulse */
+.nav-user-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: var(--v3-green-neon) !important;
+    box-shadow: var(--v3-green-glow) !important;
+    animation: v3-pulse-green 2.5s ease-in-out infinite !important;
+}
+
+@keyframes v3-pulse-green {
+    0%, 100% { box-shadow: 0 0 6px rgba(0, 230, 118, 0.4), 0 0 12px rgba(0, 230, 118, 0.2); }
+    50% { box-shadow: 0 0 12px rgba(0, 230, 118, 0.7), 0 0 24px rgba(0, 230, 118, 0.3); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   3. HERO / MASTHEAD — cinematic gradient mesh
+   ───────────────────────────────────────────────────────────────── */
+
+.hero.fz-masthead,
+.dashboard-masthead,
+.fz-masthead {
+    background: linear-gradient(135deg,
+        rgba(224, 248, 255, 0.97) 0%,
+        rgba(200, 240, 255, 0.95) 40%,
+        rgba(210, 245, 252, 0.97) 100%) !important;
+    border: 1px solid rgba(0, 212, 232, 0.18) !important;
+    border-radius: 22px !important;
+    box-shadow:
+        0 8px 32px rgba(0, 150, 200, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.hero.fz-masthead::before,
+.dashboard-masthead::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -60% !important;
+    right: -20% !important;
+    width: 500px !important;
+    height: 500px !important;
+    background: radial-gradient(circle, rgba(0, 212, 232, 0.12) 0%, transparent 70%) !important;
+    pointer-events: none !important;
+    border-radius: 50% !important;
+}
+
+[data-theme="dark"] .hero.fz-masthead,
+[data-theme="dark"] .dashboard-masthead,
+[data-theme="dark"] .fz-masthead {
+    background: linear-gradient(135deg,
+        rgba(4, 16, 36, 0.97) 0%,
+        rgba(6, 20, 44, 0.97) 50%,
+        rgba(4, 18, 38, 0.97) 100%) !important;
+    border-color: rgba(0, 212, 232, 0.12) !important;
+    box-shadow:
+        0 8px 48px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(0, 212, 232, 0.08) !important;
+}
+
+/* Live badge — neon glow */
+.live-badge {
+    background: rgba(0, 230, 118, 0.1) !important;
+    border: 1px solid rgba(0, 230, 118, 0.3) !important;
+    color: #00a854 !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em !important;
+    padding: 3px 8px !important;
+    border-radius: 99px !important;
+    vertical-align: middle !important;
+}
+
+[data-theme="dark"] .live-badge {
+    background: rgba(0, 230, 118, 0.08) !important;
+    color: var(--v3-green-neon) !important;
+    box-shadow: 0 0 12px rgba(0, 230, 118, 0.2) !important;
+}
+
+.live-dot {
+    width: 5px !important;
+    height: 5px !important;
+    background: var(--v3-green-neon) !important;
+    box-shadow: 0 0 6px var(--v3-green-neon) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   4. SENSOR CARDS — glassmorphic + neon status
+   ───────────────────────────────────────────────────────────────── */
+
+.location-card {
+    border-radius: 20px !important;
+    border: 1.5px solid rgba(0, 180, 216, 0.14) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow:
+        0 4px 24px rgba(0, 50, 100, 0.07),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transition: transform 0.25s var(--v3-ease), box-shadow 0.25s ease, border-color 0.25s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Top accent bar */
+.location-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #00d4e8, #0090c8) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.location-card:hover::before {
+    opacity: 1 !important;
+}
+
+.location-card:hover {
+    transform: translateY(-5px) scale(1.01) !important;
+    box-shadow:
+        0 16px 48px rgba(0, 50, 100, 0.12),
+        0 4px 12px rgba(0, 212, 232, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    border-color: rgba(0, 212, 232, 0.3) !important;
+}
+
+/* Detecting state — red neon */
+.location-card.detecting,
+.location-card.alert {
+    border-color: rgba(255, 77, 77, 0.4) !important;
+    box-shadow:
+        0 4px 24px rgba(255, 77, 77, 0.12),
+        0 0 0 1px rgba(255, 77, 77, 0.1) !important;
+    animation: v3-card-alert 2s ease-in-out infinite !important;
+}
+
+.location-card.detecting::before,
+.location-card.alert::before {
+    opacity: 1 !important;
+    background: linear-gradient(90deg, #ff4d4d, #ff8c00) !important;
+}
+
+@keyframes v3-card-alert {
+    0%, 100% {
+        box-shadow: 0 4px 24px rgba(255, 77, 77, 0.12), 0 0 0 1px rgba(255, 77, 77, 0.1);
+    }
+    50% {
+        box-shadow: 0 4px 32px rgba(255, 77, 77, 0.25), 0 0 0 2px rgba(255, 77, 77, 0.2);
+    }
+}
+
+[data-theme="dark"] .location-card {
+    background: rgba(10, 22, 42, 0.9) !important;
+    border-color: rgba(0, 212, 232, 0.1) !important;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .location-card:hover {
+    background: rgba(12, 26, 48, 0.95) !important;
+    border-color: rgba(0, 212, 232, 0.25) !important;
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        0 0 24px rgba(0, 212, 232, 0.08) !important;
+}
+
+/* PM values — monospace numbers */
+.pm-chip,
+.pm-values span,
+#pm-zone1 span,
+#pm-zone2 span {
+    font-family: var(--v3-mono) !important;
+    font-size: 0.72rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em !important;
+    border-radius: 8px !important;
+}
+
+/* AQI badge — neon style */
+.aqi-badge {
+    font-family: var(--v3-mono) !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    border-radius: 99px !important;
+    padding: 4px 12px !important;
+}
+
+/* Card timestamp — monospace */
+.card-timestamp {
+    font-family: var(--v3-mono) !important;
+    font-size: 0.68rem !important;
+    opacity: 0.55 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* Status dots */
+.dot-online { box-shadow: var(--v3-green-glow) !important; }
+.dot-alert { box-shadow: var(--v3-red-glow) !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   5. AUTH PAGE — frosted glass card
+   ───────────────────────────────────────────────────────────────── */
+
+.auth-wrapper {
+    position: relative !important;
+}
+
+/* Animated background blobs */
+.auth-wrapper::before,
+.auth-wrapper::after {
+    content: '' !important;
+    position: fixed !important;
+    border-radius: 50% !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    filter: blur(60px) !important;
+    animation: v3-blob-float 8s ease-in-out infinite !important;
+}
+
+.auth-wrapper::before {
+    width: 400px !important;
+    height: 400px !important;
+    background: rgba(0, 180, 216, 0.12) !important;
+    top: -10% !important;
+    left: -10% !important;
+}
+
+.auth-wrapper::after {
+    width: 350px !important;
+    height: 350px !important;
+    background: rgba(0, 100, 200, 0.08) !important;
+    bottom: -10% !important;
+    right: -5% !important;
+    animation-delay: -4s !important;
+}
+
+@keyframes v3-blob-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+.auth-container {
+    position: relative !important;
+    z-index: 1 !important;
+    border-radius: 24px !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(0, 212, 232, 0.15) !important;
+    box-shadow:
+        0 24px 64px rgba(0, 30, 80, 0.12),
+        0 4px 16px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    animation: v3-card-appear 0.5s var(--v3-ease) both !important;
+}
+
+@keyframes v3-card-appear {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+[data-theme="dark"] .auth-container {
+    background: rgba(8, 18, 36, 0.92) !important;
+    border-color: rgba(0, 212, 232, 0.1) !important;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(0, 212, 232, 0.06) !important;
+}
+
+/* Tab switcher */
+.auth-tabs {
+    background: rgba(0, 180, 216, 0.07) !important;
+    border: 1px solid rgba(0, 180, 216, 0.12) !important;
+    border-radius: 14px !important;
+    padding: 4px !important;
+}
+
+.auth-tab {
+    border-radius: 10px !important;
+    font-family: var(--v3-sans) !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s var(--v3-ease-smooth) !important;
+}
+
+.auth-tab.active {
+    background: white !important;
+    color: #0077a8 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 12px rgba(0, 50, 100, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-theme="dark"] .auth-tab.active {
+    background: rgba(0, 212, 232, 0.1) !important;
+    color: #00d4e8 !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2), 0 0 12px rgba(0, 212, 232, 0.1) !important;
+}
+
+/* Inputs — neon focus ring */
+.input-group input,
+.input-group select {
+    border-radius: 12px !important;
+    border: 1.5px solid rgba(0, 150, 200, 0.18) !important;
+    font-family: var(--v3-sans) !important;
+    font-size: 0.9rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+    padding: 0.8rem 1rem !important;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #00d4e8 !important;
+    box-shadow: 0 0 0 3px rgba(0, 212, 232, 0.15), 0 0 12px rgba(0, 212, 232, 0.08) !important;
+    outline: none !important;
+}
+
+/* Primary button — gradient */
+.btn-primary {
+    background: linear-gradient(135deg, #0090c8 0%, #00b4d8 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-family: var(--v3-sans) !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.02em !important;
+    box-shadow: 0 4px 16px rgba(0, 150, 200, 0.3) !important;
+    transition: all 0.2s var(--v3-ease) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.btn-primary::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+    transition: left 0.4s ease !important;
+}
+
+.btn-primary:hover:not(:disabled)::after {
+    left: 100% !important;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(0, 150, 200, 0.4), 0 0 20px rgba(0, 212, 232, 0.2) !important;
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 8px rgba(0, 150, 200, 0.3) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   6. HISTORY TABLE — dark tech feel
+   ───────────────────────────────────────────────────────────────── */
+
+.filter-bar {
+    border-radius: 18px !important;
+    border: 1px solid rgba(0, 180, 216, 0.12) !important;
+    box-shadow: 0 4px 24px rgba(0, 50, 100, 0.06) !important;
+    backdrop-filter: blur(12px) !important;
+}
+
+thead th {
+    font-family: var(--v3-mono) !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: #5a8fa8 !important;
+}
+
+[data-theme="dark"] thead th {
+    color: rgba(0, 212, 232, 0.6) !important;
+}
+
+tbody tr {
+    transition: background 0.15s ease !important;
+}
+
+tbody tr:hover {
+    background: rgba(0, 212, 232, 0.04) !important;
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background: rgba(0, 212, 232, 0.05) !important;
+}
+
+tbody td {
+    font-family: var(--v3-sans) !important;
+    font-size: 0.875rem !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   7. ALERT ELEMENTS — dramatic
+   ───────────────────────────────────────────────────────────────── */
+
+.staff-alert-bar {
+    border-radius: 14px !important;
+    border: 1px solid rgba(255, 77, 77, 0.2) !important;
+    box-shadow: 0 4px 20px rgba(255, 77, 77, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.5) !important;
+    animation: v3-alert-in 0.4s var(--v3-ease) both !important;
+}
+
+@keyframes v3-alert-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ack/Resolve buttons */
+.ack-btn {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
+    transition: all 0.2s var(--v3-ease) !important;
+}
+
+.ack-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4) !important;
+}
+
+.resolve-btn {
+    background: linear-gradient(135deg, #10b981, #34d399) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 0.78rem !important;
+    color: white !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    transition: all 0.2s var(--v3-ease) !important;
+}
+
+.resolve-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   8. MODAL — cinematic blur overlay
+   ───────────────────────────────────────────────────────────────── */
+
+.modal-overlay-custom {
+    backdrop-filter: blur(12px) brightness(0.7) !important;
+    -webkit-backdrop-filter: blur(12px) brightness(0.7) !important;
+    background: rgba(0, 10, 30, 0.6) !important;
+}
+
+.modal-content-custom {
+    border-radius: 22px !important;
+    border: 1px solid rgba(0, 212, 232, 0.15) !important;
+    box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.25),
+        0 8px 24px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    animation: v3-modal-zoom 0.35s var(--v3-ease) both !important;
+}
+
+@keyframes v3-modal-zoom {
+    from { opacity: 0; transform: scale(0.9) translateY(16px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+[data-theme="dark"] .modal-content-custom {
+    border-color: rgba(0, 212, 232, 0.1) !important;
+    box-shadow:
+        0 32px 80px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(0, 212, 232, 0.06) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   9. NOTIFICATION TOAST — floating glass
+   ───────────────────────────────────────────────────────────────── */
+
+.notification.show {
+    border-radius: 14px !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.08) !important;
+    font-family: var(--v3-sans) !important;
+    font-weight: 500 !important;
+    animation: v3-toast 0.4s var(--v3-ease) both !important;
+}
+
+@keyframes v3-toast {
+    from { opacity: 0; transform: translateY(-16px) scale(0.93); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   10. LAST UPDATED BAR — monospace ticker
+   ───────────────────────────────────────────────────────────────── */
+
+.last-updated-bar {
+    font-family: var(--v3-mono) !important;
+    font-size: 0.72rem !important;
+    letter-spacing: 0.04em !important;
+    opacity: 0.65 !important;
+    border-radius: 99px !important;
+    padding: 0.35rem 1rem !important;
+    display: inline-block !important;
+    background: rgba(0, 180, 216, 0.06) !important;
+    border: 1px solid rgba(0, 180, 216, 0.12) !important;
+    margin-bottom: 1rem !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   11. STAT BOXES — glassmorphic
+   ───────────────────────────────────────────────────────────────── */
+
+.stat-box {
+    border-radius: 18px !important;
+    border: 1px solid rgba(0, 180, 216, 0.12) !important;
+    box-shadow:
+        0 4px 20px rgba(0, 50, 100, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transition: all 0.25s var(--v3-ease) !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.stat-box:hover {
+    transform: translateY(-3px) !important;
+    box-shadow:
+        0 12px 36px rgba(0, 50, 100, 0.1),
+        0 0 20px rgba(0, 212, 232, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    border-color: rgba(0, 212, 232, 0.25) !important;
+}
+
+[data-theme="dark"] .stat-box {
+    border-color: rgba(0, 212, 232, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .stat-box:hover {
+    border-color: rgba(0, 212, 232, 0.2) !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 212, 232, 0.06) !important;
+}
+
+/* Stat numbers */
+.stat-number,
+.stat-value {
+    font-family: var(--v3-mono) !important;
+    font-variant-numeric: tabular-nums !important;
+    letter-spacing: -0.03em !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   12. PROFILE CARD — polished
+   ───────────────────────────────────────────────────────────────── */
+
+.profile-section,
+.profile-card {
+    border-radius: 20px !important;
+    border: 1px solid rgba(0, 180, 216, 0.1) !important;
+    box-shadow: 0 4px 24px rgba(0, 50, 100, 0.07) !important;
+    transition: all 0.25s var(--v3-ease) !important;
+}
+
+.profile-section:hover,
+.profile-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 50, 100, 0.1), 0 0 0 1px rgba(0, 212, 232, 0.15) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   13. FILTER INPUTS — neon focus
+   ───────────────────────────────────────────────────────────────── */
+
+.filter-input-wrap input,
+.filter-input-wrap select,
+textarea {
+    border-radius: 12px !important;
+    border: 1.5px solid rgba(0, 150, 200, 0.16) !important;
+    transition: all 0.2s ease !important;
+    font-family: var(--v3-sans) !important;
+}
+
+.filter-input-wrap input:focus,
+.filter-input-wrap select:focus,
+textarea:focus {
+    border-color: #00d4e8 !important;
+    box-shadow: 0 0 0 3px rgba(0, 212, 232, 0.12), 0 0 16px rgba(0, 212, 232, 0.06) !important;
+    outline: none !important;
+}
+
+/* Filter buttons */
+.filter-action-btn {
+    border-radius: 11px !important;
+    font-family: var(--v3-sans) !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    transition: all 0.2s var(--v3-ease) !important;
+}
+
+.filter-export-btn {
+    background: linear-gradient(135deg, #0090c8, #00b4d8) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 3px 12px rgba(0, 150, 200, 0.3) !important;
+}
+
+.filter-export-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(0, 150, 200, 0.4) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   14. PAGE ENTRANCE — staggered fade up
+   ───────────────────────────────────────────────────────────────── */
+
+.animate-in {
+    animation: v3-fade-up 0.5s var(--v3-ease) both !important;
+}
+
+@keyframes v3-fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container > *:nth-child(1) { animation: v3-fade-up 0.4s var(--v3-ease) 0.05s both; }
+.container > *:nth-child(2) { animation: v3-fade-up 0.4s var(--v3-ease) 0.1s both; }
+.container > *:nth-child(3) { animation: v3-fade-up 0.4s var(--v3-ease) 0.15s both; }
+.container > *:nth-child(4) { animation: v3-fade-up 0.4s var(--v3-ease) 0.2s both; }
+.container > *:nth-child(5) { animation: v3-fade-up 0.4s var(--v3-ease) 0.25s both; }
+
+/* ─────────────────────────────────────────────────────────────────
+   15. SCROLLBAR — thin neon
+   ───────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar { width: 5px !important; height: 5px !important; }
+::-webkit-scrollbar-track { background: transparent !important; }
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(0, 180, 216, 0.3), rgba(0, 100, 200, 0.2)) !important;
+    border-radius: 99px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(0, 212, 232, 0.6), rgba(0, 150, 220, 0.4)) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   16. MOBILE — full touch optimization
+   ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .location-card { border-radius: 16px !important; }
+    .location-card:hover { transform: translateY(-2px) scale(1.005) !important; }
+    .auth-container { border-radius: 20px !important; }
+    .btn-primary { min-height: 48px !important; border-radius: 14px !important; }
+    .filter-bar { border-radius: 16px !important; }
+    .stat-box { border-radius: 14px !important; }
+    .modal-content-custom { border-radius: 20px !important; }
+    .notification.show {
+        left: 1rem !important;
+        right: 1rem !important;
+        width: auto !important;
+        border-radius: 14px !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   17. FOCUS ACCESSIBILITY — neon ring
+   ───────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+    outline: 2px solid rgba(0, 212, 232, 0.7) !important;
+    outline-offset: 3px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 0 12px rgba(0, 212, 232, 0.2) !important;
+}
+
+/* END ui-improvements-v3.css */
