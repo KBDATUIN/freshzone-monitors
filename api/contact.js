@@ -4,10 +4,10 @@
 const express = require('express');
 const router  = express.Router();
 const db      = require('../db');
+const logger  = require('../logger');
 const { authMiddleware, adminOnly } = require('../middleware/auth');
 
 // ── POST /api/contact ─────────────────────────────────────────
-// Any logged-in user can submit a ticket
 router.post('/', authMiddleware, async (req, res) => {
     const subject = typeof req.body.subject === 'string' ? req.body.subject.trim().slice(0, 200) : '';
     const message = typeof req.body.message === 'string' ? req.body.message.trim().slice(0, 2000) : '';
@@ -15,14 +15,15 @@ router.post('/', authMiddleware, async (req, res) => {
     const email   = (req.body.email || req.user.email || '').toString().slice(0, 255);
 
     const validSubjects = ['Vape Alert Feedback', 'Device Maintenance', 'General Suggestion', 'Bug Report', 'Other'];
-    if (!subject || !validSubjects.includes(subject))
+    if (!subject || !validSubjects.includes(subject)) {
         return res.status(400).json({ success: false, message: 'Please select a valid subject.' });
-
-    if (!message)
+    }
+    if (!message) {
         return res.status(400).json({ success: false, message: 'Message is required.' });
-
-    if (message.length < 10)
+    }
+    if (message.length < 10) {
         return res.status(400).json({ success: false, message: 'Message is too short (min 10 characters).' });
+    }
 
     const ticketRef = 'TK-' + Date.now().toString().slice(-6);
 
@@ -33,20 +34,14 @@ router.post('/', authMiddleware, async (req, res) => {
              VALUES (?, ?, ?, ?, ?, ?)`,
             [ticketRef, req.user.id, name, email, subject, message.trim()]
         );
-
-        res.json({
-            success: true,
-            message: `Report submitted! Ticket ID: ${ticketRef}`,
-            ticket_ref: ticketRef
-        });
+        res.json({ success: true, message: `Report submitted! Ticket ID: ${ticketRef}`, ticket_ref: ticketRef });
     } catch (err) {
-        console.error('Contact POST error:', err);
+        logger.error({ err }, '[contact] POST error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
 
 // ── GET /api/contact ──────────────────────────────────────────
-// Admin inbox — all tickets
 router.get('/', authMiddleware, adminOnly, async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -57,6 +52,7 @@ router.get('/', authMiddleware, adminOnly, async (req, res) => {
         );
         res.json({ success: true, data: rows });
     } catch (err) {
+        logger.error({ err }, '[contact] GET error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
@@ -72,24 +68,21 @@ router.post('/:id/resolve', authMiddleware, adminOnly, async (req, res) => {
         );
         res.json({ success: true, message: 'Ticket marked as resolved.' });
     } catch (err) {
+        logger.error({ err }, '[contact] resolve error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
 
 // ── DELETE /api/contact/:id ───────────────────────────────────
-// Admin only — permanently delete a ticket/message
 router.delete('/:id', authMiddleware, adminOnly, async (req, res) => {
     try {
-        const [result] = await db.query(
-            `DELETE FROM contact_tickets WHERE id = ?`,
-            [req.params.id]
-        );
+        const [result] = await db.query('DELETE FROM contact_tickets WHERE id = ?', [req.params.id]);
         if (result.affectedRows === 0) {
             return res.status(404).json({ success: false, message: 'Ticket not found.' });
         }
         res.json({ success: true, message: 'Ticket deleted successfully.' });
     } catch (err) {
-        console.error('Contact DELETE error:', err);
+        logger.error({ err }, '[contact] DELETE error');
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });

@@ -3,49 +3,24 @@
 // ============================================================
 require('dotenv').config();
 
-// ── ASSET OPTIMISATION UTILITY (dev only, run with --optimize-assets) ──
-// Usage: node server.js --optimize-assets
-// Converts PNG images to WebP at quality 80. Never runs in production.
-if (process.env.NODE_ENV !== 'production' && process.argv.includes('--optimize-assets')) {
-    (async () => {
-        let sharp;
-        try { sharp = require('sharp'); } catch (e) {
-            console.error('[optimize-assets] sharp not installed. Run: npm install sharp');
-            process.exit(1);
-        }
-        const fs   = require('fs');
-        const path = require('path');
-        const targets = ['vape.png', 'logo.png', 'logo1.png'];
-        for (const file of targets) {
-            const src  = path.join(__dirname, 'public', file);
-            const dest = src.replace(/\.png$/i, '.webp');
-            if (!fs.existsSync(src)) { console.log(`[optimize-assets] Skipping ${file} (not found)`); continue; }
-            const beforeBytes = fs.statSync(src).size;
-            await sharp(src).webp({ quality: 80 }).toFile(dest);
-            const afterBytes = fs.statSync(dest).size;
-            console.log(`[optimize-assets] ${file} → ${path.basename(dest)} | ${(beforeBytes/1024).toFixed(1)}KB → ${(afterBytes/1024).toFixed(1)}KB (saved ${((1 - afterBytes/beforeBytes)*100).toFixed(1)}%)`);
-        }
-        console.log('[optimize-assets] Done.');
-        process.exit(0);
-    })();
-}
-const express    = require('express');
-const cors       = require('cors');
-const path       = require('path');
-const cron       = require('node-cron');
-const rateLimit  = require('express-rate-limit');
-const helmet     = require('helmet');
+const express      = require('express');
+const cors         = require('cors');
+const path         = require('path');
+const cron         = require('node-cron');
+const rateLimit    = require('express-rate-limit');
+const helmet       = require('helmet');
 const cookieParser = require('cookie-parser');
-const pinoHttp = require('pino-http');
-const Sentry = require('@sentry/node');
-const db         = require('./db');
+const pinoHttp     = require('pino-http');
+const Sentry       = require('@sentry/node');
+const db           = require('./db');
 const { sendAlertEmail } = require('./mailer');
-const logger = require('./logger');
+const logger       = require('./logger');
 const { ensureCsrfCookie } = require('./middleware/csrf');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ── SENTRY ────────────────────────────────────────────────────
 const sentryDsn = process.env.SENTRY_DSN;
 if (sentryDsn) {
     Sentry.init({
@@ -55,35 +30,27 @@ if (sentryDsn) {
     });
 }
 
-// FIX: Trust Railway's Proxy for Rate Limiting and HTTPS detection
+// Trust Render's proxy for correct IP and HTTPS detection
 app.set('trust proxy', 1);
 
-// ── HTTPS REDIRECT MIDDLEWARE ────────────────────────────────
-// Forces the browser to use https://freshzone.space
+// ── HTTPS REDIRECT ────────────────────────────────────────────
 app.use((req, res, next) => {
     if (req.header('x-forwarded-proto') !== 'https' && process.env.NODE_ENV === 'production') {
-        res.redirect(`https://${req.header('host')}${req.url}`);
-    } else {
-        next();
+        return res.redirect(`https://${req.header('host')}${req.url}`);
     }
-});
-
-app.use((req, res, next) => {
-    res.setHeader('ngrok-skip-browser-warning', 'true');
     next();
 });
 
-// ── RATE LIMITING ────────────────────────────────────────────
+// ── RATE LIMITING ─────────────────────────────────────────────
 const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 500,                  
+    windowMs: 15 * 60 * 1000,
+    max: 500,
     message: { success: false, message: 'Too many requests, please try again later.' },
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req) => {
         const p = req.path;
-        return p === '/api/health' ||
-               !p.startsWith('/api/'); 
+        return p === '/api/health' || !p.startsWith('/api/');
     },
 });
 
@@ -101,15 +68,15 @@ const authLimiter = rateLimit({
 
 const pushLimiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 10,                   
+    max: 10,
     message: { success: false, message: 'Too many subscription requests.' },
     standardHeaders: true,
     legacyHeaders: false,
 });
 
 const esp32Limiter = rateLimit({
-    windowMs: 60 * 1000,       
-    max: 30,                   
+    windowMs: 60 * 1000,
+    max: 30,
     message: { success: false, message: 'Too many readings.' },
     standardHeaders: true,
     legacyHeaders: false,
@@ -117,38 +84,31 @@ const esp32Limiter = rateLimit({
 
 app.use('/api/', generalLimiter);
 
-// ── CORS ─────────────────────────────────────────────────────
+// ── CORS ──────────────────────────────────────────────────────
+// FIX: Removed wildcard *.onrender.com allowance in production.
+// Only the explicitly listed origins are permitted.
 app.use(cors({
-    origin: function(origin, callback) {
+    origin: function (origin, callback) {
         const allowed = [
             process.env.FRONTEND_URL,
             'https://freshzone.space',
             'https://www.freshzone.space',
+            process.env.RENDER_BACKEND_URL, // your own Render URL, set in env
             'http://localhost:3000',
             'http://localhost:5500',
             'http://127.0.0.1:5500',
             'http://127.0.0.1:3000',
         ].filter(Boolean);
-        
-        // Allow requests with no origin (like mobile apps or curl) or same-origin requests
-        if (!origin || allowed.includes(origin) || origin === 'null') {
-            callback(null, true);
-            return;
+
+        if (!origin || allowed.includes(origin)) {
+            return callback(null, true);
         }
-        
-        // Allow any subdomain of railway.app, ngrok.io, and onrender.com for dynamic deployments
-        if (/.*\.railway\.app$/.test(origin) || /.*\.onrender\.com$/.test(origin) || /ngrok\.io$/.test(origin)) {
-            callback(null, true);
-            return;
-        }
-        
-        // In development, allow all origins
+
+        // In development only, allow all
         if (process.env.NODE_ENV !== 'production') {
-            callback(null, true);
-            return;
+            return callback(null, true);
         }
-        
-        // Production: only allow explicitly listed origins
+
         callback(new Error('Origin not allowed by CORS policy.'));
     },
     credentials: true,
@@ -164,7 +124,7 @@ app.use(helmet({
             scriptSrcAttr: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://*.googleapis.com", "https://fonts.googleapis.com", "https://api.fontshare.com", "https://cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "blob:", "https://ui-avatars.com"],
-            connectSrc: ["'self'", "https://freshzone-production.up.railway.app", "https://freshzone.space", "https://www.freshzone.space", "https://*.googleapis.com", "https://api.fontshare.com", "https://cdn.fontshare.com", "https://cdnjs.cloudflare.com"],
+            connectSrc: ["'self'", "https://freshzone.space", "https://www.freshzone.space", "https://*.googleapis.com", "https://api.fontshare.com", "https://cdn.fontshare.com", "https://cdnjs.cloudflare.com"],
             fontSrc: ["'self'", "data:", "https://fonts.gstatic.com", "https://*.gstatic.com", "https://*.googleapis.com", "https://fonts.googleapis.com", "https://api.fontshare.com", "https://cdn.fontshare.com", "https://cdnjs.cloudflare.com"],
             objectSrc: ["'none'"],
             frameAncestors: ["'none'"],
@@ -177,15 +137,21 @@ app.use(helmet({
 }));
 app.use(express.json({
     limit: '2mb',
-    verify: (req, res, buf) => {
-        req.rawBody = buf.toString('utf8');
-    },
+    verify: (req, res, buf) => { req.rawBody = buf.toString('utf8'); },
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(ensureCsrfCookie);
 
-// ── STATIC FILES ─────────────────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
+// ── STATIC FILES ──────────────────────────────────────────────
+// Cache static assets for 7 days; HTML pages always re-validated
+app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: '7d',
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache');
+        }
+    },
+}));
 
 // ── API ROUTES ────────────────────────────────────────────────
 app.use('/api/auth',     authLimiter,  require('./api/auth'));
@@ -198,9 +164,14 @@ app.use('/api/push',     pushLimiter,  require('./api/push'));
 // ── DASHBOARD STATS ───────────────────────────────────────────
 app.get('/api/stats/dashboard', async (req, res) => {
     try {
-        const [nodes]  = await db.query("SELECT COUNT(*) as count FROM sensor_nodes");
+        const [nodes]  = await db.query('SELECT COUNT(*) as count FROM sensor_nodes');
         const [events] = await db.query("SELECT COUNT(*) as count FROM detection_events WHERE event_status IN ('Detected','Acknowledged')");
-        const [recent] = await db.query("SELECT de.id, de.location_name, de.event_status, de.detected_at, sn.node_code FROM detection_events de JOIN sensor_nodes sn ON sn.id=de.node_id WHERE de.event_status IN ('Detected','Acknowledged') ORDER BY de.detected_at DESC LIMIT 5");
+        const [recent] = await db.query(
+            `SELECT de.id, de.location_name, de.event_status, de.detected_at, sn.node_code
+             FROM detection_events de JOIN sensor_nodes sn ON sn.id=de.node_id
+             WHERE de.event_status IN ('Detected','Acknowledged')
+             ORDER BY de.detected_at DESC LIMIT 5`
+        );
         res.json({ success: true, totalNodes: nodes[0].count, activeAlerts: events[0].count, recentEvents: recent });
     } catch (err) {
         logger.error({ err }, 'Stats error');
@@ -208,30 +179,36 @@ app.get('/api/stats/dashboard', async (req, res) => {
     }
 });
 
-// ── HEALTH CHECK ─────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', time: new Date().toISOString() });
+// ── HEALTH CHECK ──────────────────────────────────────────────
+// FIX: Actually pings the database so UptimeRobot reflects real health.
+app.get('/api/health', async (req, res) => {
+    try {
+        await db.query('SELECT 1');
+        res.json({ status: 'ok', db: 'ok', time: new Date().toISOString() });
+    } catch (err) {
+        logger.error({ err }, 'Health check DB ping failed');
+        res.status(503).json({ status: 'degraded', db: 'error', time: new Date().toISOString() });
+    }
 });
 
-// ── FALLBACK ─────────────────────────────────────────────────
+// ── FALLBACK ──────────────────────────────────────────────────
 app.get('*', (req, res) => {
     const ext = path.extname(req.path);
     if (ext === '.html') {
-        // Serve the requested HTML file directly; 404 if it doesn't exist
         const file = path.join(__dirname, 'public', req.path);
         res.sendFile(file, err => {
             if (err) res.status(404).json({ success: false, message: 'Page not found.' });
         });
     } else if (ext === '') {
-        // No extension — SPA fallback to auth.html (frontend handles auth redirect)
         res.sendFile(path.join(__dirname, 'public', 'auth.html'));
     } else {
-        // Any other extension (.js, .css, .png, etc.) not found by static middleware
         res.status(404).json({ success: false, message: 'Not found.' });
     }
 });
 
 // ── SCHEDULED JOBS ────────────────────────────────────────────
+
+// Send pending push notification emails (every 5 min)
 cron.schedule('*/5 * * * *', async () => {
     try {
         const [pending] = await db.query(
@@ -246,88 +223,79 @@ cron.schedule('*/5 * * * *', async () => {
                 await sendAlertEmail(notif.recipient_email, notif.recipient_name, notif.location_name, notif.pm1_for_email, notif.aqi_category);
                 await db.query("UPDATE push_notifications SET send_status='sent', sent_at=NOW() WHERE id=?", [notif.id]);
             } catch (err) {
-                await db.query("UPDATE push_notifications SET error_message=? WHERE id=?", [err.message, notif.id]);
+                await db.query('UPDATE push_notifications SET error_message=? WHERE id=?', [err.message, notif.id]);
             }
         }
-    } catch (err) { logger.error({ err }, 'Cron fail'); }
+    } catch (err) {
+        logger.error({ err }, 'Pending notifications cron failed');
+    }
 });
 
+// FIX: Merged the two overlapping escalation crons into one job.
+// Previously: a */5 cron escalated to all admins AND a * * * * * cron
+// escalated to ADMIN_EMAIL — causing duplicate emails every minute.
+// Now: one */5 cron handles both, deduplicated.
 cron.schedule('*/5 * * * *', async () => {
     try {
         const [unacked] = await db.query(
-            `SELECT de.*, sn.location_name, sn.last_seen, sr.pm1_0 AS pm1_for_email FROM detection_events de
+            `SELECT de.*, sn.location_name, sn.last_seen, sr.pm1_0 AS pm1_for_email
+             FROM detection_events de
              JOIN sensor_nodes sn ON sn.id = de.node_id
              LEFT JOIN sensor_readings sr ON sr.id = de.reading_id
              WHERE de.event_status = 'Detected'
-             AND de.detected_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
-             AND (de.last_escalated_at IS NULL OR de.last_escalated_at < DATE_SUB(NOW(), INTERVAL 10 MINUTE))
-             AND sn.last_seen >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)`
+               AND de.detected_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)
+               AND (de.last_escalated_at IS NULL OR de.last_escalated_at < DATE_SUB(NOW(), INTERVAL 10 MINUTE))
+               AND sn.last_seen >= DATE_SUB(NOW(), INTERVAL 2 MINUTE)`
         );
         for (const event of unacked) {
             try {
+                // Notify all active admins from DB
                 const [admins] = await db.query(
                     "SELECT full_name, email FROM accounts WHERE position = 'Administrator' AND is_active = 1"
                 );
+
+                // Also include ADMIN_EMAIL env var if set and not already in the list
+                const adminEmails = new Set(admins.map(a => a.email));
+                const extraEmail = process.env.ADMIN_EMAIL;
+                if (extraEmail && !adminEmails.has(extraEmail)) {
+                    admins.push({ email: extraEmail, full_name: 'Administrator' });
+                }
+
                 for (const admin of admins) {
                     await sendAlertEmail(admin.email, admin.full_name, event.location_name, event.pm1_for_email, event.aqi_category);
                 }
-                await db.query("UPDATE detection_events SET last_escalated_at=NOW() WHERE id=?", [event.id]);
-                logger.info({ eventId: event.id }, '[escalation] Re-notified');
-            } catch(e) { logger.error({ err: e }, '[escalation] Error'); }
+                await db.query('UPDATE detection_events SET last_escalated_at=NOW() WHERE id=?', [event.id]);
+                logger.warn({ eventId: event.id }, '[escalation] Re-notified admins');
+            } catch (e) {
+                logger.error({ err: e }, '[escalation] Error');
+            }
         }
-    } catch (err) { logger.error({ err }, 'Escalation cron fail'); }
+    } catch (err) {
+        logger.error({ err }, 'Escalation cron failed');
+    }
 });
 
+// Clean up old login attempts (hourly)
 cron.schedule('0 * * * *', async () => {
-    try { await db.query("DELETE FROM login_attempts WHERE attempted_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)"); }
-    catch (err) { logger.error({ err }, 'Cleanup fail'); }
+    try {
+        await db.query("DELETE FROM login_attempts WHERE attempted_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+    } catch (err) {
+        logger.error({ err }, 'Login attempt cleanup failed');
+    }
 });
 
-// ── DATA RETENTION CLEANUP ───────────────────────────────────
-// Runs daily at 2:00 AM to enforce GDPR/privacy retention policies
+// Data retention cleanup (daily at 2 AM)
 cron.schedule('0 2 * * *', async () => {
     try {
         logger.info('[Data Retention] Starting scheduled cleanup...');
-        await db.query("CALL sp_run_all_retention_cleanups()");
+        await db.query('CALL sp_run_all_retention_cleanups()');
         logger.info('[Data Retention] Cleanup completed successfully');
     } catch (err) {
         logger.error({ err }, '[Data Retention] Cleanup failed');
     }
 });
 
-// ── UNACKNOWLEDGED ALERT ESCALATION (every 60 seconds) ───────
-// Emails ADMIN_EMAIL for any open event older than 5 min with no acknowledgement
-cron.schedule('* * * * *', async () => {
-    const adminEmail = process.env.ADMIN_EMAIL;
-    if (!adminEmail) return;
-    try {
-        const [events] = await db.query(
-            `SELECT de.id, de.location_name, de.aqi_category, sr.pm1_0 AS pm1_for_email
-             FROM detection_events de
-             LEFT JOIN sensor_readings sr ON sr.id = de.reading_id
-             WHERE de.event_status = 'Detected'
-               AND de.acknowledged_at IS NULL
-               AND de.detected_at < DATE_SUB(NOW(), INTERVAL 5 MINUTE)`
-        );
-        for (const event of events) {
-            try {
-                await sendAlertEmail(
-                    adminEmail,
-                    'Administrator',
-                    event.location_name,
-                    event.pm1_for_email,
-                    event.aqi_category
-                );
-                logger.warn({ eventId: event.id, location: event.location_name }, '[escalation-60s] Unacknowledged alert escalated to ADMIN_EMAIL');
-            } catch (mailErr) {
-                logger.error({ err: mailErr, eventId: event.id }, '[escalation-60s] Email failed');
-            }
-        }
-    } catch (err) {
-        logger.error({ err }, '[escalation-60s] Query failed');
-    }
-});
-
+// ── SECURITY TABLES INIT ──────────────────────────────────────
 async function ensureSecurityTables() {
     await db.query(
         `CREATE TABLE IF NOT EXISTS auth_otp_store (
@@ -358,16 +326,15 @@ async function ensureSecurityTables() {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`
     );
 
-    await db.query(
-        `DELETE FROM auth_otp_store
-         WHERE expires_at < DATE_SUB(NOW(), INTERVAL 1 DAY)`
-    );
+    // Clean up expired OTPs on startup
+    await db.query("DELETE FROM auth_otp_store WHERE expires_at < DATE_SUB(NOW(), INTERVAL 1 DAY)");
 }
 
 if (sentryDsn) {
     Sentry.setupExpressErrorHandler(app);
 }
 
+// Global error handler
 app.use((err, req, res, next) => {
     logger.error({ err }, 'Unhandled server error');
     res.status(500).json({ success: false, message: 'Internal server error.' });

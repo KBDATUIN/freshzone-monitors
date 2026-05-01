@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  api/readings.js — Sensor data from ESP32 + live dashboard
 // ============================================================
 const express  = require('express');
@@ -200,7 +200,7 @@ router.post('/', verifyNodeHmac, async (req, res) => {
                             'dashboard.html'
                         );
                     } catch (pushErr) {
-                        console.warn('[push] Web push failed:', pushErr.message);
+                        logger.warn('[push] Web push failed:', pushErr.message);
                     }
                 }
                 // else: last event was Cleared but no clean reading yet — silently skip
@@ -270,7 +270,7 @@ router.get('/live', authMiddleware, async (req, res) => {
         `);
         res.json({ success: true, data: rows });
     } catch (err) {
-        console.error('[readings GET /live] Error:', err.message);
+        logger.error({ err: arguments[0] }, '[readings GET /live] Error:', err.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
@@ -311,7 +311,7 @@ router.get('/open-events', authMiddleware, async (req, res) => {
         `);
         res.json({ success: true, data: rows });
     } catch (err) {
-        console.error('[readings GET /open-events] Error:', err.message);
+        logger.error({ err: arguments[0] }, '[readings GET /open-events] Error:', err.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
@@ -350,7 +350,7 @@ router.post('/acknowledge/:eventId', authMiddleware, async (req, res) => {
 
         res.json({ success: true, message: 'Alert acknowledged.', event_id: eventId });
     } catch (err) {
-        console.error('[acknowledge] Error:', err.message);
+        logger.error({ err: arguments[0] }, '[acknowledge] Error:', err.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });
@@ -390,7 +390,7 @@ router.post('/resolve/:eventId', authMiddleware, async (req, res) => {
 
         res.json({ success: true, message: 'Alert resolved.' });
     } catch (err) {
-        console.error('[resolve] Error:', err.message);
+        logger.error({ err: arguments[0] }, '[resolve] Error:', err.message);
         res.status(500).json({ success: false, message: 'Server error.' });
     }
 });

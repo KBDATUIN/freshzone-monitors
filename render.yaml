@@ -1,0 +1,54 @@
+# render.yaml — FreshZone Render service configuration
+# Commit this file so your Render service is reproducible.
+# Docs: https://render.com/docs/infrastructure-as-code
+
+services:
+  - type: web
+    name: freshzone-backend
+    runtime: node
+    plan: free          # change to "starter" or higher when ready
+    region: singapore   # closest to PH; options: oregon, frankfurt, singapore, ohio
+    branch: main
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+
+      # Set these in the Render dashboard — never commit real values here
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: RENDER_BACKEND_URL
+        sync: false
+      - key: ESP32_API_KEY
+        sync: false
+      - key: ALLOW_LEGACY_ESP32_KEY
+        value: "false"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_TRACES_SAMPLE_RATE
+        value: "0.1"
