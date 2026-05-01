@@ -21,6 +21,9 @@ function getCsrfToken() {
 
 // ── BIOMETRIC / CREDENTIAL AUTO-FILL ─────────────────────────
 async function tryBiometricLogin() {
+    // Only auto-fill if NOT on signup tab and NOT bypassing auto-login
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('new') === '1' || params.get('switch') === '1') return;
     if (!window.PasswordCredential && !window.FederatedCredential) return;
     try {
         const cred = await navigator.credentials.get({ password: true, mediation: 'optional' });
@@ -29,7 +32,10 @@ async function tryBiometricLogin() {
             const passField  = document.getElementById('login-password');
             if (emailField) emailField.value = cred.id;
             if (passField)  passField.value  = cred.password;
-            setTimeout(() => login(), 600);
+            // Only auto-submit on login tab, not signup
+            const signupView = document.getElementById('signup-view');
+            const isSignup = signupView && !signupView.classList.contains('hidden');
+            if (!isSignup) setTimeout(() => login(), 600);
         }
     } catch(e) {}
 }
