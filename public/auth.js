@@ -7,9 +7,14 @@ function getCsrfToken() {
 
 // ── AUTO LOGIN: check if already logged in ────────────────────
 (async function checkAutoLogin() {
-    // Skip auto-login if ?tab=signup or ?new=1 is in the URL
+    // Skip auto-login if ?tab=signup, ?new=1, or ?switch=1 is in the URL
     const params = new URLSearchParams(window.location.search);
-    if (params.get('tab') === 'signup' || params.get('new') === '1') return;
+    if (params.get('tab') === 'signup' || params.get('new') === '1' || params.get('switch') === '1') {
+        // Clear session so they can log in as someone else
+        localStorage.removeItem('currentUser');
+        document.cookie = 'fz_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+        return;
+    }
     const user = await hydrateSessionUser();
     if (user) {
         window.location.href = 'dashboard.html';
