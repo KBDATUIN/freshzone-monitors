@@ -1,0 +1,980 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FRESHZONE UI/UX IMPROVEMENTS v1.0
+   Additive layer — loads AFTER all other stylesheets.
+   Does NOT break existing JS or HTML structure.
+   Improves: nav, sensor cards, hero, alert modal, filter bar, auth page,
+             AQI guide, history table, mobile polish, dark mode, etc.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   1. NAV — cleaner layout, better active state, live badge
+   ───────────────────────────────────────────────────────────────── */
+
+/* Subtle border bottom instead of glass shadow soup */
+nav {
+    border-bottom: 1px solid rgba(0, 180, 216, 0.2) !important;
+    box-shadow: 0 2px 16px rgba(0, 30, 60, 0.18) !important;
+}
+
+/* Nav links — pill style active, smooth hover */
+.nav-links a {
+    font-size: 0.88rem !important;
+    padding: 0.45rem 0.9rem !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em !important;
+    transition: background 0.18s, color 0.18s !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.nav-links a:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    transform: none !important;
+}
+
+.nav-links a.active {
+    background: rgba(0, 200, 220, 0.22) !important;
+    color: #d4f8ff !important;
+    font-weight: 600 !important;
+}
+
+/* Nav user display — cleaner dot */
+.nav-user-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: #22c55e !important;
+    box-shadow: 0 0 6px #22c55e !important;
+    flex-shrink: 0 !important;
+}
+
+#nav-user-name {
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    color: rgba(255, 255, 255, 0.92) !important;
+    max-width: 140px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+/* Dark toggle — cleaner */
+.dark-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 10px !important;
+    padding: 0.42rem 0.65rem !important;
+    transition: background 0.18s !important;
+}
+
+.dark-toggle:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Mobile nav — smooth close button tap area */
+.mobile-nav-close {
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border-radius: 10px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   2. HERO / MASTHEAD — softer, more information-dense
+   ───────────────────────────────────────────────────────────────── */
+
+.fz-masthead,
+.hero.fz-masthead,
+.dashboard-masthead {
+    border-radius: 20px !important;
+    margin-bottom: 1.5rem !important;
+    padding: 1.75rem 1.5rem !important;
+    background: linear-gradient(155deg,
+        rgba(232, 248, 255, 0.97) 0%,
+        rgba(208, 238, 255, 0.95) 100%) !important;
+    border: 1px solid rgba(0, 150, 200, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 50, 100, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+[data-theme="dark"] .fz-masthead,
+[data-theme="dark"] .hero.fz-masthead,
+[data-theme="dark"] .dashboard-masthead {
+    background: linear-gradient(155deg,
+        rgba(8, 20, 38, 0.97) 0%,
+        rgba(5, 28, 55, 0.95) 100%) !important;
+    border-color: rgba(0, 200, 232, 0.12) !important;
+}
+
+/* Hero H1 — slightly tighter */
+.fz-masthead h1,
+.hero h1,
+.dashboard-masthead h1 {
+    font-size: clamp(1.35rem, 3vw, 1.9rem) !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.5rem !important;
+    word-break: break-word !important;
+}
+
+/* Hero eyebrow line */
+.dashboard-hero-eyebrow {
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 0.4rem !important;
+}
+
+/* Session line — single line, never overflows card */
+.dashboard-hero-session {
+    font-size: 0.82rem !important;
+    padding: 0.4rem 0.75rem !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+/* History button in hero — cleaner */
+.btn-hero-history {
+    font-size: 0.85rem !important;
+    padding: 0.52rem 1.15rem !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    transition: transform 0.15s, box-shadow 0.15s !important;
+}
+
+.btn-hero-history:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 16px rgba(0, 78, 122, 0.18) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   3. SENSOR CARDS (location-card) — richer, more scannable
+   ───────────────────────────────────────────────────────────────── */
+
+.location-card {
+    border-radius: 18px !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+    padding: 1.1rem 1.2rem !important;
+    box-shadow: 0 2px 16px rgba(0, 30, 80, 0.07) !important;
+    transition: box-shadow 0.25s, transform 0.25s !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.location-card::before {
+    content: '';
+    position: absolute !important;
+    top: 0; left: 0; right: 0;
+    height: 4px !important;
+    background: #cbd5e1 !important;
+    border-radius: 18px 18px 0 0 !important;
+}
+
+.location-card.clear::before {
+    background: linear-gradient(90deg, #22c55e, #4ade80) !important;
+}
+
+.location-card.detecting::before {
+    background: linear-gradient(90deg, #e74c3c, #f87171) !important;
+}
+
+.location-card.offline::before {
+    background: #94a3b8 !important;
+}
+
+.location-card:hover {
+    box-shadow: 0 6px 28px rgba(0, 30, 80, 0.12) !important;
+    transform: translateY(-2px) !important;
+}
+
+[data-theme="dark"] .location-card {
+    border-color: rgba(0, 200, 232, 0.1) !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* AQI badge — more pill-like, readable */
+.aqi-badge {
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    letter-spacing: 0.02em !important;
+    display: inline-block !important;
+    margin-top: 6px !important;
+}
+
+/* Status dot — improved pulse */
+.dot-detecting {
+    animation: dotBlink 1s ease-in-out infinite !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* PM chips — cleaner grid */
+.pm-values {
+    display: flex !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+    flex-wrap: wrap !important;
+}
+
+.pm-chip {
+    background: rgba(240, 247, 255, 0.9) !important;
+    border: 0.5px solid rgba(0, 78, 122, 0.12) !important;
+    border-radius: 8px !important;
+    padding: 3px 10px !important;
+    font-size: 0.73rem !important;
+    font-weight: 500 !important;
+    color: #3d6070 !important;
+}
+
+[data-theme="dark"] .pm-chip {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #94c8d8 !important;
+}
+
+/* Timestamp */
+.card-timestamp {
+    font-size: 0.68rem !important;
+    color: var(--gray) !important;
+    margin-top: 8px !important;
+    display: block !important;
+}
+
+/* Acknowledge / Resolve buttons */
+.ack-btn,
+.resolve-btn {
+    border-radius: 10px !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    padding: 9px 16px !important;
+    transition: transform 0.15s, filter 0.15s !important;
+    letter-spacing: 0.01em !important;
+    margin-top: 10px !important;
+}
+
+.ack-btn:hover,
+.resolve-btn:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.1) !important;
+}
+
+/* Detecting card — pulse shadow instead of just bg color */
+.location-card.detecting {
+    box-shadow:
+        0 0 0 2px rgba(220, 53, 69, 0.15),
+        0 4px 20px rgba(220, 53, 69, 0.12) !important;
+    animation: cardPulse 2.5s ease-in-out infinite !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   4. AQI BANDS — more compact, readable on mobile
+   ───────────────────────────────────────────────────────────────── */
+
+.aqi-bands {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.6rem !important;
+    margin-top: 1rem !important;
+}
+
+.aqi-band {
+    flex: 1 1 80px !important;
+    border-radius: 14px !important;
+    padding: 0.75rem 0.8rem !important;
+    text-align: center !important;
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    transition: transform 0.18s !important;
+}
+
+.aqi-band:hover {
+    transform: translateY(-2px) !important;
+}
+
+.aqi-band span {
+    display: block !important;
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    margin-top: 3px !important;
+    opacity: 0.85 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   5. AQ GUIDE CARDS — consistently sized, hover lift
+   ───────────────────────────────────────────────────────────────── */
+
+.aq-card {
+    border-radius: 18px !important;
+    padding: 1.2rem 1.1rem !important;
+    transition: transform 0.22s, box-shadow 0.22s !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+}
+
+.aq-card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 12px 32px rgba(0, 50, 100, 0.13) !important;
+}
+
+.aq-card h4 {
+    font-size: 0.95rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.aq-card p {
+    font-size: 0.84rem !important;
+    line-height: 1.65 !important;
+}
+
+/* Live sensor strip items */
+.live-sensor-item {
+    border-radius: 14px !important;
+    padding: 0.9rem 1rem !important;
+    font-size: 0.83rem !important;
+    line-height: 1.6 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   6. ALERT MODAL (fz-alarm-overlay) — less visually alarming
+   ───────────────────────────────────────────────────────────────── */
+
+.fz-alarm-inner {
+    border-radius: 22px !important;
+    padding: 2rem 1.75rem !important;
+    max-width: 340px !important;
+    width: 92% !important;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.15),
+        0 24px 60px rgba(0, 0, 0, 0.4) !important;
+}
+
+.fz-alarm-title {
+    font-size: 1.5rem !important;
+    letter-spacing: 0.04em !important;
+    margin: 0.75rem 0 0.4rem !important;
+}
+
+.fz-alarm-location {
+    font-size: 0.95rem !important;
+    opacity: 0.9 !important;
+    font-weight: 600 !important;
+}
+
+.fz-alarm-close {
+    border-radius: 12px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    margin-top: 1.25rem !important;
+    letter-spacing: 0.02em !important;
+    transition: filter 0.15s, transform 0.15s !important;
+}
+
+.fz-alarm-close:hover {
+    filter: brightness(1.05) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Staff response modal */
+.staff-response-card {
+    border-radius: 20px !important;
+    padding: 24px 24px 20px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28) !important;
+    border-top-width: 4px !important;
+}
+
+.staff-respond-btn {
+    border-radius: 12px !important;
+    padding: 12px !important;
+    font-size: 0.94rem !important;
+    font-weight: 600 !important;
+    transition: filter 0.15s !important;
+}
+
+.staff-respond-btn:hover {
+    filter: brightness(1.1) !important;
+}
+
+.staff-dismiss-btn {
+    border-radius: 12px !important;
+    padding: 10px !important;
+    font-size: 0.84rem !important;
+    margin-top: 8px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   7. FILTER BAR (history page) — search-first, cleaner layout
+   ───────────────────────────────────────────────────────────────── */
+
+.filter-bar {
+    background: var(--card-bg, #fff) !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+    border-radius: 16px !important;
+    padding: 1.1rem 1.2rem !important;
+    box-shadow: 0 2px 12px rgba(0, 30, 80, 0.06) !important;
+    gap: 0.85rem !important;
+}
+
+[data-theme="dark"] .filter-bar {
+    border-color: rgba(0, 200, 232, 0.1) !important;
+}
+
+.filter-bar input,
+.filter-bar select {
+    border-radius: 10px !important;
+    border: 1px solid rgba(0, 78, 122, 0.15) !important;
+    font-size: 0.85rem !important;
+    padding: 0.55rem 0.85rem !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+    background: rgba(240, 247, 255, 0.6) !important;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+    outline: none !important;
+    border-color: var(--secondary, #00b4d8) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.12) !important;
+    background: #fff !important;
+}
+
+[data-theme="dark"] .filter-bar input,
+[data-theme="dark"] .filter-bar select {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.filter-bar button {
+    border-radius: 10px !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    padding: 0.55rem 1.15rem !important;
+    transition: filter 0.15s, transform 0.15s !important;
+    letter-spacing: 0.01em !important;
+}
+
+.filter-bar button:hover {
+    filter: brightness(1.1) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Filter labels */
+.filter-bar label {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    color: var(--gray) !important;
+    text-transform: uppercase !important;
+}
+
+/* Export button green */
+.export-btn {
+    background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+    color: white !important;
+    border: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   8. HISTORY TABLE — zebra stripe, hover highlight, sticky header
+   ───────────────────────────────────────────────────────────────── */
+
+.log-container {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+    box-shadow: 0 2px 16px rgba(0, 30, 80, 0.06) !important;
+}
+
+[data-theme="dark"] .log-container {
+    border-color: rgba(0, 200, 232, 0.1) !important;
+}
+
+table thead tr th {
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    padding: 0.85rem 1.1rem !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2 !important;
+}
+
+table tbody td {
+    padding: 0.85rem 1.1rem !important;
+    font-size: 0.88rem !important;
+    vertical-align: middle !important;
+}
+
+/* Row hover — subtle teal tint */
+tbody tr:hover td {
+    background: rgba(0, 180, 216, 0.05) !important;
+}
+
+/* Don't slide on mobile */
+@media (max-width: 768px) {
+    tbody tr:hover {
+        transform: none !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   9. STATS BOX (history page) — more visual weight
+   ───────────────────────────────────────────────────────────────── */
+
+.stat-box {
+    border-radius: 16px !important;
+    padding: 1.1rem 1.2rem !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+    box-shadow: 0 2px 12px rgba(0, 30, 80, 0.06) !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.stat-box:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 28px rgba(0, 30, 80, 0.12) !important;
+}
+
+.stat-box h3 {
+    font-size: 1.9rem !important;
+    font-weight: 700 !important;
+}
+
+.stat-box p {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   10. AUTH PAGE — softer, more trustworthy
+   ────────────────────────────────────────────────────────────────── */
+
+.auth-card {
+    border-radius: 22px !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.5),
+        0 20px 60px rgba(0, 40, 80, 0.2) !important;
+    padding: 2rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme="dark"] .auth-card {
+    border-color: rgba(0, 200, 232, 0.12) !important;
+}
+
+/* Tab switcher — pill style */
+.auth-tabs {
+    background: rgba(0, 78, 122, 0.07) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    gap: 2px !important;
+}
+
+.auth-tab {
+    border-radius: 9px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s !important;
+    border: none !important;
+}
+
+.auth-tab.active {
+    box-shadow: 0 2px 8px rgba(0, 78, 122, 0.18) !important;
+}
+
+/* Input groups */
+.auth-form-content .input-group {
+    margin-bottom: 0.85rem !important;
+}
+
+.auth-form-content .input-group label {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 5px !important;
+    display: block !important;
+}
+
+.auth-form-content input,
+.auth-form-content select {
+    border-radius: 12px !important;
+    padding: 0.65rem 0.95rem !important;
+    font-size: 0.9rem !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+}
+
+.auth-form-content input:focus,
+.auth-form-content select:focus {
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.15) !important;
+    outline: none !important;
+}
+
+/* Trust badges */
+.auth-trust-badge {
+    font-size: 0.76rem !important;
+    font-weight: 500 !important;
+    padding: 4px 12px !important;
+    border-radius: 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+}
+
+/* Forgot password link */
+.auth-forgot {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+/* Auth buttons */
+.btn-primary,
+.btn-success {
+    border-radius: 12px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    padding: 0.72rem 1.2rem !important;
+    letter-spacing: 0.02em !important;
+    transition: filter 0.15s, transform 0.15s !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* OTP input */
+#signup-otp-input,
+#reset-otp-input {
+    border-radius: 14px !important;
+    padding: 0.85rem !important;
+    font-size: 1.7rem !important;
+    letter-spacing: 0.5em !important;
+    font-weight: 800 !important;
+}
+
+/* OTP timer */
+.otp-timer {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    margin: 0.5rem 0 !important;
+}
+
+/* Password strength */
+.pw-strength-bar {
+    height: 4px !important;
+    border-radius: 4px !important;
+    margin-top: 6px !important;
+    transition: width 0.3s, background 0.3s !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   11. PROFILE PAGE — consistent card style
+   ────────────────────────────────────────────────────────────────── */
+
+/* Profile cards */
+.glass-card,
+.card {
+    border-radius: 20px !important;
+    padding: 1.4rem 1.5rem !important;
+    border: 1px solid rgba(0, 78, 122, 0.1) !important;
+    box-shadow: 0 4px 24px rgba(0, 30, 80, 0.08) !important;
+}
+
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .card {
+    border-color: rgba(0, 200, 232, 0.1) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18) !important;
+}
+
+.glass-card:hover,
+.card:hover {
+    transform: translateY(-4px) !important;
+    box-shadow: 0 10px 32px rgba(0, 30, 80, 0.12) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   12. GENERAL INPUTS / BUTTONS — site-wide polish
+   ────────────────────────────────────────────────────────────────── */
+
+/* Inputs — consistent focus ring */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.18) !important;
+}
+
+/* Modal overlay */
+.modal-overlay-custom {
+    backdrop-filter: blur(8px) !important;
+}
+
+.modal-content-custom {
+    border-radius: 20px !important;
+    padding: 1.75rem !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .modal-content-custom {
+    background: #1a2a3a !important;
+}
+
+.modal-content-custom h3 {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.confirm-btn,
+.cancel-btn {
+    border-radius: 12px !important;
+    padding: 10px 20px !important;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    transition: filter 0.15s, transform 0.15s !important;
+}
+
+.confirm-btn:hover,
+.cancel-btn:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Notification toast */
+.notification {
+    border-radius: 14px !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    padding: 0.85rem 1.2rem !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   13. FOOTER — cleaner
+   ────────────────────────────────────────────────────────────────── */
+
+.site-footer {
+    margin-top: 3rem !important;
+    padding: 1.5rem 1rem !important;
+    font-size: 0.8rem !important;
+    opacity: 0.85 !important;
+    border-top: 1px solid rgba(0, 78, 122, 0.12) !important;
+}
+
+[data-theme="dark"] .site-footer {
+    border-top-color: rgba(0, 200, 232, 0.1) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   14. MOBILE POLISH — tighter spacing, larger tap targets
+   ────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    /* Container padding */
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Hero tighter on mobile */
+    .fz-masthead,
+    .hero.fz-masthead,
+    .dashboard-masthead {
+        padding: 1.2rem 1rem !important;
+        border-radius: 14px !important;
+    }
+
+    /* Cards full width */
+    .location-card {
+        border-radius: 14px !important;
+        padding: 1rem !important;
+    }
+
+    /* Stat boxes compact */
+    .stat-box {
+        padding: 0.85rem 1rem !important;
+    }
+
+    /* AQI bands scroll horizontally on tiny screens */
+    .aqi-bands {
+        flex-wrap: wrap !important;
+    }
+
+    .aqi-band {
+        min-width: 70px !important;
+        font-size: 0.74rem !important;
+        padding: 0.6rem 0.7rem !important;
+    }
+
+    /* Table: minimum usable tap targets on cells */
+    table th,
+    table td {
+        padding: 0.7rem 0.75rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* Auth card */
+    .auth-card {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 18px !important;
+    }
+
+    /* Buttons — full width on auth mobile */
+    .auth-form-content .btn-primary,
+    .auth-form-content .btn-success {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* Push toggle hidden already, ensure clean mobile nav */
+    .push-toggle-wrap {
+        display: none !important;
+    }
+
+    /* Sensor grid: single col on small phones */
+    #sensor-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Staff alert bar wraps */
+    .staff-alert-bar {
+        flex-direction: column !important;
+        gap: 6px !important;
+        font-size: 0.82rem !important;
+    }
+
+    /* Alarm overlay: tighter */
+    .fz-alarm-inner {
+        padding: 1.5rem 1.25rem !important;
+    }
+
+    .fz-alarm-title {
+        font-size: 1.3rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Grid to 1 col for all card grids */
+    .grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .aq-guide-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Hero session line: allow wrap on tiny screens */
+    .dashboard-hero-session {
+        white-space: normal !important;
+        font-size: 0.78rem !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   15. DARK MODE CLEANUP — fill gaps in existing dark rules
+   ────────────────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .filter-bar {
+    background: rgba(10, 22, 40, 0.9) !important;
+}
+
+[data-theme="dark"] .stat-box {
+    background: rgba(10, 22, 40, 0.9) !important;
+}
+
+[data-theme="dark"] .aq-card {
+    background: rgba(8, 20, 38, 0.9) !important;
+}
+
+[data-theme="dark"] .modal-overlay-custom {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+
+[data-theme="dark"] .aqi-badge.aqi-good {
+    background: rgba(34, 197, 94, 0.18) !important;
+    color: #4ade80 !important;
+}
+
+[data-theme="dark"] .aqi-badge.aqi-moderate {
+    background: rgba(245, 158, 11, 0.18) !important;
+    color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .aqi-badge.aqi-alert {
+    background: rgba(239, 68, 68, 0.18) !important;
+    color: #f87171 !important;
+}
+
+[data-theme="dark"] .aqi-badge.aqi-offline {
+    background: rgba(148, 163, 184, 0.15) !important;
+    color: #94a3b8 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   16. SCROLLBAR — subtle, non-intrusive
+   ────────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 78, 122, 0.25) !important;
+    border-radius: 6px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 78, 122, 0.45) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: rgba(0, 200, 232, 0.2) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   17. SMOOTH TRANSITIONS — page feel
+   ────────────────────────────────────────────────────────────────── */
+
+/* Animate-in class — used by existing code */
+.animate-in {
+    animation: fzFadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+@keyframes fzFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Stagger children in animate-in containers */
+.animate-in > *:nth-child(1) { animation-delay: 0.05s; }
+.animate-in > *:nth-child(2) { animation-delay: 0.10s; }
+.animate-in > *:nth-child(3) { animation-delay: 0.15s; }
+.animate-in > *:nth-child(4) { animation-delay: 0.20s; }
+.animate-in > *:nth-child(5) { animation-delay: 0.25s; }
+
+/* END ui-improvements.css */
