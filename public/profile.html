@@ -653,11 +653,22 @@
             document.getElementById('userEmployeeID').textContent = u.employee_id || '—';
             const phLocale = 'en-PH';
             const phTZ     = { timeZone: 'Asia/Manila' };
-            document.getElementById('userDateJoined').textContent = u.date_joined
-                ? new Date(u.date_joined).toLocaleDateString(phLocale, { ...phTZ, year:'numeric', month:'long', day:'numeric' })
+            function parseFirestoreDate(val) {
+                if (!val) return null;
+                // Firestore Timestamp object with _seconds
+                if (val._seconds) return new Date(val._seconds * 1000);
+                if (val.seconds) return new Date(val.seconds * 1000);
+                // Already a string or number
+                const d = new Date(val);
+                return isNaN(d.getTime()) ? null : d;
+            }
+            const dateJoined = parseFirestoreDate(u.date_joined);
+            const lastLogin  = parseFirestoreDate(u.last_login);
+            document.getElementById('userDateJoined').textContent = dateJoined
+                ? dateJoined.toLocaleDateString(phLocale, { ...phTZ, year:'numeric', month:'long', day:'numeric' })
                 : '—';
-            document.getElementById('userLastLogin').textContent  = u.last_login
-                ? new Date(u.last_login).toLocaleString(phLocale, { ...phTZ, year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })
+            document.getElementById('userLastLogin').textContent  = lastLogin
+                ? lastLogin.toLocaleString(phLocale, { ...phTZ, year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })
                 : '—';
             document.getElementById('userEmergency').textContent  = u.emergency_contact || '—';
 
