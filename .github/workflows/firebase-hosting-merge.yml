@@ -21,6 +21,12 @@ jobs:
       # in package.json. This was causing every deploy to fail.
       # If you add a build step in future (e.g. CSS minification), add it here.
 
+      - name: Build React frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
