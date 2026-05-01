@@ -1,0 +1,386 @@
+/* ================================================================
+   FreshZone — fz-ui-fix.css
+   LOAD LAST (after all other CSS files).
+   Fixes:
+     1. Invisible white text in light mode (last-updated-bar, auth
+        header/footer/labels, page-hero sub-text, trust badges,
+        footer, dark-label)
+     2. Duplicate link cleanup guard (idempotent overrides)
+     3. Alignment fixes: flex-btn centering on mobile, stat-box
+        grid collapse, filter-bar inputs, nav-controls gap
+     4. Misaligned elements: live-badge vertical, aqi-badge margin,
+        pm-chip wrapping, staff-alert-bar padding
+   ================================================================ */
+
+/* ─── 1. LIGHT-MODE TEXT READABILITY FIXES ──────────────────────
+
+   All these classes were set to rgba(255,255,255,*) or "white"
+   without a theme guard, making them invisible on the light
+   gradient backgrounds.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Last-updated status bar below dashboard hero */
+.last-updated-bar {
+    color: #004e7a !important;            /* dark navy on light bg  */
+    font-weight: 600 !important;
+    font-size: 0.74rem !important;
+}
+[data-theme="dark"] .last-updated-bar {
+    color: #94a3b8 !important;
+}
+
+/* Auth page header — "FreshZone" tagline below the h1 */
+.auth-header p {
+    color: rgba(0, 55, 100, 0.82) !important;
+    text-shadow: none !important;
+}
+[data-theme="dark"] .auth-header p {
+    color: rgba(220, 240, 255, 0.82) !important;
+}
+
+/* Auth page — "Appearance" label beside the dark toggle */
+.auth-dark-label {
+    color: #004e7a !important;
+    font-weight: 600 !important;
+}
+[data-theme="dark"] .auth-dark-label {
+    color: rgba(255, 255, 255, 0.70) !important;
+}
+
+/* Auth footer copyright / links wrapper */
+.auth-footer {
+    color: #003a5c !important;
+}
+[data-theme="dark"] .auth-footer {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* Trust badges (Secure Login · Verified Access · Real-time Alerts) */
+.auth-trust-badge {
+    background: rgba(0, 78, 122, 0.10) !important;
+    border: 1px solid rgba(0, 78, 122, 0.22) !important;
+    color: #004e7a !important;
+}
+.auth-trust-badge:hover {
+    background: rgba(0, 78, 122, 0.16) !important;
+}
+[data-theme="dark"] .auth-trust-badge {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: rgba(200, 235, 255, 0.92) !important;
+}
+
+/* Site footer (all pages) */
+footer,
+.site-footer {
+    color: rgba(0, 50, 85, 0.82) !important;
+}
+[data-theme="dark"] footer,
+[data-theme="dark"] .site-footer {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Page hero sub-paragraph (History, Contact, About) */
+.page-hero p,
+.page-hero .page-hero-sub {
+    color: rgba(0, 45, 80, 0.82) !important;
+    text-shadow: none !important;
+}
+[data-theme="dark"] .page-hero p,
+[data-theme="dark"] .page-hero .page-hero-sub {
+    color: rgba(148, 163, 184, 0.92) !important;
+}
+
+/* Dashboard hero tagline (already scoped but !important chain fight) */
+.dashboard-hero-tagline {
+    color: #334155 !important;
+}
+[data-theme="dark"] .dashboard-hero-tagline {
+    color: #94a3b8 !important;
+}
+
+/* ─── 2. AUTH HEADER h1 — gradient only looks good on the dark
+         photo bg. In light mode use a solid navy instead.
+   ─────────────────────────────────────────────────────────────── */
+.auth-header h1 {
+    background: linear-gradient(135deg, #003a5c 20%, #006fa3 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    filter: none !important;
+}
+[data-theme="dark"] .auth-header h1 {
+    background: linear-gradient(135deg, #e2f0f8 30%, #22d3ee 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+/* ─── 3. AUTH DARK-TOGGLE BUTTON — light mode border fix ────────
+   In light mode the button used rgba(255,255,255,0.28) border
+   which is invisible against the light background.
+   ─────────────────────────────────────────────────────────────── */
+#auth-dark-toggle {
+    border-color: rgba(0, 78, 122, 0.35) !important;
+    color: #004e7a !important;
+}
+#auth-dark-toggle:hover {
+    border-color: #0092c0 !important;
+    color: #0092c0 !important;
+    background: rgba(0, 78, 122, 0.06) !important;
+}
+[data-theme="dark"] #auth-dark-toggle {
+    border-color: rgba(255, 255, 255, 0.28) !important;
+    color: rgba(200, 238, 255, 0.82) !important;
+}
+[data-theme="dark"] #auth-dark-toggle:hover {
+    border-color: rgba(255, 255, 255, 0.60) !important;
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ─── 4. ALIGNMENT FIXES ─────────────────────────────────────── */
+
+/* 4a. Live badge — vertical alignment with the h1 text */
+.live-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    vertical-align: middle !important;
+    margin-left: 6px !important;
+    padding: 3px 10px 3px 7px !important;
+    line-height: 1 !important;
+    transform: translateY(-1px);
+}
+.live-dot {
+    flex-shrink: 0 !important;
+}
+
+/* 4b. Flex-btn-container — center on mobile, left on desktop */
+.flex-btn-container {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+    flex-wrap: wrap !important;
+    margin-top: 0.85rem !important;
+}
+@media (min-width: 768px) {
+    .dashboard-masthead .flex-btn-container {
+        justify-content: flex-start !important;
+    }
+}
+
+/* 4c. AQI badge — consistent top margin, no shift */
+.aqi-badge {
+    display: inline-block !important;
+    margin-top: 6px !important;
+    margin-bottom: 2px !important;
+    vertical-align: middle !important;
+}
+
+/* 4d. PM values row — even wrapping */
+.pm-values {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 8px !important;
+    align-items: center !important;
+}
+.pm-chip {
+    flex-shrink: 0 !important;
+}
+
+/* 4e. Stats grid — don't collapse to 1 col on small screens */
+.stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.85rem !important;
+    width: 100% !important;
+}
+@media (max-width: 400px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.4rem !important;
+    }
+    .stat-box { padding: 0.6rem 0.35rem !important; }
+    .stat-box h3 { font-size: 1rem !important; }
+    .stat-box p { font-size: 0.58rem !important; }
+}
+
+/* 4f. Staff alert bar — proper padding so icon and text align */
+.staff-alert-bar {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: var(--radius-md) !important;
+    margin-bottom: 0.75rem !important;
+    line-height: 1.5 !important;
+}
+.staff-alert-bar svg.h-icon {
+    flex-shrink: 0 !important;
+    margin-top: 2px !important;
+}
+
+/* 4g. Location card — consistent internal layout */
+.location-card {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    padding: 1.1rem 1.1rem 1rem !important;
+}
+.location-card h3 {
+    font-size: 0.975rem !important;
+    line-height: 1.3 !important;
+}
+.card-timestamp {
+    margin-top: auto !important;
+    padding-top: 6px !important;
+}
+.ack-btn, .resolve-btn {
+    margin-top: 10px !important;
+    width: 100% !important;
+}
+
+/* 4h. Nav controls gap — icon buttons too close together */
+.nav-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+.dark-toggle,
+.push-toggle-wrap {
+    flex-shrink: 0 !important;
+}
+
+/* 4i. Filter bar — inputs don't overflow on narrow screens */
+.filter-bar {
+    box-sizing: border-box !important;
+    width: 100% !important;
+}
+.filter-inputs-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 0.6rem !important;
+    width: 100% !important;
+}
+.filter-group,
+.filter-bar input,
+.filter-bar select {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+}
+@media (max-width: 640px) {
+    .filter-inputs-row {
+        flex-direction: column !important;
+    }
+    .filter-group,
+    .filter-bar input,
+    .filter-bar select {
+        width: 100% !important;
+    }
+}
+
+/* 4j. Dashboard masthead grid — avoid viz overlapping text on
+       tablets (768px–900px). Stack it at tablet widths. */
+@media (max-width: 860px) {
+    .dashboard-masthead__grid {
+        grid-template-columns: 1fr !important;
+    }
+    .dashboard-masthead__viz {
+        display: none !important; /* detector rings not critical on small screens */
+    }
+    .dashboard-masthead {
+        text-align: center !important;
+    }
+    .dashboard-masthead .flex-btn-container {
+        justify-content: center !important;
+    }
+    .dashboard-hero-tagline {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* ─── 5. CONTACT / ABOUT PAGE HERO TEXT ─────────────────────── */
+.page-hero h1 {
+    color: white !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.25) !important;
+}
+/* The p-tag fix is already handled in section 1 above */
+
+/* ─── 6. TABLE CELLS IN LIGHT MODE ──────────────────────────── */
+/* style.css sets .log-container td { color: #0f172a } which is
+   correct, but some layered files override it back to white.
+   Re-assert here as the final word. */
+.log-container td {
+    color: #0f172a !important;
+}
+[data-theme="dark"] .log-container td {
+    color: #e2e8f0 !important;
+}
+.log-container th {
+    color: #003a5c !important;
+}
+[data-theme="dark"] .log-container th {
+    color: #7dd3fc !important;
+}
+
+/* ─── 7. SENSOR CARD STATUS TEXT ────────────────────────────── */
+/* The bold status paragraph inside location-card */
+#status-zone1,
+#status-zone2,
+[id^="status-zone"] {
+    color: var(--text, #003049) !important;
+}
+[data-theme="dark"] #status-zone1,
+[data-theme="dark"] #status-zone2,
+[data-theme="dark"] [id^="status-zone"] {
+    color: #e2f0f8 !important;
+}
+
+/* ─── 8. MOBILE NAV DRAWER — ensure text always readable ───── */
+/* Already dark bg so white text is correct; this is a guard only */
+.mobile-nav-drawer a {
+    color: rgba(195, 235, 255, 0.90) !important;
+}
+.mobile-nav-drawer a:hover,
+.mobile-nav-drawer a.active {
+    color: #fff !important;
+}
+
+/* ─── 9. PROFILE ROLE BADGE — white text on gradient is fine ── */
+/* No fix needed — gradient bg always shows white text correctly  */
+
+/* ─── 10. HOTKEY BADGE — light mode guard ───────────────────── */
+.hotkey-badge {
+    background: rgba(0, 100, 160, 0.10) !important;
+    border-color: rgba(0, 180, 216, 0.28) !important;
+    color: #00659c !important;
+}
+[data-theme="dark"] .hotkey-badge {
+    background: rgba(34, 211, 238, 0.08) !important;
+    border-color: rgba(34, 211, 238, 0.2) !important;
+    color: #7dd3fc !important;
+}
+
+/* ─── 11. PUSH-TOGGLE LABEL — invisible in light mode ────────── */
+.push-toggle-label {
+    color: rgba(200, 238, 255, 0.9) !important;  /* nav is always dark bg */
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+}
+
+/* ─── 12. HERO SESSION PILL — light mode contrast ───────────── */
+.dashboard-hero-session {
+    color: #0c4a6e !important;
+}
+[data-theme="dark"] .dashboard-hero-session {
+    color: #e2e8f0 !important;
+}
+
+/* ─── 13. SMOKE CONTAINER z-index fix (content behind smoke) ── */
+.smoke-container {
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
