@@ -1,3 +1,53 @@
-node_modules/
+# ── Environment files — NEVER commit these ────────────────────
 .env
-functions/freshzone-509a9-firebase-adminsdk-fbsvc-bde93082cf.json 
+.env.local
+.env.production
+functions/.env
+functions/.env.local
+
+# ── Dependencies ──────────────────────────────────────────────
+node_modules/
+functions/node_modules/
+
+# ── Firebase local cache ──────────────────────────────────────
+.firebase/
+
+# ── Logs ──────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── OS / Editor ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── AI coding tool config (dev only, not needed in repo) ──────
+.agents/
+.claude/
+.continue/
+.kiro/
+.windsurf/
+.qodo/
+.idx/
+
+# ── Backup / temp files ───────────────────────────────────────
+*.bak
+history_backup.html
+history_old.html
+smoke.html
+test-email.js
+Build
+Checking
+Cloning
+Common
+Docs
+Exited
+Running
+Setting
+Uploaded
+Uploading
+Using
+git
+gitignore

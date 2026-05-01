@@ -1,10 +1,11 @@
-﻿// ============================================================
+// ============================================================
 //  api/profile.js — View & update user profile, change password
 // ============================================================
 const express = require('express');
 const bcrypt  = require('bcryptjs');
 const router  = express.Router();
 const db      = require('../db');
+const logger = require('../logger');
 const { authMiddleware } = require('../middleware/auth');
 
 function sanitizeStr(val, maxLen = 100) {
