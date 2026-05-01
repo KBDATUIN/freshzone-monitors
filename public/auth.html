@@ -149,7 +149,7 @@
             <!-- Tab Switcher -->
             <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="Authentication mode">
                 <button class="auth-tab active" id="tab-login"   role="tab" aria-selected="true"  aria-controls="login-view">Sign In</button>
-                <button class="auth-tab"        id="tab-signup"  role="tab" aria-selected="false" aria-controls="signup-view">Create Account</button>
+                <button class="auth-tab"        id="tab-signup"  role="tab" aria-selected="false" aria-controls="signup-view" onclick="history.replaceState(null,'','?tab=signup')">Create Account</button>
             </div>
 
             <!-- ═══ LOGIN VIEW ═══ -->
@@ -181,7 +181,7 @@
                     Sign In
                 </button>
                 <div class="auth-extra-links">
-                    <p>New here? <span data-switch-tab="signup" class="text-link">Create account</span></p>
+                    <p>New here? <span data-switch-tab="signup" class="text-link" onclick="history.replaceState(null,'','?tab=signup')">Create account</span></p>
                 </div>
             </div>
 

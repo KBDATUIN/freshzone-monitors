@@ -7,6 +7,9 @@ function getCsrfToken() {
 
 // ── AUTO LOGIN: check if already logged in ────────────────────
 (async function checkAutoLogin() {
+    // Skip auto-login if ?tab=signup or ?new=1 is in the URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('tab') === 'signup' || params.get('new') === '1') return;
     const user = await hydrateSessionUser();
     if (user) {
         window.location.href = 'dashboard.html';
