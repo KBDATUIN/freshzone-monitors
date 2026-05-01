@@ -1,0 +1,806 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FRESHZONE UI/UX IMPROVEMENTS v2.0
+   Additive layer — loads AFTER ui-improvements.css.
+   Enhances: sensor cards, auth page, history, profile, nav, 
+             mobile, animations, dark mode, typography, micro-interactions
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   1. GLOBAL TOKENS & TYPOGRAPHY UPGRADES
+   ───────────────────────────────────────────────────────────────── */
+
+:root {
+    --fz-radius-card: 18px !important;
+    --fz-radius-pill: 99px !important;
+    --fz-radius-input: 12px !important;
+    --fz-shadow-card: 0 4px 24px rgba(0, 50, 100, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+    --fz-shadow-hover: 0 12px 40px rgba(0, 50, 100, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    --fz-shadow-active: 0 2px 8px rgba(0, 50, 100, 0.12) !important;
+    --fz-green: #16a34a !important;
+    --fz-red: #dc2626 !important;
+    --fz-amber: #d97706 !important;
+    --fz-blue: #0284c7 !important;
+    --fz-teal: #0891b2 !important;
+    --fz-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+[data-theme="dark"]:root,
+[data-theme="dark"] {
+    --fz-shadow-card: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+    --fz-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Better base typography */
+body {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   2. SENSOR / LOCATION CARDS — enhanced visual hierarchy
+   ───────────────────────────────────────────────────────────────── */
+
+.location-card {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    transition: var(--fz-transition) !important;
+    border: 1.5px solid rgba(0, 180, 216, 0.12) !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.location-card:hover {
+    box-shadow: var(--fz-shadow-hover) !important;
+    transform: translateY(-3px) !important;
+    border-color: rgba(0, 180, 216, 0.25) !important;
+}
+
+.location-card:active {
+    transform: translateY(-1px) !important;
+    box-shadow: var(--fz-shadow-active) !important;
+}
+
+/* Detecting state — stronger visual */
+.location-card.detecting {
+    border-color: rgba(220, 38, 38, 0.35) !important;
+    animation: fz-pulse-border 2s ease-in-out infinite !important;
+}
+
+@keyframes fz-pulse-border {
+    0%, 100% { border-color: rgba(220, 38, 38, 0.35); box-shadow: 0 4px 24px rgba(220, 38, 38, 0.1); }
+    50% { border-color: rgba(220, 38, 38, 0.6); box-shadow: 0 4px 32px rgba(220, 38, 38, 0.2); }
+}
+
+/* Status dot improvements */
+.status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+}
+
+/* Pulsing online dot */
+.dot-online,
+.status-dot.online {
+    background: #22c55e !important;
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4) !important;
+    animation: fz-dot-pulse 2s ease-in-out infinite !important;
+}
+
+@keyframes fz-dot-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+    70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+.dot-offline,
+.status-dot.offline {
+    background: #94a3b8 !important;
+}
+
+.dot-alert,
+.status-dot.alert {
+    background: #ef4444 !important;
+    animation: fz-dot-pulse-red 1.5s ease-in-out infinite !important;
+}
+
+@keyframes fz-dot-pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+    70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* AQI Badge improvements */
+.aqi-badge {
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    padding: 3px 10px !important;
+    border-radius: 99px !important;
+    text-transform: uppercase !important;
+}
+
+/* PM chips */
+.pm-chip {
+    border-radius: 8px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    padding: 4px 8px !important;
+    transition: var(--fz-transition) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   3. NAVIGATION — refined polish
+   ───────────────────────────────────────────────────────────────── */
+
+nav {
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+}
+
+/* Nav container better spacing */
+.nav-container {
+    padding: 0 1.25rem !important;
+    height: 58px !important;
+    gap: 1rem !important;
+}
+
+/* Smoother nav link transitions */
+.nav-links a {
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease !important;
+    position: relative !important;
+}
+
+.nav-links a:hover {
+    transform: translateY(-1px) !important;
+}
+
+.nav-links a.active {
+    font-weight: 600 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   4. AUTH PAGE — premium feel
+   ───────────────────────────────────────────────────────────────── */
+
+.auth-container {
+    border-radius: 24px !important;
+    box-shadow: 0 20px 60px rgba(0, 30, 80, 0.15), 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    overflow: hidden !important;
+}
+
+.auth-tabs {
+    background: rgba(0, 180, 216, 0.06) !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    gap: 2px !important;
+}
+
+.auth-tab {
+    border-radius: 9px !important;
+    transition: var(--fz-transition) !important;
+    font-weight: 500 !important;
+    font-size: 0.88rem !important;
+}
+
+.auth-tab.active {
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(0, 50, 100, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+/* Input groups */
+.input-group {
+    margin-bottom: 1rem !important;
+}
+
+.input-group input,
+.input-group select {
+    border-radius: var(--fz-radius-input) !important;
+    border: 1.5px solid rgba(0, 150, 200, 0.2) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    font-size: 0.9rem !important;
+    padding: 0.75rem 1rem !important;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: rgba(0, 180, 216, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.12) !important;
+    outline: none !important;
+}
+
+/* Trust badges */
+.auth-trust-badge {
+    font-size: 0.72rem !important;
+    padding: 3px 10px !important;
+    border-radius: 99px !important;
+    background: rgba(34, 197, 94, 0.1) !important;
+    border: 1px solid rgba(34, 197, 94, 0.2) !important;
+    color: #15803d !important;
+    font-weight: 500 !important;
+}
+
+[data-theme="dark"] .auth-trust-badge {
+    background: rgba(34, 197, 94, 0.08) !important;
+    color: #4ade80 !important;
+    border-color: rgba(34, 197, 94, 0.15) !important;
+}
+
+/* Primary button */
+.btn-primary {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.01em !important;
+    transition: var(--fz-transition) !important;
+    padding: 0.75rem 1.5rem !important;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(0, 150, 200, 0.35) !important;
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   5. HISTORY PAGE — cleaner table & filters
+   ───────────────────────────────────────────────────────────────── */
+
+.filter-bar {
+    border-radius: 16px !important;
+    padding: 1rem 1.25rem !important;
+    box-shadow: var(--fz-shadow-card) !important;
+}
+
+.filter-input-wrap input,
+.filter-input-wrap select {
+    border-radius: 10px !important;
+    font-size: 0.875rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.filter-input-wrap input:focus,
+.filter-input-wrap select:focus {
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.12) !important;
+}
+
+.filter-action-btn {
+    border-radius: 10px !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    transition: var(--fz-transition) !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.filter-action-btn:hover {
+    transform: translateY(-1px) !important;
+}
+
+.filter-export-btn {
+    box-shadow: 0 2px 8px rgba(0, 150, 200, 0.2) !important;
+}
+
+/* Table improvements */
+table {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+thead th {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    padding: 0.75rem 1rem !important;
+}
+
+tbody tr {
+    transition: background 0.15s ease !important;
+}
+
+tbody tr:hover {
+    background: rgba(0, 180, 216, 0.04) !important;
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background: rgba(0, 180, 216, 0.06) !important;
+}
+
+tbody td {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.875rem !important;
+    vertical-align: middle !important;
+}
+
+/* Status badges in history table */
+.status-badge,
+[class*="status-"] {
+    border-radius: 99px !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    padding: 3px 10px !important;
+    text-transform: uppercase !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   6. PROFILE PAGE — cleaner layout
+   ───────────────────────────────────────────────────────────────── */
+
+.profile-card,
+.profile-section {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    border: 1px solid rgba(0, 150, 200, 0.1) !important;
+    transition: var(--fz-transition) !important;
+}
+
+.profile-card:hover,
+.profile-section:hover {
+    box-shadow: var(--fz-shadow-hover) !important;
+}
+
+/* Avatar */
+.profile-avatar,
+.avatar-circle {
+    border: 3px solid rgba(0, 180, 216, 0.3) !important;
+    box-shadow: 0 4px 16px rgba(0, 150, 200, 0.2) !important;
+    transition: var(--fz-transition) !important;
+}
+
+.profile-avatar:hover,
+.avatar-circle:hover {
+    border-color: rgba(0, 180, 216, 0.6) !important;
+    box-shadow: 0 6px 24px rgba(0, 150, 200, 0.3) !important;
+}
+
+/* Form inputs in profile */
+.profile-input,
+.edit-input {
+    border-radius: var(--fz-radius-input) !important;
+    border: 1.5px solid rgba(0, 150, 200, 0.2) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    font-size: 0.9rem !important;
+}
+
+.profile-input:focus,
+.edit-input:focus {
+    border-color: rgba(0, 180, 216, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1) !important;
+    outline: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   7. BUTTONS — consistent system
+   ───────────────────────────────────────────────────────────────── */
+
+.btn-secondary,
+.btn-outline {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: var(--fz-transition) !important;
+    border: 1.5px solid currentColor !important;
+}
+
+.btn-secondary:hover,
+.btn-outline:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+}
+
+.btn-danger {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    transition: var(--fz-transition) !important;
+}
+
+.btn-danger:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.25) !important;
+}
+
+/* Acknowledge & Resolve buttons */
+.ack-btn,
+.resolve-btn {
+    border-radius: 10px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    transition: var(--fz-transition) !important;
+    padding: 0.45rem 0.9rem !important;
+}
+
+.ack-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.3) !important;
+}
+
+.resolve-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   8. NOTIFICATION / TOAST — polished
+   ───────────────────────────────────────────────────────────────── */
+
+.notification {
+    border-radius: 14px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.875rem 1.25rem !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    animation: fz-toast-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes fz-toast-in {
+    from { opacity: 0; transform: translateY(-12px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   9. STAFF ALERT BAR — more prominent
+   ───────────────────────────────────────────────────────────────── */
+
+.staff-alert-bar {
+    border-radius: 14px !important;
+    padding: 0.875rem 1.25rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2) !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+    animation: fz-alert-slide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+@keyframes fz-alert-slide {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   10. MODAL — smoother overlay
+   ───────────────────────────────────────────────────────────────── */
+
+.modal-overlay-custom {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal-content-custom {
+    border-radius: 20px !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+    animation: fz-modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+@keyframes fz-modal-in {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   11. CONTACT PAGE — card improvements
+   ───────────────────────────────────────────────────────────────── */
+
+.contact-card,
+.ticket-card {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    transition: var(--fz-transition) !important;
+    border: 1px solid rgba(0, 150, 200, 0.1) !important;
+}
+
+.contact-card:hover,
+.ticket-card:hover {
+    box-shadow: var(--fz-shadow-hover) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Textarea */
+textarea {
+    border-radius: var(--fz-radius-input) !important;
+    border: 1.5px solid rgba(0, 150, 200, 0.2) !important;
+    font-size: 0.9rem !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+    resize: vertical !important;
+    min-height: 120px !important;
+}
+
+textarea:focus {
+    border-color: rgba(0, 180, 216, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1) !important;
+    outline: none !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   12. ABOUT PAGE — section polish
+   ───────────────────────────────────────────────────────────────── */
+
+.about-section,
+.about-card,
+.feature-card {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    transition: var(--fz-transition) !important;
+}
+
+.feature-card:hover {
+    box-shadow: var(--fz-shadow-hover) !important;
+    transform: translateY(-3px) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   13. PUSH NOTIFICATION TOGGLE — pill style
+   ───────────────────────────────────────────────────────────────── */
+
+.push-toggle-wrap {
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    border: 1px solid rgba(0, 150, 200, 0.15) !important;
+    transition: var(--fz-transition) !important;
+}
+
+.push-toggle-wrap:hover {
+    background: rgba(0, 180, 216, 0.04) !important;
+    border-color: rgba(0, 180, 216, 0.25) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   14. FOOTER — subtle improvements
+   ───────────────────────────────────────────────────────────────── */
+
+.site-footer {
+    border-top: 1px solid rgba(0, 180, 216, 0.12) !important;
+    padding: 1.5rem 0 !important;
+    font-size: 0.8rem !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   15. MOBILE IMPROVEMENTS
+   ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .location-card {
+        border-radius: 14px !important;
+    }
+
+    .auth-container {
+        border-radius: 20px !important;
+        margin: 0.75rem !important;
+    }
+
+    .filter-bar {
+        border-radius: 14px !important;
+        padding: 0.875rem 1rem !important;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .filter-action-btn {
+        min-height: 44px !important;
+        font-size: 0.9rem !important;
+    }
+
+    tbody td {
+        padding: 0.75rem 0.75rem !important;
+        font-size: 0.82rem !important;
+    }
+
+    .notification {
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+        width: auto !important;
+        border-radius: 12px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        border-radius: 16px !important;
+        margin: 0.5rem !important;
+    }
+
+    .auth-tab {
+        font-size: 0.82rem !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+
+    .location-card {
+        border-radius: 12px !important;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   16. DARK MODE REFINEMENTS
+   ───────────────────────────────────────────────────────────────── */
+
+[data-theme="dark"] .location-card {
+    border-color: rgba(0, 180, 216, 0.08) !important;
+}
+
+[data-theme="dark"] .location-card:hover {
+    border-color: rgba(0, 180, 216, 0.2) !important;
+}
+
+[data-theme="dark"] .auth-container {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .auth-tab.active {
+    background: rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .filter-bar {
+    border-color: rgba(0, 180, 216, 0.08) !important;
+}
+
+[data-theme="dark"] .input-group input,
+[data-theme="dark"] .input-group select,
+[data-theme="dark"] .filter-input-wrap input,
+[data-theme="dark"] .filter-input-wrap select,
+[data-theme="dark"] textarea {
+    border-color: rgba(0, 180, 216, 0.15) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .input-group input:focus,
+[data-theme="dark"] .input-group select:focus,
+[data-theme="dark"] .filter-input-wrap input:focus,
+[data-theme="dark"] .filter-input-wrap select:focus,
+[data-theme="dark"] textarea:focus {
+    border-color: rgba(0, 180, 216, 0.4) !important;
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.08) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme="dark"] .modal-content-custom {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+[data-theme="dark"] .notification {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   17. AQI GUIDE — collapsible polish
+   ───────────────────────────────────────────────────────────────── */
+
+.aqi-guide,
+.aqi-legend {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    overflow: hidden !important;
+}
+
+.aqi-band {
+    transition: opacity 0.15s ease, transform 0.15s ease !important;
+    border-radius: 8px !important;
+    margin-bottom: 4px !important;
+}
+
+.aqi-band:hover {
+    opacity: 0.9 !important;
+    transform: translateX(3px) !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   18. FIELD ERROR STATES — clearer feedback
+   ───────────────────────────────────────────────────────────────── */
+
+.field-error {
+    border-color: rgba(220, 38, 38, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+    animation: fz-shake 0.4s ease !important;
+}
+
+@keyframes fz-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.field-error-msg {
+    font-size: 0.75rem !important;
+    color: #dc2626 !important;
+    font-weight: 500 !important;
+    margin-top: 4px !important;
+    display: block !important;
+    animation: fz-fade-in 0.2s ease !important;
+}
+
+@keyframes fz-fade-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   19. LOADING STATES — skeleton shimmer
+   ───────────────────────────────────────────────────────────────── */
+
+.loading-shimmer {
+    background: linear-gradient(90deg,
+        rgba(0, 180, 216, 0.08) 25%,
+        rgba(0, 180, 216, 0.15) 50%,
+        rgba(0, 180, 216, 0.08) 75%) !important;
+    background-size: 200% 100% !important;
+    animation: fz-shimmer 1.5s infinite !important;
+    border-radius: 8px !important;
+}
+
+@keyframes fz-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   20. ACCESSIBILITY — focus visible
+   ───────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+    outline: 2px solid rgba(0, 180, 216, 0.6) !important;
+    outline-offset: 2px !important;
+    border-radius: 4px !important;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid rgba(0, 180, 216, 0.6) !important;
+    outline-offset: 3px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   21. PAGE LOAD ANIMATION
+   ───────────────────────────────────────────────────────────────── */
+
+.main-content,
+main,
+.container {
+    animation: fz-page-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both !important;
+}
+
+@keyframes fz-page-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   22. STAT BOXES / SUMMARY CARDS
+   ───────────────────────────────────────────────────────────────── */
+
+.stat-box,
+.summary-card,
+.info-card {
+    border-radius: var(--fz-radius-card) !important;
+    box-shadow: var(--fz-shadow-card) !important;
+    transition: var(--fz-transition) !important;
+    border: 1px solid rgba(0, 150, 200, 0.08) !important;
+}
+
+.stat-box:hover,
+.summary-card:hover,
+.info-card:hover {
+    box-shadow: var(--fz-shadow-hover) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Stat numbers */
+.stat-number,
+.stat-value {
+    font-variant-numeric: tabular-nums !important;
+    font-feature-settings: "tnum" !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* END ui-improvements-v2.css */
