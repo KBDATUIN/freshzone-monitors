@@ -1,0 +1,455 @@
+/* ================================================================
+   fz-final-fix.css — LOAD ABSOLUTE LAST
+   Fixes ALL remaining issues:
+   1. Mobile alignment for auth page (trust badges, header, footer)
+   2. Light mode readability (all text, badges, footer)
+   3. White card outline — mobile only on all pages
+   4. Description text corrections
+   5. Full mobile optimization
+   ================================================================ */
+
+/* ─── 1. AUTH HEADER — fix misaligned top elements on mobile ─── */
+
+.auth-wrapper {
+    padding: 1rem 0.75rem !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+.auth-container {
+    width: 100% !important;
+    max-width: 460px !important;
+    margin: 0 auto !important;
+    padding: 1.25rem 1rem 1.75rem !important;
+    box-sizing: border-box !important;
+}
+
+.auth-header {
+    text-align: center !important;
+    margin-bottom: 1.25rem !important;
+    padding: 0 0.25rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.auth-header h1 {
+    font-size: clamp(1.5rem, 6vw, 1.9rem) !important;
+    line-height: 1.15 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+.auth-header p {
+    font-size: clamp(0.78rem, 3vw, 0.9rem) !important;
+    line-height: 1.55 !important;
+    margin-top: 0.4rem !important;
+    padding: 0 0.5rem !important;
+    /* LIGHT MODE — readable */
+    color: rgba(0, 55, 100, 0.85) !important;
+    text-shadow: none !important;
+}
+
+[data-theme="dark"] .auth-header p {
+    color: rgba(210, 235, 255, 0.85) !important;
+}
+
+/* Trust badges row — ALWAYS centered, wraps cleanly */
+.auth-trust-row {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    margin-top: 0.85rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* LIGHT MODE trust badges — readable */
+.auth-trust-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    background: rgba(0, 78, 122, 0.10) !important;
+    border: 1px solid rgba(0, 78, 122, 0.22) !important;
+    color: #004e7a !important;
+    border-radius: 99px !important;
+    padding: 4px 11px !important;
+    font-size: clamp(0.62rem, 2.5vw, 0.7rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    white-space: nowrap !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+[data-theme="dark"] .auth-trust-badge {
+    background: rgba(255, 255, 255, 0.10) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: rgba(200, 235, 255, 0.92) !important;
+}
+
+.auth-trust-badge svg {
+    width: 11px !important;
+    height: 11px !important;
+    flex-shrink: 0 !important;
+}
+
+/* ─── 2. LIGHT MODE READABILITY — all text elements ─────────── */
+
+/* Footer copyright & description */
+.auth-footer {
+    color: #003a5c !important;
+    text-align: center !important;
+    font-size: 0.75rem !important;
+    line-height: 1.7 !important;
+    padding: 0.75rem 0 0 !important;
+    margin-top: 0.75rem !important;
+    border-top: 1px solid rgba(0, 78, 122, 0.12) !important;
+}
+
+[data-theme="dark"] .auth-footer {
+    color: rgba(255, 255, 255, 0.72) !important;
+    border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.auth-footer a {
+    color: #0077a8 !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .auth-footer a {
+    color: #38bdf8 !important;
+}
+
+/* Auth footer — corrected description text via CSS content injection */
+/* (actual text change done in auth.html) */
+
+/* Page footer on all other pages */
+footer,
+.site-footer {
+    color: rgba(0, 50, 85, 0.82) !important;
+}
+
+[data-theme="dark"] footer,
+[data-theme="dark"] .site-footer {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* ─── 3. WHITE CARD OUTLINE — mobile only on ALL pages ──────── */
+/* On desktop: no outline (clean look)
+   On mobile: subtle white/glass outline (looks cool) */
+
+@media (min-width: 769px) {
+    /* Desktop — remove outline from auth card and all glass cards */
+    .auth-card,
+    .glass-card,
+    .card,
+    .container > .card,
+    .hero {
+        box-shadow: 0 24px 64px rgba(0, 78, 122, 0.14), 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+        border: 1px solid rgba(0, 150, 200, 0.12) !important;
+    }
+    [data-theme="dark"] .auth-card,
+    [data-theme="dark"] .glass-card,
+    [data-theme="dark"] .card {
+        border: 1px solid rgba(34, 211, 238, 0.10) !important;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Mobile — cool white glass outline on ALL page cards */
+    .auth-card {
+        border: 1.5px solid rgba(255, 255, 255, 0.75) !important;
+        box-shadow:
+            0 16px 48px rgba(0, 78, 122, 0.18),
+            0 0 0 1px rgba(255, 255, 255, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    }
+    .glass-card,
+    .card,
+    .container > .card,
+    .hero,
+    .filter-bar,
+    .log-container,
+    .contact-form-card,
+    .profile-section,
+    .about-card,
+    .privacy-card,
+    .terms-card {
+        border: 1.5px solid rgba(255, 255, 255, 0.65) !important;
+        box-shadow:
+            0 8px 32px rgba(0, 50, 100, 0.12),
+            0 0 0 1px rgba(255, 255, 255, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    }
+    [data-theme="dark"] .auth-card,
+    [data-theme="dark"] .glass-card,
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .container > .card,
+    [data-theme="dark"] .hero {
+        border: 1.5px solid rgba(0, 212, 232, 0.2) !important;
+        box-shadow:
+            0 8px 32px rgba(0, 0, 0, 0.35),
+            0 0 0 1px rgba(0, 212, 232, 0.12),
+            inset 0 1px 0 rgba(0, 212, 232, 0.06) !important;
+    }
+}
+
+/* ─── 4. FULL MOBILE OPTIMIZATION ───────────────────────────── */
+
+@media (max-width: 768px) {
+    /* Auth card padding */
+    .auth-card {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 20px !important;
+    }
+
+    /* Container padding */
+    .container {
+        padding: 0.875rem 0.75rem !important;
+    }
+
+    /* Prevent horizontal overflow on all pages */
+    body {
+        overflow-x: hidden !important;
+    }
+
+    /* Dashboard masthead */
+    .dashboard-masthead {
+        padding: 1.25rem !important;
+        border-radius: 16px !important;
+    }
+
+    /* Nav bar height */
+    .nav-container {
+        height: 52px !important;
+    }
+
+    /* Cards on inner pages */
+    .glass-card,
+    .card,
+    .hero {
+        border-radius: 16px !important;
+    }
+
+    /* Location cards — sensor grid */
+    .location-card {
+        border-radius: 14px !important;
+        padding: 1rem !important;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .stat-box {
+        padding: 0.75rem 0.5rem !important;
+    }
+
+    .stat-box h3 {
+        font-size: 1.1rem !important;
+    }
+
+    .stat-box p {
+        font-size: 0.62rem !important;
+    }
+
+    /* Buttons — proper touch targets */
+    .btn, button[class*="btn"] {
+        min-height: 44px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+        padding: 0.875rem !important;
+        border-radius: 14px !important;
+    }
+
+    /* History table — stacked on mobile */
+    .filter-inputs-row {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Page hero */
+    .page-hero {
+        padding: 1.25rem 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .page-hero h1 {
+        font-size: clamp(1.3rem, 5vw, 1.6rem) !important;
+    }
+
+    /* Modal */
+    .modal-content-custom,
+    .modal-content {
+        border-radius: 18px !important;
+        margin: 0.5rem !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small — iPhones, small Androids */
+    .auth-container {
+        padding: 0.875rem 0.75rem 1.5rem !important;
+    }
+
+    .auth-header h1 {
+        font-size: 1.45rem !important;
+    }
+
+    .auth-trust-row {
+        gap: 0.4rem !important;
+    }
+
+    .auth-trust-badge {
+        font-size: 0.6rem !important;
+        padding: 3px 8px !important;
+    }
+
+    .auth-card {
+        padding: 1.25rem 1rem !important;
+        border-radius: 18px !important;
+    }
+
+    /* Input fields — prevent iOS zoom */
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+
+    /* Dashboard sensor grid */
+    .sensor-grid,
+    .live-sensor-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    /* Stats 2-col on very small */
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    /* AQI guide grid */
+    .aqi-guide-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Notification toast */
+    .notification {
+        width: calc(100vw - 1rem) !important;
+        max-width: calc(100vw - 1rem) !important;
+        font-size: 0.82rem !important;
+    }
+}
+
+/* ─── 5. ALL PAGES — readability in light mode ───────────────── */
+
+/* Page hero text — history, about, contact */
+.page-hero h1 {
+    color: white !important;
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2) !important;
+}
+
+.page-hero p,
+.page-hero .page-hero-sub {
+    color: rgba(255, 255, 255, 0.88) !important;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Dashboard last-updated bar */
+.last-updated-bar {
+    color: #004e7a !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .last-updated-bar {
+    color: #94a3b8 !important;
+}
+
+/* Appearance label */
+.auth-dark-label {
+    color: #004e7a !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .auth-dark-label {
+    color: rgba(200, 238, 255, 0.75) !important;
+}
+
+/* Table cells */
+.log-container td {
+    color: #0f172a !important;
+}
+
+[data-theme="dark"] .log-container td {
+    color: #e2e8f0 !important;
+}
+
+.log-container th {
+    color: #003a5c !important;
+}
+
+[data-theme="dark"] .log-container th {
+    color: #7dd3fc !important;
+}
+
+/* Status text in sensor cards */
+#status-zone1,
+#status-zone2,
+[id^="status-zone"] {
+    color: var(--text, #003049) !important;
+}
+
+[data-theme="dark"] [id^="status-zone"] {
+    color: #e2f0f8 !important;
+}
+
+/* ─── 6. AUTH CARD GLOW — desktop only ──────────────────────── */
+
+@media (min-width: 769px) {
+    .auth-card {
+        transition: box-shadow 0.3s ease !important;
+    }
+    .auth-card:hover {
+        box-shadow:
+            0 28px 72px rgba(0, 78, 122, 0.2),
+            0 8px 24px rgba(0, 150, 200, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    }
+}
+
+/* ─── 7. NOTIFICATION TOAST — always on top ─────────────────── */
+
+.notification {
+    z-index: 9999 !important;
+}
+
+/* ─── 8. SCROLL & OVERFLOW GUARDS ───────────────────────────── */
+
+html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+}
+
+.auth-wrapper,
+.container,
+.nav-container,
+.page-hero,
+.glass-card,
+.card,
+.auth-container {
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+}
+
+/* END fz-final-fix.css */
