@@ -384,3 +384,146 @@ footer,
     pointer-events: none !important;
     z-index: 0 !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE FIX v2 — Notification alignment + Auth header readability
+   Added: 2026-05 | Applies to ALL pages (load-order: last)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── N1. NOTIFICATION — single authoritative rule set ──────────
+   Previous files set conflicting position/transform combinations.
+   This block is the single source of truth. The !important chain
+   here is intentional — earlier files have !important too.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Desktop: top-right corner */
+.notification {
+    position: fixed !important;
+    top: 1.25rem !important;
+    right: 1.25rem !important;
+    left: auto !important;
+    transform: translateY(-10px) scale(0.97) !important;
+    min-width: 280px !important;
+    max-width: 360px !important;
+    width: auto !important;
+    margin: 0 !important;
+    z-index: 99999 !important;
+    text-align: left !important;
+}
+.notification.show {
+    transform: translateY(0) scale(1) !important;
+}
+
+/* Mobile: centered, full-width strip below status bar */
+@media (max-width: 768px) {
+    .notification {
+        left: 50% !important;
+        right: auto !important;
+        top: max(env(safe-area-inset-top, 0px) + 0.65rem, 0.65rem) !important;
+        width: calc(100vw - 2rem) !important;
+        max-width: 480px !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        transform: translateX(-50%) translateY(-10px) scale(0.97) !important;
+        text-align: center !important;
+        border-radius: 16px !important;
+        font-size: 0.875rem !important;
+        padding: 0.75rem 1rem !important;
+    }
+    .notification.show {
+        transform: translateX(-50%) translateY(0) scale(1) !important;
+    }
+}
+
+/* Extra-small phones */
+@media (max-width: 400px) {
+    .notification {
+        width: calc(100vw - 1rem) !important;
+        max-width: calc(100vw - 1rem) !important;
+        font-size: 0.82rem !important;
+    }
+}
+
+/* ─── N2. AUTH HEADER — mobile readability ──────────────────────
+   On narrow screens the h1 + tagline + trust row stack up and
+   can overflow or shrink to unreadable sizes. Fixed below.
+   ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .auth-header {
+        padding: 0 0.5rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+    .auth-header h1 {
+        font-size: 2rem !important;
+        letter-spacing: -0.04em !important;
+        line-height: 1.1 !important;
+    }
+    .auth-header p {
+        font-size: 0.875rem !important;
+        line-height: 1.5 !important;
+        padding: 0.3rem 0.85rem !important;
+        margin-top: 0.6rem !important;
+        /* Ensure readable on all backgrounds */
+        color: rgba(0, 55, 100, 0.88) !important;
+    }
+    [data-theme="dark"] .auth-header p {
+        color: rgba(210, 238, 255, 0.88) !important;
+    }
+    /* Trust badges: smaller gap, don't overflow */
+    .auth-trust-row {
+        gap: 0.5rem !important;
+        margin-top: 0.65rem !important;
+        justify-content: center !important;
+    }
+    .auth-trust-badge {
+        font-size: 0.65rem !important;
+        padding: 4px 9px 4px 8px !important;
+        border-radius: 12px !important;
+    }
+    .auth-trust-badge svg {
+        width: 11px !important;
+        height: 11px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .auth-header h1 {
+        font-size: 1.75rem !important;
+    }
+    .auth-header p {
+        font-size: 0.8rem !important;
+    }
+    /* Hide trust row on very small screens to reduce clutter */
+    .auth-trust-row {
+        display: none !important;
+    }
+}
+
+/* ─── N3. AUTH HEADER h1 — always readable regardless of bg ─────
+   The gradient text looks great on dark mode but can appear
+   washed out on light gradient backgrounds on mobile browsers.
+   ─────────────────────────────────────────────────────────────── */
+.auth-header h1 {
+    /* Solid fallback for browsers where background-clip:text fails */
+    color: #003a5c;
+}
+[data-theme="dark"] .auth-header h1 {
+    color: #e2f0f8;
+}
+
+/* ─── N4. GENERAL MOBILE VIEWPORT SAFETY ────────────────────────
+   Prevent horizontal scroll caused by overflowing elements.
+   Applied to all pages via this last-loaded file.
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden !important;
+    }
+    /* Prevent fixed elements from causing layout shift */
+    .auth-wrapper,
+    .page-wrapper,
+    main {
+        overflow-x: hidden !important;
+    }
+}
