@@ -8,7 +8,6 @@ functions/.env.local
 # ── Dependencies ──────────────────────────────────────────────
 node_modules/
 functions/node_modules/
-frontend/node_modules/
 
 # ── Firebase local cache ──────────────────────────────────────
 .firebase/

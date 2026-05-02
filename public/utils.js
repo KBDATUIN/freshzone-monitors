@@ -81,9 +81,44 @@ async function hydrateSessionUser(forceRefresh = false) {
 function showNotification(message, type = 'info', duration = 3000) {
     const n = document.getElementById('notification');
     if (!n) return;
+    // Apply position inline so CSS cascade cannot override it
+    const isMobile = window.innerWidth <= 768;
+    n.style.cssText = [
+        'position:fixed',
+        'z-index:999999',
+        isMobile ? 'top:0.65rem' : 'top:1.25rem',
+        isMobile ? 'left:0.65rem' : 'left:auto',
+        isMobile ? 'right:0.65rem' : 'right:1.25rem',
+        isMobile ? 'width:auto' : 'min-width:280px',
+        isMobile ? 'max-width:none' : 'max-width:360px',
+        isMobile ? 'text-align:center' : 'text-align:left',
+        'color:white',
+        'padding:0.85rem 1.2rem',
+        'border-radius:14px',
+        'font-size:0.9rem',
+        'font-weight:600',
+        'box-shadow:0 8px 32px rgba(0,0,0,0.22)',
+        'opacity:1',
+        'visibility:visible',
+        'transform:translateY(0) scale(1)',
+        'animation:none',
+        'transition:opacity 0.3s ease',
+    ].join(';');
+    // Set background by type
+    const backgrounds = {
+        success: 'linear-gradient(135deg,#16a34a,#15803d)',
+        error:   'linear-gradient(135deg,#dc2626,#b91c1c)',
+        info:    'linear-gradient(135deg,#0284c7,#0369a1)',
+        warning: 'linear-gradient(135deg,#d97706,#b45309)',
+    };
+    n.style.background = backgrounds[type] || backgrounds.info;
     n.textContent = message;
     n.className = `notification show ${type}`;
-    setTimeout(() => { n.className = 'notification'; }, duration);
+    clearTimeout(n._hideTimer);
+    n._hideTimer = setTimeout(() => {
+        n.style.opacity = '0';
+        setTimeout(() => { n.className = 'notification'; n.style.cssText = ''; }, 300);
+    }, duration);
 }
 
 // ── LOGOUT MODAL ──────────────────────────────────────────────
