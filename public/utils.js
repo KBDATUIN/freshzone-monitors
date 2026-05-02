@@ -82,29 +82,15 @@ function showNotification(message, type = 'info', duration = 3500) {
     const n = document.getElementById('notification');
     if (!n) return;
     clearTimeout(n._t);
-    const mob = window.innerWidth <= 768;
-    const bg = {success:'linear-gradient(135deg,#16a34a,#15803d)',error:'linear-gradient(135deg,#dc2626,#b91c1c)',info:'linear-gradient(135deg,#0284c7,#0369a1)',warning:'linear-gradient(135deg,#d97706,#b45309)'};
-    n.style.cssText = [
-        'position:fixed','z-index:999999',
-        mob ? 'top:0.7rem':'top:1.25rem',
-        mob ? 'left:0.7rem':'left:auto',
-        mob ? 'right:0.7rem':'right:1.25rem',
-        mob ? 'width:auto':'min-width:280px',
-        mob ? 'max-width:none':'max-width:380px',
-        mob ? 'text-align:center':'text-align:left',
-        'color:#fff','padding:0.85rem 1.2rem','border-radius:14px',
-        'font-size:0.9rem','font-weight:600',
-        'box-shadow:0 8px 32px rgba(0,0,0,0.22)',
-        'opacity:1','visibility:visible',
-        'transform:translateY(0) scale(1)',
-        'animation:none','transition:opacity 0.3s ease',
-        'background:' + (bg[type] || bg.info)
-    ].join(';');
+    const validTypes = ['success', 'error', 'info', 'warning'];
+    const safeType = validTypes.includes(type) ? type : 'info';
+    // Let CSS handle all positioning/sizing — no inline style overrides
+    n.style.cssText = '';
     n.textContent = message;
-    n.className = 'notification show ' + type;
+    n.className = 'notification show ' + safeType;
     n._t = setTimeout(() => {
-        n.style.opacity = '0';
-        setTimeout(() => { n.className = 'notification'; n.style.cssText = ''; }, 320);
+        n.classList.remove('show');
+        setTimeout(() => { n.className = 'notification'; }, 400);
     }, duration);
 }
 
