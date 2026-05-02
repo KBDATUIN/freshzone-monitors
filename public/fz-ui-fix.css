@@ -482,3 +482,11 @@ footer,
     body { overflow-x: hidden !important; }
     .auth-wrapper, .page-wrapper, main { overflow-x: hidden !important; }
 }
+
+/* ─── CRITICAL: auth-wrapper must NOT clip fixed notification ───
+   overflow:hidden on a parent can trap position:fixed children
+   on mobile browsers (known iOS/Android WebKit behaviour).
+   ─────────────────────────────────────────────────────────────── */
+.auth-wrapper {
+    overflow: visible !important;
+}

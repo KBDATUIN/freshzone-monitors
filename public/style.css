@@ -1574,7 +1574,7 @@ button, .nav-links a, label { font-family: 'Outfit', sans-serif; }
 /* ── AUTH PAGE — complete visual overhaul ─────────────────────── */
 .auth-wrapper {
     background: none;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* Animated mesh behind auth */
