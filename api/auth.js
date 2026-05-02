@@ -86,21 +86,22 @@ async function getFailedAttempts(identifier) {
     return rows[0].count;
 }
 
-// FIX: OTP send rate limit now stored in the database instead of an in-memory
-// Map. The old Map reset on every Render restart, clearing the rate limit.
-// Uses auth_otp_store to count recent sends per email per OTP type.
-async function checkOtpSendRateLimit(email, type) {
-    const [rows] = await db.query(
-        `SELECT COUNT(*) AS count FROM auth_otp_store
-         WHERE email = ? AND otp_type = ?
-           AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)`,
-        [email, type]
-    );
-    return rows[0].count;
-}
+         *//* FIX: OTP send rate limit now stored in the database instead of an in-memory
+         * Map. The old Map reset on every Render restart, clearing the rate limit.
+         * Uses auth_otp_store to count recent sends per email per OTP type.
+         */
+        async function checkOtpSendRateLimit(email, type) {
+            const [rows] = await db.query(
+                `SELECT COUNT(*) AS count FROM auth_otp_store
+                 WHERE email = ? AND otp_type = ?
+                   AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)`,
+                [email, type]
+            );
+            return rows[0].count;
+        }
 
-// ── POST /api/auth/login ──────────────────────────────────────
-router.post('/login', csrfProtection, async (req, res) => {
+        // ── POST /api/auth/login ──────────────────────────────────────
+        router.post('/login', csrfProtection, async (req, res) => {
     const identifier = sanitizeStr(req.body.email, 255);
     const password   = typeof req.body.password === 'string' ? req.body.password.slice(0, 128) : '';
 
@@ -149,9 +150,17 @@ router.post('/login', csrfProtection, async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email, position: user.position, name: user.full_name },
+            {
+                id: user.id,
+                email: user.email,
+                position: user.position,
+                name: user.full_name,
+                jti: require('crypto').randomBytes(16).toString('hex'),
+                iss: 'freshzone-api',
+                aud: 'freshzone-client'
+            },
             process.env.JWT_SECRET,
-            { expiresIn: '8h' }
+            { expiresIn: '8h', algorithm: 'HS256' }
         );
 
         const { password_hash, ...safeUser } = user;
@@ -283,6 +292,15 @@ router.post('/verify-otp', csrfProtection, async (req, res) => {
         if (Date.now() > new Date(stored.expires_at).getTime()) {
             await db.query('DELETE FROM auth_otp_store WHERE id = ?', [stored.id]);
             return res.status(400).json({ success: false, message: 'OTP expired. Please request a new one.' });
+        }
+
+        // FIX: Brute-force lockout — check attempts before OTP comparison
+        const [attemptRow] = await db.query(
+            `SELECT attempts FROM auth_otp_store WHERE email=? AND otp_type=? AND expires_at > NOW() LIMIT 1`,
+            [email, stored.otp_type]
+        );
+        if (!attemptRow.length || attemptRow[0].attempts >= 5) {
+            return res.status(429).json({ success: false, message: 'Too many OTP attempts. Request a new code.' });
         }
 
         if ((stored.attempts || 0) >= 5) {

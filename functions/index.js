@@ -1,6 +1,8 @@
 const express      = require("express");
 const cors         = require("cors");
 const cookieParser = require("cookie-parser");
+const rateLimit    = require('express-rate-limit');
+const helmet       = require('helmet');
 
 const app = express();
 
@@ -18,6 +20,9 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 300, standardHeaders: true, legacyHeaders: false }));
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, skip: (req) => !req.path.startsWith('/api/auth') }));
 
 const authRoutes     = require("./api/auth");
 const readingsRoutes = require("./api/readings");
