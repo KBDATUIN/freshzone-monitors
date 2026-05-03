@@ -289,10 +289,12 @@
     <div class="glass-card profile-card">
 
         <!-- Avatar -->
-        <div class="profile-avatar">
-            <img src="" id="userPhoto" class="profile-img" alt="Profile photo" style="object-fit:cover;object-position:center center;">
-            <input type="file" id="upload" hidden accept="image/*" onchange="openCropModal(this)">
-            <button class="change-photo-btn" onclick="document.getElementById('upload').click()" aria-label="Change profile photo">
+        <div class="profile-avatar-wrap" style="display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-bottom:0.25rem;">
+            <div class="profile-avatar-circle" style="position:relative;display:inline-block;">
+                <img src="" id="userPhoto" class="profile-img profile-avatar" alt="Profile photo" style="object-fit:cover;object-position:center center;display:block;">
+                <input type="file" id="upload" hidden accept="image/*" onchange="openCropModal(this)">
+            </div>
+            <button class="change-photo-btn" onclick="document.getElementById('upload').click()" aria-label="Change profile photo" style="display:inline-flex;align-items:center;gap:6px;padding:0.4rem 1rem;font-size:0.8rem;font-weight:600;border-radius:20px;background:rgba(255,255,255,0.92);border:1.5px solid rgba(0,180,216,0.4);color:#0077b6;cursor:pointer;box-shadow:0 2px 8px rgba(0,80,150,0.10);white-space:nowrap;">
                 📷 Change Photo
             </button>
         </div>
