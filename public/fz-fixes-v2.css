@@ -1,136 +1,112 @@
 /* ============================================================
-   fz-fixes-v2.css  —  FreshZone UI Fixes (definitive)
-   Deploy: add as LAST <link> in every HTML page's <head>
-     <link rel="stylesheet" href="fz-fixes-v2.css">
+   fz-fixes-v2.css — FreshZone UI Fixes
    ============================================================ */
 
 
 /* ================================================================
-   1. LIGHT MODE — AUTH PAGE HERO TEXT & BADGES
-   auth-header h1/p sit on a teal gradient bg in both modes,
-   so they must always be white/light — but body h1 rule overrides.
+   1. NAV — always white text (bg is always teal)
    ================================================================ */
-
-/* Auth hero title — always white (bg is always teal) */
-.auth-header h1 {
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    text-shadow: 0 2px 16px rgba(0, 30, 70, 0.55) !important;
-}
-
-/* Auth subtitle */
-.auth-header p {
-    color: rgba(215, 242, 255, 0.92) !important;
-    text-shadow: 0 1px 6px rgba(0, 20, 50, 0.4) !important;
-}
-
-/* Trust badges (Secure Login / Verified Access / Real-time Alerts) */
-.auth-trust-badge {
-    background: rgba(255, 255, 255, 0.18) !important;
-    border: 1px solid rgba(255, 255, 255, 0.38) !important;
-    color: rgba(225, 248, 255, 0.97) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-}
-
-/* Nav bar — always white text (nav bg is always teal) */
 nav a,
 .nav-links a {
-    color: rgba(255, 255, 255, 0.90) !important;
+    color: rgba(255,255,255,0.90) !important;
 }
-nav a:hover,
-.nav-links a:hover {
+nav a:hover, .nav-links a:hover {
     color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.14) !important;
+    background: rgba(255,255,255,0.14) !important;
 }
-nav a.active,
-.nav-links a.active {
+nav a.active, .nav-links a.active {
     color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.20) !important;
+    background: rgba(255,255,255,0.20) !important;
     font-weight: 700 !important;
 }
 .dark-toggle {
-    color: rgba(255, 255, 255, 0.88) !important;
-    background: rgba(255, 255, 255, 0.14) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    color: rgba(255,255,255,0.88) !important;
+    background: rgba(255,255,255,0.14) !important;
+    border: 1px solid rgba(255,255,255,0.22) !important;
 }
 .dark-toggle:hover {
-    background: rgba(255, 255, 255, 0.26) !important;
+    background: rgba(255,255,255,0.26) !important;
 }
 .hamburger span {
-    background: rgba(255, 255, 255, 0.92) !important;
+    background: rgba(255,255,255,0.92) !important;
 }
 .nav-user {
-    color: rgba(255, 255, 255, 0.85) !important;
-}
-
-/* Light mode: sensor / monitor cards — dark text on white card */
-html:not([data-theme='dark']) .sensor-card h2,
-html:not([data-theme='dark']) .sensor-card h3,
-html:not([data-theme='dark']) .monitor-card h2,
-html:not([data-theme='dark']) .monitor-card h3,
-html:not([data-theme='dark']) .location-card h2,
-html:not([data-theme='dark']) .location-card h3 {
-    color: #063147 !important;
-}
-html:not([data-theme='dark']) .sensor-card p,
-html:not([data-theme='dark']) .sensor-card small,
-html:not([data-theme='dark']) .monitor-card p,
-html:not([data-theme='dark']) .monitor-card small,
-html:not([data-theme='dark']) .location-card p,
-html:not([data-theme='dark']) .location-card small {
-    color: #1a4a6b !important;
-}
-
-/* Dashboard last-updated text */
-html:not([data-theme='dark']) #last-updated,
-html:not([data-theme='dark']) [id*="last-updated"],
-html:not([data-theme='dark']) [class*="last-updated"] {
-    color: #1e5270 !important;
-}
-
-/* Warning banner */
-html:not([data-theme='dark']) .alert-warning,
-html:not([data-theme='dark']) [class*="role-warning"],
-html:not([data-theme='dark']) [class*="warn-"] {
-    color: #5a3300 !important;
-}
-html:not([data-theme='dark']) .alert-warning strong,
-html:not([data-theme='dark']) [class*="role-warning"] strong {
-    color: #7a4400 !important;
-}
-
-/* Logged-in-as pill */
-html:not([data-theme='dark']) [class*="user-pill"],
-html:not([data-theme='dark']) [id*="logged-in"],
-html:not([data-theme='dark']) .user-display {
-    background: rgba(255, 255, 255, 0.55) !important;
-    color: #0a2d42 !important;
-    border: 1px solid rgba(100, 180, 220, 0.35) !important;
+    color: rgba(255,255,255,0.85) !important;
 }
 
 
 /* ================================================================
-   2. COOKIE CONSENT MODAL — centered overlay
-   The cookie-consent.js injects a banner — we intercept its
-   container and force it to be a centered modal overlay.
+   2. AUTH PAGE — hero text always readable (teal bg, any mode)
    ================================================================ */
+.auth-header h1 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow: 0 2px 20px rgba(0,20,60,0.6) !important;
+}
+.auth-header p {
+    color: rgba(210,242,255,0.92) !important;
+    -webkit-text-fill-color: rgba(210,242,255,0.92) !important;
+    text-shadow: 0 1px 6px rgba(0,15,40,0.45) !important;
+}
+.auth-trust-badge {
+    background: rgba(255,255,255,0.18) !important;
+    border: 1px solid rgba(255,255,255,0.38) !important;
+    color: rgba(220,246,255,0.96) !important;
+    -webkit-text-fill-color: rgba(220,246,255,0.96) !important;
+}
 
-/* Whatever element cookie-consent.js injects as the outer wrapper:
-   force it to be a full-screen centered overlay */
-#cookie-banner,
-#cookieBanner,
-#cookie-consent,
-.cookie-banner,
-.cookie-consent,
-[id*="cookie"][id*="banner"],
-[class*="cookie"][class*="banner"] {
+
+/* ================================================================
+   3. MOBILE NAV DRAWER — centered links
+   (HTML has <a> as direct children of .mobile-nav-drawer,
+    NOT wrapped in .nav-links — fix targets them directly)
+   ================================================================ */
+.mobile-nav-drawer a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.6rem !important;
+    padding: 0.82rem 1rem !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    color: rgba(200,232,255,0.92) !important;
+    -webkit-text-fill-color: rgba(200,232,255,0.92) !important;
+    transition: background 0.18s !important;
+    margin-bottom: 2px !important;
+}
+.mobile-nav-drawer a:hover {
+    background: rgba(0,180,216,0.12) !important;
+    color: #7ec8e3 !important;
+    -webkit-text-fill-color: #7ec8e3 !important;
+}
+.mobile-nav-drawer a.active {
+    background: rgba(0,180,216,0.18) !important;
+    color: #4dcce8 !important;
+    -webkit-text-fill-color: #4dcce8 !important;
+    font-weight: 700 !important;
+}
+.mobile-nav-drawer a .nav-icon {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+    flex-shrink: 0 !important;
+    margin-right: 0 !important;
+}
+.mobile-nav-close {
+    align-self: flex-end !important;
+    margin-bottom: 0.5rem !important;
+}
+
+
+/* ================================================================
+   4. COOKIE MODAL — backup CSS if cookie-consent.js styles
+   are insufficient (the JS injects inline styles + #cookie-banner)
+   ================================================================ */
+#cookie-banner {
     position: fixed !important;
     inset: 0 !important;
-    bottom: auto !important;
-    left: auto !important;
-    right: auto !important;
-    top: 0 !important;
     width: 100% !important;
     height: 100% !important;
     max-width: none !important;
@@ -139,391 +115,45 @@ html:not([data-theme='dark']) .user-display {
     align-items: center !important;
     justify-content: center !important;
     padding: 1rem !important;
-    background: rgba(0, 20, 45, 0.52) !important;
+    background: rgba(0,20,45,0.52) !important;
     backdrop-filter: blur(5px) !important;
     -webkit-backdrop-filter: blur(5px) !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     border: none !important;
-    margin: 0 !important;
-    transform: none !important;
-}
-
-/* The inner card box */
-#cookie-banner > *,
-#cookieBanner > *,
-.cookie-banner > *,
-.cookie-consent > *,
-[id*="cookie"][id*="banner"] > *,
-[class*="cookie"][class*="banner"] > * {
-    position: relative !important;
-    inset: auto !important;
     bottom: auto !important;
     left: auto !important;
+    right: auto !important;
+    top: 0 !important;
+    margin: 0 !important;
+}
+#cookie-banner .cookie-box {
+    position: relative !important;
     width: 100% !important;
     max-width: 460px !important;
     margin: 0 auto !important;
     padding: 2rem 2rem 1.75rem !important;
     border-radius: 20px !important;
     background: #ffffff !important;
-    box-shadow: 0 24px 64px rgba(0, 30, 60, 0.25), 0 4px 16px rgba(0,0,0,0.10) !important;
-    border: 1px solid rgba(220, 235, 245, 0.9) !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0 !important;
+    box-shadow: 0 24px 64px rgba(0,30,60,0.25) !important;
+    border: 1px solid rgba(220,235,245,0.9) !important;
+    bottom: auto !important;
+    left: auto !important;
 }
-
-[data-theme='dark'] #cookie-banner > *,
-[data-theme='dark'] .cookie-banner > *,
-[data-theme='dark'] .cookie-consent > * {
+[data-theme='dark'] #cookie-banner .cookie-box {
     background: #0d1b2a !important;
-    border-color: rgba(0, 180, 216, 0.18) !important;
-    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55) !important;
+    border-color: rgba(0,180,216,0.18) !important;
 }
-
-/* Close X button — give it room so it doesn't clip the title */
-#cookie-banner .close-btn,
-.cookie-banner .close-btn,
-#cookie-banner button[onclick*="close"],
-#cookie-banner button[onclick*="reject"],
-#cookie-banner button[aria-label*="close"],
-#cookie-banner button[aria-label*="Close"],
-.cookie-banner button[aria-label*="close"],
-.cookie-banner button[aria-label*="Close"],
-#cookie-close,
-.cookie-close {
+#cookie-banner .close-btn {
     position: absolute !important;
     top: 0.9rem !important;
-    right: 0.9rem !important;  /* move to top-RIGHT so it doesn't clip title */
+    right: 0.9rem !important;
     left: auto !important;
     width: 28px !important;
     height: 28px !important;
     border-radius: 50% !important;
-    border: 1.5px solid #e2e8f0 !important;
-    background: #f8fafc !important;
-    color: #64748b !important;
-    font-size: 0.9rem !important;
-    font-weight: 700 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    line-height: 1 !important;
-    transition: background 0.18s !important;
-    z-index: 1 !important;
-    padding: 0 !important;
-    margin: 0 !important;
 }
-
-#cookie-banner .close-btn:hover,
-.cookie-banner .close-btn:hover {
-    background: #e8edf2 !important;
-    color: #0f172a !important;
-}
-
-/* Cookie heading */
-#cookie-banner h2,
-.cookie-banner h2,
-#cookie-banner h3,
-.cookie-banner h3 {
-    font-size: 1.25rem !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    margin: 0 0 0.6rem !important;
-    padding-top: 0 !important;
-    padding-right: 2rem !important; /* prevent overlap with close btn */
-}
-
-[data-theme='dark'] #cookie-banner h2,
-[data-theme='dark'] .cookie-banner h2 {
-    color: #e8f4fb !important;
-}
-
-/* Cookie body text */
-#cookie-banner p,
-.cookie-banner p {
-    font-size: 0.875rem !important;
-    line-height: 1.65 !important;
-    color: #475569 !important;
-    margin: 0 !important;
-}
-[data-theme='dark'] #cookie-banner p,
-[data-theme='dark'] .cookie-banner p {
-    color: #8fa8bc !important;
-}
-
-/* Policy link */
-#cookie-banner a,
-.cookie-banner a {
-    color: #0077b6 !important;
-    font-weight: 600 !important;
-    text-underline-offset: 2px !important;
-}
-
-/* Cookie image/illustration — float right beside text */
-#cookie-banner img,
-.cookie-banner img,
-#cookie-banner svg[width="80"],
-#cookie-banner svg[width="72"],
-.cookie-img,
-.cookie-illustration {
-    width: 72px !important;
-    height: 72px !important;
-    float: right !important;
-    margin: 0 0 0.5rem 1rem !important;
-    flex-shrink: 0 !important;
-    border-radius: 50% !important;
-}
-
-/* Action buttons row */
-#cookie-banner .cookie-actions,
-#cookie-banner .actions,
-#cookie-banner [class*="btn-row"],
-#cookie-banner [class*="buttons"],
-.cookie-banner .cookie-actions,
-.cookie-banner .actions,
-.cookie-banner [class*="buttons"] {
-    display: flex !important;
-    gap: 0.75rem !important;
-    margin-top: 1.4rem !important;
-    flex-wrap: nowrap !important;
-    clear: both !important;
-}
-
-/* Accept button */
-#cookie-banner button[class*="accept"],
-#cookie-banner .btn-accept,
-#cookie-banner #cookie-accept,
-.cookie-banner button[class*="accept"],
-.cookie-banner .btn-accept,
-.cookie-accept {
-    flex: 1 !important;
-    padding: 0.72rem 1rem !important;
-    border-radius: 11px !important;
-    border: none !important;
-    background: #0f172a !important;
-    color: #ffffff !important;
-    font-size: 0.9rem !important;
-    font-weight: 700 !important;
-    cursor: pointer !important;
-    transition: background 0.18s !important;
-}
-#cookie-banner button[class*="accept"]:hover,
-.cookie-banner button[class*="accept"]:hover,
-.cookie-accept:hover {
-    background: #1e293b !important;
-}
-
-/* Preferences button */
-#cookie-banner button[class*="pref"],
-#cookie-banner .btn-preferences,
-.cookie-banner button[class*="pref"],
-.cookie-preferences {
-    flex: 1 !important;
-    padding: 0.72rem 1rem !important;
-    border-radius: 11px !important;
-    border: 1.5px solid #dde4ec !important;
-    background: transparent !important;
-    color: #4a6278 !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    cursor: pointer !important;
-    transition: border-color 0.18s, background 0.18s !important;
-}
-#cookie-banner button[class*="pref"]:hover,
-.cookie-banner button[class*="pref"]:hover {
-    border-color: #94a3b8 !important;
-    background: #f1f5f9 !important;
-}
-
-@media (max-width: 480px) {
-    #cookie-banner .cookie-actions,
-    .cookie-banner .cookie-actions,
-    #cookie-banner .actions,
-    .cookie-banner .actions {
-        flex-direction: column !important;
-    }
-    #cookie-banner img,
-    .cookie-banner img {
-        float: none !important;
-        margin: 0 auto 1rem !important;
-        display: block !important;
-    }
-}
-
-
-/* ================================================================
-   3. PROFILE PAGE — "Change Photo" button fix
-
-   ROOT CAUSE: .profile-avatar (the wrapper DIV) gets the same CSS
-   as the image: width:96px; height:96px; border-radius:50%
-   This turns the wrapper into a tiny circle that clips the button.
-
-   FIX: Override .profile-avatar when it's a DIV (the wrapper),
-   not an IMG. The img inside uses class .profile-img, not .profile-avatar.
-   We expand the wrapper and reposition the button below the circle.
-   ================================================================ */
-
-/* Reset the wrapper div — make it a flex column, not a 96px circle */
-div.profile-avatar {
-    width: auto !important;
-    height: auto !important;
-    border-radius: 0 !important;
-    border: none !important;
-    box-shadow: none !important;
-    object-fit: unset !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
-    padding-bottom: 0.5rem !important;
-    position: relative !important;
-    overflow: visible !important;
-}
-
-/* The actual profile photo image keeps its circular styling */
-div.profile-avatar img.profile-img {
-    width: 96px !important;
-    height: 96px !important;
-    border-radius: 50% !important;
-    border: 3px solid rgba(0, 180, 216, 0.40) !important;
-    box-shadow: 0 4px 20px rgba(0, 78, 122, 0.25), 0 0 0 4px rgba(0, 180, 216, 0.12) !important;
-    object-fit: cover !important;
-    display: block !important;
-    flex-shrink: 0 !important;
-}
-
-[data-theme='dark'] div.profile-avatar img.profile-img {
-    border-color: rgba(34, 211, 238, 0.30) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.50), 0 0 0 4px rgba(34, 211, 238, 0.08) !important;
-}
-
-/* Change Photo button — now sits naturally below the image in the flex column */
-.change-photo-btn {
-    position: static !important;
-    transform: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 0.35rem !important;
-    padding: 0.42rem 1.1rem !important;
-    font-size: 0.8rem !important;
-    font-weight: 600 !important;
-    border-radius: 20px !important;
-    background: rgba(255, 255, 255, 0.92) !important;
-    border: 1.5px solid rgba(0, 180, 216, 0.40) !important;
-    color: #0077b6 !important;
-    cursor: pointer !important;
-    box-shadow: 0 2px 10px rgba(0, 80, 150, 0.10) !important;
-    transition: background 0.18s, box-shadow 0.18s, transform 0.12s !important;
-    white-space: nowrap !important;
-    margin: 0 auto !important;
-}
-
-.change-photo-btn:hover {
-    background: #ffffff !important;
-    box-shadow: 0 4px 18px rgba(0, 120, 180, 0.22) !important;
-    transform: translateY(-1px) !important;
-}
-
-[data-theme='dark'] .change-photo-btn {
-    background: rgba(10, 25, 42, 0.92) !important;
-    border-color: rgba(0, 180, 216, 0.45) !important;
-    color: #7ec8e3 !important;
-}
-
-[data-theme='dark'] .change-photo-btn:hover {
-    background: rgba(15, 35, 60, 0.98) !important;
-}
-
-/* Profile card — ensure it doesn't clip overflow */
-.profile-card {
-    overflow: visible !important;
-}
-
-
-/* ================================================================
-   4. MOBILE NAV DRAWER — CENTERED LINKS
-
-   ROOT CAUSE: fz-design-v4.css targets .mobile-nav-drawer .nav-links a
-   but the HTML has <a> as DIRECT children of .mobile-nav-drawer —
-   there is NO .nav-links wrapper inside the drawer.
-
-   FIX: Target .mobile-nav-drawer > a and .mobile-nav-drawer a directly.
-   ================================================================ */
-
-/* Direct <a> children of the drawer */
-.mobile-nav-drawer a {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;   /* ← CENTER the icon+text */
-    gap: 0.6rem !important;
-    padding: 0.82rem 1rem !important;
-    border-radius: 12px !important;
-    font-size: 0.95rem !important;
-    font-weight: 600 !important;
-    text-align: center !important;
-    text-decoration: none !important;
-    color: rgba(200, 232, 255, 0.92) !important;
-    transition: background 0.18s, color 0.18s !important;
-    margin-bottom: 2px !important;
-}
-
-.mobile-nav-drawer a:hover,
-.mobile-nav-drawer a:focus-visible {
-    background: rgba(0, 180, 216, 0.12) !important;
-    color: #7ec8e3 !important;
-}
-
-.mobile-nav-drawer a.active {
-    background: rgba(0, 180, 216, 0.18) !important;
-    color: #4dcce8 !important;
-    font-weight: 700 !important;
-}
-
-/* Icons inside nav links */
-.mobile-nav-drawer a .nav-icon {
-    width: 1.05rem !important;
-    height: 1.05rem !important;
-    flex-shrink: 0 !important;
-    opacity: 0.85 !important;
-    margin-right: 0 !important;   /* gap handles spacing */
-}
-
-.mobile-nav-drawer a:hover .nav-icon,
-.mobile-nav-drawer a.active .nav-icon {
-    opacity: 1 !important;
-}
-
-/* Logout link */
-.mobile-nav-drawer a[href*="logout"],
-.mobile-nav-drawer .mobile-nav-logout {
-    color: #f87171 !important;
-    margin-top: 0.5rem !important;
-}
-
-.mobile-nav-drawer a[href*="logout"]:hover,
-.mobile-nav-drawer .mobile-nav-logout:hover {
-    background: rgba(239, 68, 68, 0.10) !important;
-    color: #fca5a5 !important;
-}
-
-/* Close button in drawer */
-.mobile-nav-close {
-    align-self: flex-end !important;
-    margin-bottom: 0.5rem !important;
-    padding: 0.45rem !important;
-    border-radius: 8px !important;
-    border: none !important;
-    background: transparent !important;
-    cursor: pointer !important;
-    color: rgba(200, 232, 255, 0.7) !important;
-    transition: opacity 0.18s, background 0.18s !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.mobile-nav-close:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
-    color: rgba(200, 232, 255, 1) !important;
+#cookie-banner h2 {
+    padding-right: 2.5rem !important;
+    margin-top: 0 !important;
 }
