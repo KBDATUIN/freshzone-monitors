@@ -115,13 +115,12 @@ app.use(cors({
 }));
 
 app.use(pinoHttp({ logger }));
-app.use((req, res, next) => { const id = require('crypto').randomBytes(8).toString('hex'); req.requestId = id; res.setHeader('X-Request-ID', id); next(); });
 app.use(cookieParser());
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
             scriptSrcAttr: ["'self'", "'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", "https://*.googleapis.com", "https://fonts.googleapis.com", "https://api.fontshare.com", "https://cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "blob:", "https://ui-avatars.com"],
@@ -132,25 +131,16 @@ app.use(helmet({
             baseUri: ["'self'"],
             formAction: ["'self'"],
             upgradeInsecureRequests: [],
-            reportUri: ['/api/csp-report'],
         },
     },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
-app.use((req, res, next) => { res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()'); next(); });
-app.use(cookieParser());
 app.use(express.json({
     limit: '2mb',
     verify: (req, res, buf) => { req.rawBody = buf.toString('utf8'); },
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(ensureCsrfCookie);
-
-// CSP Violation Reporting Endpoint
-app.post('/api/csp-report', express.json({ type: 'application/csp-report' }), (req, res) => {
-    logger.warn({ body: req.body }, '[CSP Violation]');
-    res.status(204).end();
-});
 
 // ── STATIC FILES ──────────────────────────────────────────────
 // Cache static assets for 7 days; HTML pages always re-validated
@@ -351,25 +341,12 @@ app.use((err, req, res, next) => {
 });
 
 // ── START ─────────────────────────────────────────────────────
-// ── START ─────────────────────────────────────────────────────
 ensureSecurityTables()
     .then(() => {
-        const server = app.listen(PORT, () => {
+        app.listen(PORT, () => {
             logger.info(`Server running on http://localhost:${PORT}`);
             logger.info(`Allowed Frontend: ${process.env.FRONTEND_URL || 'not set'}`);
         });
-
-        function gracefulShutdown(signal) {
-            logger.info(`[${signal}] Shutting down gracefully...`);
-            server.close(async () => {
-                try { await pool.end(); } catch (e) {}
-                logger.info('All connections closed. Exiting.');
-                process.exit(0);
-            });
-            setTimeout(() => { logger.error('Forced shutdown after 10s'); process.exit(1); }, 10000);
-        }
-        process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-        process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
     })
     .catch((err) => {
         logger.error({ err }, 'Failed to initialize security tables');
