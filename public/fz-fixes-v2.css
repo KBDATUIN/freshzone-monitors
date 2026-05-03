@@ -157,3 +157,134 @@ nav a.active, .nav-links a.active {
     padding-right: 2.5rem !important;
     margin-top: 0 !important;
 }
+
+/* ================================================================
+   5. COOKIE CLOSE BUTTON — proper alignment, no overlap
+   ================================================================ */
+#cookie-banner .cookie-box {
+    position: relative !important;
+}
+#cookie-banner .close-btn {
+    position: absolute !important;
+    top: 0.75rem !important;
+    right: 0.75rem !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    font-size: 0.78rem !important;
+    line-height: 1 !important;
+    z-index: 10 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    color: #64748b !important;
+    cursor: pointer !important;
+    transition: background 0.18s !important;
+    box-shadow: none !important;
+}
+#cookie-banner .close-btn:hover {
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+}
+[data-theme='dark'] #cookie-banner .close-btn {
+    background: #1a2c3e !important;
+    border-color: rgba(100,180,220,0.3) !important;
+    color: #94a3b8 !important;
+}
+[data-theme='dark'] #cookie-banner .close-btn:hover {
+    background: rgba(100,180,220,0.15) !important;
+    color: #e8f4fb !important;
+}
+
+
+/* ================================================================
+   6. PROFILE — Change Photo button directly below avatar image
+   ================================================================ */
+.profile-avatar-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0.7rem !important;
+    margin-bottom: 0.75rem !important;
+    width: 100% !important;
+}
+.profile-avatar-wrap .profile-img,
+.profile-avatar-wrap .profile-avatar {
+    display: block !important;
+    position: static !important;
+    flex-shrink: 0 !important;
+}
+.profile-avatar-wrap .change-photo-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 0.38rem 1.1rem !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+    background: rgba(255,255,255,0.92) !important;
+    border: 1.5px solid rgba(0,180,216,0.4) !important;
+    color: #0077b6 !important;
+    -webkit-text-fill-color: #0077b6 !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0,80,150,0.10) !important;
+    white-space: nowrap !important;
+    position: static !important;
+    margin: 0 auto !important;
+}
+[data-theme='dark'] .profile-avatar-wrap .change-photo-btn {
+    background: rgba(0,30,55,0.65) !important;
+    border-color: rgba(34,211,238,0.35) !important;
+    color: #22d3ee !important;
+    -webkit-text-fill-color: #22d3ee !important;
+}
+
+
+/* ================================================================
+   7. AUTH HERO — readable in BOTH light & dark mode
+   Light mode: teal gradient bg → white text (was transparent due to
+   -webkit-background-clip on h1 without -webkit-text-fill-color fix)
+   ================================================================ */
+.auth-header h1 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    text-shadow: 0 2px 24px rgba(0,20,60,0.55), 0 0 32px rgba(0,180,216,0.25) !important;
+    filter: none !important;
+}
+[data-theme='dark'] .auth-header h1 {
+    color: #e0f9ff !important;
+    -webkit-text-fill-color: #e0f9ff !important;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.55), 0 0 36px rgba(34,211,238,0.35) !important;
+}
+.auth-header p {
+    color: rgba(255,255,255,0.95) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.95) !important;
+    background: rgba(0,0,0,0.18) !important;
+    text-shadow: 0 1px 4px rgba(0,15,40,0.4) !important;
+}
+[data-theme='dark'] .auth-header p {
+    color: rgba(200,240,255,0.92) !important;
+    -webkit-text-fill-color: rgba(200,240,255,0.92) !important;
+    background: rgba(34,211,238,0.08) !important;
+}
+.auth-trust-badge {
+    color: rgba(255,255,255,0.97) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.97) !important;
+    background: rgba(255,255,255,0.15) !important;
+    border-color: rgba(255,255,255,0.30) !important;
+    text-shadow: 0 1px 3px rgba(0,10,30,0.3) !important;
+}
+[data-theme='dark'] .auth-trust-badge {
+    color: rgba(180,235,255,0.95) !important;
+    -webkit-text-fill-color: rgba(180,235,255,0.95) !important;
+}

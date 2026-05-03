@@ -29,13 +29,17 @@
     color: #94a3b8 !important;
 }
 
-/* Auth page header — "FreshZone" tagline below the h1 */
+/* Auth page header — tagline below the h1: white on teal bg */
 .auth-header p {
-    color: rgba(0, 55, 100, 0.82) !important;
-    text-shadow: none !important;
+    color: rgba(255,255,255,0.92) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
+    text-shadow: 0 1px 6px rgba(0,15,40,0.35) !important;
+    background: rgba(0,0,0,0.15) !important;
 }
 [data-theme="dark"] .auth-header p {
-    color: rgba(220, 240, 255, 0.82) !important;
+    color: rgba(200,240,255,0.88) !important;
+    -webkit-text-fill-color: rgba(200,240,255,0.88) !important;
+    background: rgba(34,211,238,0.07) !important;
 }
 
 /* Auth page — "Appearance" label beside the dark toggle */
@@ -55,19 +59,22 @@
     color: rgba(255, 255, 255, 0.75) !important;
 }
 
-/* Trust badges (Secure Login · Verified Access · Real-time Alerts) */
+/* Trust badges (Secure Login · Verified Access · Real-time Alerts) — on teal bg */
 .auth-trust-badge {
-    background: rgba(0, 78, 122, 0.10) !important;
-    border: 1px solid rgba(0, 78, 122, 0.22) !important;
-    color: #004e7a !important;
+    background: rgba(255,255,255,0.18) !important;
+    border: 1px solid rgba(255,255,255,0.35) !important;
+    color: rgba(255,255,255,0.97) !important;
+    -webkit-text-fill-color: rgba(255,255,255,0.97) !important;
+    text-shadow: 0 1px 3px rgba(0,10,30,0.25) !important;
 }
 .auth-trust-badge:hover {
-    background: rgba(0, 78, 122, 0.16) !important;
+    background: rgba(255,255,255,0.28) !important;
 }
 [data-theme="dark"] .auth-trust-badge {
-    background: rgba(255, 255, 255, 0.10) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    color: rgba(200, 235, 255, 0.92) !important;
+    background: rgba(34,211,238,0.10) !important;
+    border: 1px solid rgba(34,211,238,0.25) !important;
+    color: rgba(180,235,255,0.95) !important;
+    -webkit-text-fill-color: rgba(180,235,255,0.95) !important;
 }
 
 /* Site footer (all pages) */
@@ -99,21 +106,26 @@ footer,
     color: #94a3b8 !important;
 }
 
-/* ─── 2. AUTH HEADER h1 — gradient only looks good on the dark
-         photo bg. In light mode use a solid navy instead.
+/* ─── 2. AUTH HEADER h1 — solid white on teal bg (both modes)
+         background-clip:text + transparent fill = invisible in light mode.
+         Use solid color + text-shadow for depth instead.
    ─────────────────────────────────────────────────────────────── */
 .auth-header h1 {
-    background: linear-gradient(135deg, #003a5c 20%, #006fa3 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
     filter: none !important;
+    text-shadow: 0 2px 16px rgba(0,20,60,0.45) !important;
 }
 [data-theme="dark"] .auth-header h1 {
-    background: linear-gradient(135deg, #e2f0f8 30%, #22d3ee 100%) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    background-clip: text !important;
+    color: #e0f9ff !important;
+    -webkit-text-fill-color: #e0f9ff !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 0 32px rgba(34,211,238,0.3) !important;
 }
 
 /* ─── 3. AUTH DARK-TOGGLE BUTTON — light mode border fix ────────
@@ -390,12 +402,17 @@ footer,
    MOBILE FIX v3 — Notification + Auth header mobile
    ═══════════════════════════════════════════════════════════════ */
 
-/* ─── AUTH HEADER h1 solid color fallback ───────────────────── */
+/* ─── AUTH HEADER h1 solid color fallback (mobile) ─────────── */
 .auth-header h1 {
-    color: #003a5c;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
 }
 [data-theme="dark"] .auth-header h1 {
-    color: #e2f0f8;
+    color: #e0f9ff;
+    -webkit-text-fill-color: #e0f9ff;
 }
 
 /* ─── AUTH HEADER mobile: trust badges always visible ──────────
@@ -439,10 +456,12 @@ footer,
         line-height: 1.5 !important;
         padding: 0.28rem 0.85rem !important;
         margin-top: 0.55rem !important;
-        color: rgba(0, 55, 100, 0.9) !important;
+        color: rgba(255,255,255,0.92) !important;
+        -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
     }
     [data-theme="dark"] .auth-header p {
         color: rgba(210, 238, 255, 0.88) !important;
+        -webkit-text-fill-color: rgba(210, 238, 255, 0.88) !important;
     }
 }
 
