@@ -449,12 +449,14 @@
             display: flex !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            justify-content: flex-start !important;
+            justify-content: space-between !important;
             gap: 0 !important;
             height: 100% !important;
             max-width: 1200px !important;
             margin: 0 auto !important;
             padding: 0 !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
         }
         .nav-container .logo {
             flex-shrink: 0 !important;
@@ -482,6 +484,28 @@
             .nav-links { display: none !important; }
             .nav-controls .hamburger { display: flex !important; }
             .nav-user { display: none !important; }
+        }
+        /* Mobile nav fix — prevent logo/controls overlap on small screens */
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 0.75rem !important;
+            }
+            .nav-container {
+                justify-content: space-between !important;
+                gap: 0 !important;
+            }
+            .nav-container .logo {
+                margin-right: 0 !important;
+                flex-shrink: 0 !important;
+            }
+            .nav-container .logo img {
+                height: 36px !important;
+            }
+            .nav-controls {
+                margin-left: auto !important;
+                gap: 6px !important;
+                flex-shrink: 0 !important;
+            }
         }
     </style>
     <link rel="stylesheet" href="ui-improvements.css">
