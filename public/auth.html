@@ -101,12 +101,21 @@
             font-weight: 500;
             cursor: pointer;
         }
-        /* Dark toggle on auth fix */
+        /* Dark toggle on auth fix — light mode uses dark icon, dark mode uses light icon */
         #auth-dark-toggle {
+            border-color: rgba(0,60,100,0.25) !important;
+            color: rgba(0,40,80,0.75) !important;
+        }
+        #auth-dark-toggle:hover {
+            border-color: rgba(0,100,160,0.45) !important;
+            color: #003860 !important;
+            background: rgba(255,255,255,0.35) !important;
+        }
+        [data-theme="dark"] #auth-dark-toggle {
             border-color: rgba(255,255,255,0.28) !important;
             color: rgba(255,255,255,0.7) !important;
         }
-        #auth-dark-toggle:hover {
+        [data-theme="dark"] #auth-dark-toggle:hover {
             border-color: rgba(255,255,255,0.6) !important;
             color: white !important;
             background: rgba(255,255,255,0.1) !important;
