@@ -29,17 +29,27 @@
     color: #94a3b8 !important;
 }
 
-/* Auth page header — tagline below the h1: white on teal bg */
+/* Auth page header — tagline pill below the h1 */
 .auth-header p {
-    color: rgba(255,255,255,0.92) !important;
-    -webkit-text-fill-color: rgba(255,255,255,0.92) !important;
-    text-shadow: 0 1px 6px rgba(0,15,40,0.35) !important;
-    background: rgba(0,0,0,0.15) !important;
+    /* Light mode: opaque white pill so the teal bg never bleeds through */
+    color: #002b45 !important;
+    -webkit-text-fill-color: #002b45 !important;
+    text-shadow: none !important;
+    background: rgba(255,255,255,0.93) !important;
+    border: 1px solid rgba(255,255,255,0.98) !important;
+    border-radius: 20px !important;
+    padding: 0.38rem 1.1rem !important;
+    display: inline-block !important;
+    box-shadow: 0 4px 14px rgba(0,40,100,0.16) !important;
+    font-weight: 600 !important;
 }
 [data-theme="dark"] .auth-header p {
     color: rgba(200,240,255,0.88) !important;
     -webkit-text-fill-color: rgba(200,240,255,0.88) !important;
     background: rgba(34,211,238,0.07) !important;
+    border: 1px solid rgba(34,211,238,0.18) !important;
+    box-shadow: none !important;
+    font-weight: 500 !important;
 }
 
 /* Auth page — "Appearance" label beside the dark toggle */
@@ -61,20 +71,24 @@
 
 /* Trust badges (Secure Login · Verified Access · Real-time Alerts) — on teal bg */
 .auth-trust-badge {
-    background: rgba(255,255,255,0.18) !important;
-    border: 1px solid rgba(255,255,255,0.35) !important;
-    color: rgba(255,255,255,0.97) !important;
-    -webkit-text-fill-color: rgba(255,255,255,0.97) !important;
-    text-shadow: 0 1px 3px rgba(0,10,30,0.25) !important;
+    /* Light mode: near-opaque white pill — dark text clearly readable on teal */
+    background: rgba(255,255,255,0.95) !important;
+    border: 1px solid rgba(255,255,255,1) !important;
+    color: #002c45 !important;
+    -webkit-text-fill-color: #002c45 !important;
+    text-shadow: none !important;
+    box-shadow: 0 2px 8px rgba(0,40,100,0.15) !important;
 }
 .auth-trust-badge:hover {
-    background: rgba(255,255,255,0.28) !important;
+    background: rgba(255,255,255,1) !important;
+    box-shadow: 0 4px 14px rgba(0,40,100,0.22) !important;
 }
 [data-theme="dark"] .auth-trust-badge {
     background: rgba(34,211,238,0.10) !important;
     border: 1px solid rgba(34,211,238,0.25) !important;
     color: rgba(180,235,255,0.95) !important;
     -webkit-text-fill-color: rgba(180,235,255,0.95) !important;
+    box-shadow: none !important;
 }
 
 /* Site footer (all pages) */
