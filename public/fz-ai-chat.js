@@ -2,7 +2,7 @@
  * FreshZone AI Chat Widget
  * ─────────────────────────────────────────────────────────────
  * Self-contained — drop one <script> tag into any FreshZone page.
- * Uses the Anthropic API with a FreshZone-aware system prompt.
+ * Uses the Groq API with a FreshZone-aware system prompt.
  * Respects dark/light theme, ARIA accessible, mobile-friendly.
  *
  * Usage:  <script src="fz-ai-chat.js" defer></script>
@@ -502,7 +502,7 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
           </svg>
         </button>
       </div>
-      <div class="fz-chat-powered">✦ Powered by Claude AI</div>`;
+      <div class="fz-chat-powered">✦ Powered by Groq AI</div>`;
 
     document.body.appendChild(fab);
     document.body.appendChild(panel);
@@ -587,7 +587,7 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
   }
 
   /* ─── CALL GROQ API ─────────────────────────────────────────── */
-  async function callClaude(userMessage) {
+  async function callGroq(userMessage) {
     messages.push({ role: 'user', content: userMessage });
 
     const key = window.FZ_GROQ_KEY || '';
@@ -595,7 +595,7 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
 
     const apiMessages = [
       { role: 'system', content: SYSTEM_PROMPT },
-      ...messages.map(m => ({
+      ...messages.slice(-10).map(m => ({
         role: m.role === 'bot' ? 'assistant' : 'user',
         content: m.content,
       })),
@@ -608,10 +608,10 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
         'Authorization': `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         messages: apiMessages,
-        max_tokens: 1000,
-        temperature: 0.7,
+        max_tokens: 1024,
+        temperature: 0.6,
       }),
     });
 
@@ -651,7 +651,7 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
     showTyping();
 
     try {
-      const reply = await callClaude(text);
+      const reply = await callGroq(text);
       hideTyping();
       appendMessage('bot', reply);
 
