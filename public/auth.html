@@ -127,6 +127,22 @@
     <style>
         /* ── AUTH LIGHT-MODE READABILITY — loaded after all CSS files so nothing overrides it ── */
 
+        /* FreshZone h1 — white text, clear of all gradient-clip tricks */
+        .auth-header h1 {
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            filter: none !important;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5) !important;
+        }
+        [data-theme="dark"] .auth-header h1 {
+            color: #e0f9ff !important;
+            -webkit-text-fill-color: #e0f9ff !important;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5), 0 0 32px rgba(34,211,238,0.3) !important;
+        }
+
         /* Tagline pill: opaque white bg, dark navy text */
         html:not([data-theme="dark"]) .auth-header p {
             color: #002b45 !important;
