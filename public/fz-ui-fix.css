@@ -523,3 +523,54 @@ footer,
 .auth-wrapper {
     overflow: visible !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   LIGHT MODE READABILITY — FINAL OVERRIDE (must stay at bottom)
+   Fixes auth header text visibility on the teal background.
+   Beats every !important above because it comes last in cascade.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tagline pill — opaque white background, dark text ───────── */
+:root:not([data-theme="dark"]) .auth-header p,
+html:not([data-theme="dark"]) .auth-header p {
+    color: #002b45 !important;
+    -webkit-text-fill-color: #002b45 !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 1) !important;
+    border-radius: 20px !important;
+    padding: 0.38rem 1.15rem !important;
+    display: inline-block !important;
+    box-shadow: 0 4px 14px rgba(0, 40, 100, 0.18) !important;
+    text-shadow: none !important;
+    font-weight: 600 !important;
+    backdrop-filter: none !important;
+}
+
+/* ── Trust badges — opaque white pill, dark text ─────────────── */
+:root:not([data-theme="dark"]) .auth-trust-badge,
+html:not([data-theme="dark"]) .auth-trust-badge {
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(255, 255, 255, 1) !important;
+    color: #002c45 !important;
+    -webkit-text-fill-color: #002c45 !important;
+    text-shadow: none !important;
+    box-shadow: 0 2px 8px rgba(0, 40, 100, 0.16) !important;
+}
+
+:root:not([data-theme="dark"]) .auth-trust-badge svg,
+html:not([data-theme="dark"]) .auth-trust-badge svg {
+    color: #004e7a !important;
+}
+
+/* ── Mobile: keep the pill shape at small sizes ──────────────── */
+@media (max-width: 480px) {
+    :root:not([data-theme="dark"]) .auth-header p,
+    html:not([data-theme="dark"]) .auth-header p {
+        font-size: 0.82rem !important;
+        padding: 0.32rem 0.9rem !important;
+        color: #002b45 !important;
+        -webkit-text-fill-color: #002b45 !important;
+        background: rgba(255, 255, 255, 0.94) !important;
+        border-radius: 20px !important;
+    }
+}
