@@ -124,6 +124,49 @@
     <link rel="stylesheet" href="ui-improvements.css">
     <link rel="stylesheet" href="ui-improvements-v2.css">
     <link rel="stylesheet" href="fz-ui-fix.css">
+    <style>
+        /* ── AUTH LIGHT-MODE READABILITY — loaded after all CSS files so nothing overrides it ── */
+
+        /* Tagline pill: opaque white bg, dark navy text */
+        html:not([data-theme="dark"]) .auth-header p {
+            color: #002b45 !important;
+            -webkit-text-fill-color: #002b45 !important;
+            background: rgba(255,255,255,0.95) !important;
+            border: 1px solid rgba(255,255,255,1) !important;
+            border-radius: 20px !important;
+            padding: 0.38rem 1.15rem !important;
+            display: inline-block !important;
+            box-shadow: 0 4px 14px rgba(0,40,100,0.18) !important;
+            text-shadow: none !important;
+            font-weight: 600 !important;
+            backdrop-filter: none !important;
+        }
+
+        /* Trust badges: opaque white pill, dark navy text */
+        html:not([data-theme="dark"]) .auth-trust-badge {
+            background: rgba(255,255,255,0.96) !important;
+            border: 1px solid rgba(255,255,255,1) !important;
+            color: #002c45 !important;
+            -webkit-text-fill-color: #002c45 !important;
+            text-shadow: none !important;
+            box-shadow: 0 2px 8px rgba(0,40,100,0.16) !important;
+        }
+        html:not([data-theme="dark"]) .auth-trust-badge svg {
+            color: #004e7a !important;
+        }
+
+        /* Mobile: keep pill shape */
+        @media (max-width: 480px) {
+            html:not([data-theme="dark"]) .auth-header p {
+                font-size: 0.82rem !important;
+                padding: 0.32rem 0.9rem !important;
+                color: #002b45 !important;
+                -webkit-text-fill-color: #002b45 !important;
+                background: rgba(255,255,255,0.95) !important;
+                border-radius: 20px !important;
+            }
+        }
+    </style>
 </head>
 <body>
 <div class="auth-wrapper">
