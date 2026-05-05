@@ -298,21 +298,8 @@ if (data.success) {
                 } catch(e) {}
             }
 
-            showNotification('Login successful! Redirecting…', 'success');
-            
-            // Small delay to ensure session cookie is set before redirect
-            setTimeout(() => {
-                // Verify session is established before redirect
-                fetch(`${API}/api/auth/session`, { 
-                    credentials: 'include',
-                    cache: 'no-store'
-                }).then(() => {
-                    window.location.href = 'dashboard.html';
-                }).catch(() => {
-                    // Even if session check fails, proceed to dashboard
-                    window.location.href = 'dashboard.html';
-                });
-            }, 1500);
+            // Session cookie is already set by the login response — redirect immediately
+            window.location.href = 'dashboard.html';
 
         } else {
             setError('login-password', data.message || 'Invalid credentials.');
@@ -527,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Silently attempts to fill login form from browser-saved credentials.
     // No UI element shown — runs quietly in the background only.
     if (window.PasswordCredential || window.FederatedCredential) {
-        setTimeout(tryBiometricLogin, 800);
+        setTimeout(tryBiometricLogin, 100);
     }
 
     // ── Restore remembered email ──────────────────────────────
