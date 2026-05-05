@@ -10,6 +10,14 @@ const { sendPushToAll }  = require('./push');
 const { verifyNodeHmac } = require('../middleware/device-auth');
 const logger = require('../logger');
 
+// ── ESP32 API key check (used when HMAC is not present) ──────
+function verifyEsp32ApiKey(req) {
+    const apiKey = req.headers['x-api-key'];
+    const expected = process.env.ESP32_API_KEY;
+    if (!expected) return false;           // no key configured — deny
+    return apiKey === expected;
+}
+
 // ── SSE client registry ──────────────────────────────────────
 // Map of res objects keyed by a unique client ID
 const sseClients = new Map();
@@ -45,16 +53,18 @@ function isValidReading(val, min, max) {
 }
 
 // ── POST /api/readings — ESP32 pushes sensor data ─────────────
+// Auth strategy: accept HMAC device auth (ESP32 v1 with x-node-code/x-key-id/x-signature)
+// OR plain API key (ESP32 v2 with x-api-key header only).
+// verifyNodeHmac middleware passes through when HMAC headers are absent (ESP32 v2 case).
 router.post('/', verifyNodeHmac, async (req, res) => {
-    // --- API key auth ---
+    // --- Auth check: HMAC (v1) or plain API key (v2) ---
+    const hasDeviceAuth = !!req.deviceAuth;
     const apiKey = req.headers['x-api-key'];
-    const isLegacyAllowed = process.env.ALLOW_LEGACY_ESP32_KEY === 'true';
-    if (isLegacyAllowed && (!apiKey || apiKey !== process.env.ESP32_API_KEY) && !req.deviceAuth) {
-        return res.status(401).json({ success: false, message: 'Invalid API key.' });
-    }
+    const expectedKey = process.env.ESP32_API_KEY;
+    const hasValidApiKey = !!(expectedKey && apiKey === expectedKey);
 
-    if (!isLegacyAllowed && !req.deviceAuth) {
-        return res.status(401).json({ success: false, message: 'Missing per-device authentication.' });
+    if (!hasDeviceAuth && !hasValidApiKey) {
+        return res.status(401).json({ success: false, message: 'Invalid or missing device credentials.' });
     }
 
     // --- Parse & coerce values from ESP32 (may arrive as strings) ---
