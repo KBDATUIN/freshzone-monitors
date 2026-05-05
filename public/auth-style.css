@@ -62,12 +62,16 @@
     font-size: 2.4rem !important;
     font-weight: 900 !important;
     letter-spacing: -0.05em !important;
-    /* Light mode: deep navy gradient — clearly readable on the blue background */
-    background: linear-gradient(135deg, #001e33 0%, #003860 40%, #004e7a 100%);
+    /*
+     * Light mode: bright white → soft cyan gradient so the title pops
+     * clearly against the deep teal/blue background. The text-shadow
+     * adds depth without muddying contrast.
+     */
+    background: linear-gradient(135deg, #ffffff 0%, #e0f7ff 55%, #b2eeff 100%);
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15));
+    filter: drop-shadow(0 2px 12px rgba(0,0,0,0.35));
     position: relative;
 }
 .auth-header h1::after {
@@ -78,9 +82,9 @@
     transform: translateX(-50%);
     width: 80px;
     height: 3px;
-    background: linear-gradient(90deg, transparent, #004e7a, transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
     border-radius: 2px;
-    opacity: 0.6;
+    opacity: 0.8;
 }
 [data-theme="dark"] .auth-header h1 {
     background: linear-gradient(135deg, #f8fafc 0%, #22d3ee 60%, #7dd3fc 100%);
@@ -91,43 +95,52 @@
 [data-theme="dark"] .auth-header h1::after { background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
 
 .auth-header p {
-    /* Light mode: dark navy text for high contrast on light blue bg */
-    color: rgba(0, 30, 60, 0.85) !important;
+    /*
+     * Light mode: solid white background pill with dark text — fully opaque
+     * so the blue background never bleeds through and text stays crisp.
+     */
+    color: #002b45 !important;
     font-size: 1rem !important;
-    font-weight: 500 !important;
+    font-weight: 600 !important;
     backdrop-filter: blur(10px);
-    padding: 0.35rem 1.1rem;
+    padding: 0.4rem 1.15rem;
     border-radius: 20px;
-    background: rgba(255,255,255,0.55);
-    border: 1px solid rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(255,255,255,0.95);
     display: inline-block;
     margin-top: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0,40,100,0.10);
+    box-shadow: 0 4px 14px rgba(0,40,100,0.18), inset 0 1px 0 rgba(255,255,255,1);
 }
 [data-theme="dark"] .auth-header p {
     color: rgba(255,255,255,0.88) !important;
     background: rgba(34,211,238,0.06);
     border-color: rgba(34,211,238,0.15);
+    font-weight: 500 !important;
+    box-shadow: none;
 }
 
-/* Trust badges — glassy orbs */
+/* Trust badges — glassy pills */
 .auth-trust-badge {
-    /* Light mode: dark text on frosted white pill */
-    background: rgba(255,255,255,0.72) !important;
+    /*
+     * Light mode: near-opaque white pill with high-contrast dark text.
+     * Opacity boosted from 0.72 → 0.95 so the teal background cannot
+     * wash out the label text.
+     */
+    background: rgba(255,255,255,0.95) !important;
     color: #002c45 !important;
     backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(0,100,160,0.20) !important;
+    border: 1px solid rgba(255,255,255,1) !important;
     border-radius: 16px !important;
     padding: 6px 14px 6px 11px !important;
     font-size: 0.72rem !important;
     font-weight: 700 !important;
-    box-shadow: 0 4px 16px rgba(0,40,100,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+    box-shadow: 0 4px 16px rgba(0,40,100,0.18), inset 0 1px 0 rgba(255,255,255,1);
     transition: all 0.25s cubic-bezier(0.4,0,0.2,1) !important;
 }
 .auth-trust-badge:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    background: rgba(255,255,255,0.88) !important;
-    box-shadow: 0 8px 24px rgba(0,40,100,0.18), inset 0 1px 0 rgba(255,255,255,1);
+    background: rgba(255,255,255,1) !important;
+    box-shadow: 0 8px 24px rgba(0,40,100,0.22), inset 0 1px 0 rgba(255,255,255,1);
 }
 .auth-trust-badge svg {
     width: 12px !important;
