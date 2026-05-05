@@ -586,39 +586,45 @@ If asked something outside your knowledge (e.g., specific live sensor readings r
     el.style.height = Math.min(el.scrollHeight, 120) + 'px';
   }
 
-  /* ─── CALL ANTHROPIC API ─────────────────────────────────────── */
+  /* ─── CALL GROQ API ─────────────────────────────────────────── */
   async function callClaude(userMessage) {
     messages.push({ role: 'user', content: userMessage });
 
-    const apiMessages = messages.map(m => ({
-      role: m.role === 'bot' ? 'assistant' : 'user',
-      content: m.content,
-    }));
+    const key = window.FZ_GROQ_KEY || '';
+    if (!key) throw new Error('API key not set. Add your Groq key to window.FZ_GROQ_KEY.');
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const apiMessages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...messages.map(m => ({
+        role: m.role === 'bot' ? 'assistant' : 'user',
+        content: m.content,
+      })),
+    ];
+
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': window.FZ_ANTHROPIC_KEY || '',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        'Authorization': `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM_PROMPT,
+        model: 'llama-3.1-8b-instant',
         messages: apiMessages,
+        max_tokens: 1000,
+        temperature: 0.7,
       }),
     });
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      if (response.status === 401) throw new Error('API key missing or invalid. Set window.FZ_ANTHROPIC_KEY before loading this script.');
+      if (response.status === 401) {
+        throw new Error('Invalid Groq API key. Check window.FZ_GROQ_KEY in your HTML.');
+      }
       throw new Error(err.error?.message || `API error ${response.status}`);
     }
 
     const data = await response.json();
-    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const text = data.choices?.[0]?.message?.content || '';
     if (!text) throw new Error('Empty response from AI.');
 
     messages.push({ role: 'bot', content: text });
