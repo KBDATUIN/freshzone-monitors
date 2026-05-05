@@ -150,6 +150,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
         if (filePath.endsWith('.html')) {
             res.setHeader('Cache-Control', 'no-cache');
         }
+        // Prevent caching of AI config and chat script — always use fresh version
+        if (filePath.endsWith('fz-config.js') || filePath.endsWith('fz-ai-chat.js')) {
+            res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+        }
     },
 }));
 

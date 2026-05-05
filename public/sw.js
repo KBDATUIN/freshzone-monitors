@@ -7,7 +7,7 @@
 //    - HTML pages: Network-first with offline page fallback
 // ============================================================
 
-const CACHE_NAME = 'freshzone-v7';
+const CACHE_NAME = 'freshzone-v8';
 const OFFLINE_PAGE = '/offline.html';
 
 // Static assets to pre-cache (core app shell)
@@ -310,6 +310,14 @@ self.addEventListener('fetch', (event) => {
     }
     
     // ── STATIC ASSETS (CSS, JS, Images): Stale-While-Revalidate ──
+     // Bypass SW cache for AI chat scripts � always use fresh version
+     if (request.destination === 'script' && (
+         request.url.includes('/fz-config.js') ||
+         request.url.includes('/fz-ai-chat.js'))) {
+         event.respondWith(fetch(request));
+         return;
+     }
+
     if (['style', 'script', 'image', 'font'].includes(request.destination)) {
         event.respondWith(staleWhileRevalidate(request));
         return;
@@ -563,3 +571,4 @@ self.addEventListener('pushsubscriptionchange', (event) => {
         })
     );
 });
+
