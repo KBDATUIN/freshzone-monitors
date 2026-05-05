@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+# ── AI chat key config — deploy via Firebase, never commit ──
+public/fz-config.js
