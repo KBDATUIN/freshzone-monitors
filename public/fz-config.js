@@ -1,1 +1,0 @@
-window.FZ_GROQ_KEY = "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";
