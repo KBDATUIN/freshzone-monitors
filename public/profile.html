@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>/* Anti-flash */html{background:linear-gradient(135deg,#90e0ef,#00b4d8,#004e7a);}html[data-theme="dark"]{background:linear-gradient(135deg,#0a1520,#0d2035,#071018);}</style>
+    <script>(function(){var t=localStorage.getItem('fz-theme');if(t)document.documentElement.setAttribute('data-theme',t);})();</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshZone | Profile</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style-v2.css">
+    <link rel="stylesheet" href="style-v3.css">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#004e7a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="FreshZone">
+    <link rel="apple-touch-icon" href="/favicon_io/apple-touch-icon.png">
+    <link rel="stylesheet" href="/pwa.css">
+        <link rel="stylesheet" href="style-fixes.css">
+    <link rel="stylesheet" href="premium-style.css">
+
+    <!-- Cropper.js -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+    <style>
+        /* ── CROP MODAL OVERLAY ─────────────────────────────── */
+        /* ── CROP MODAL ──────────────────────────────────────── */
+        #crop-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(6px);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+        #crop-modal.open { display: flex; }
+
+        .crop-modal-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 20px 20px 18px;
+            width: 100%;
+            max-width: 440px;
+            /* KEY FIX: limit height so card never taller than viewport */
+            max-height: calc(100vh - 24px);
+            overflow-y: auto;
+            box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+            animation: cropSlideUp 0.3s cubic-bezier(0.175,0.885,0.32,1.1);
+        }
+        [data-theme="dark"] .crop-modal-card { background: #1a2a3a; }
+
+        @keyframes cropSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+
+        .crop-modal-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary, #004e7a);
+            font-family: Lexend, sans-serif;
+            flex-shrink: 0;
+        }
+
+        /* Cropper container */
+        .crop-container {
+            width: 100%;
+            /* Responsive height — smaller on short screens */
+            height: min(280px, 42vh);
+            background: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .crop-container img { display: block; max-width: 100%; }
+
+        .crop-hint {
+            font-size: 0.74rem;
+            color: var(--gray, #888);
+            text-align: center;
+            line-height: 1.4;
+            margin: 0;
+            font-family: sans-serif;
+            flex-shrink: 0;
+        }
+
+        .crop-zoom-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .crop-zoom-row label {
+            font-size: 0.78rem;
+            color: var(--gray, #888);
+            white-space: nowrap;
+            font-family: sans-serif;
+        }
+        .crop-zoom-row input[type=range] {
+            flex: 1;
+            accent-color: var(--primary, #004e7a);
+            height: 4px;
+        }
+
+        /* KEY FIX: buttons side by side, both fully visible */
+        .crop-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .crop-btn-apply {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 8px;
+            background: var(--primary, #004e7a);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: Lexend, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .crop-btn-apply:hover { filter: brightness(1.12); }
+        .crop-btn-apply.loading { opacity: 0.65; pointer-events: none; }
+
+        .crop-btn-cancel {
+            flex: 0 0 90px;
+            padding: 11px 8px;
+            background: transparent;
+            color: var(--gray, #666);
+            border: 1.5px solid #ccc;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: sans-serif;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .crop-btn-cancel:hover { background: rgba(0,0,0,0.06); }
+    </style>
+    <style>
+        /* ── ICON SYSTEM ─────────────────────────────────────── */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            flex-shrink: 0;
+        }
+        /* nav icon sizing */
+        .nav-icon { width: 1.05rem; height: 1.05rem; margin-right: 5px; vertical-align: -0.15em; opacity: 0.85; }
+        /* button icon sizing */
+        .btn-icon { width: 0.9rem; height: 0.9rem; margin-right: 4px; vertical-align: -0.1em; }
+        /* heading icon */
+        .h-icon { width: 1.1rem; height: 1.1rem; margin-right: 6px; vertical-align: -0.18em; }
+        /* small inline icon */
+        .sm-icon { width: 0.8rem; height: 0.8rem; vertical-align: -0.08em; margin-right: 3px; }
+    </style>
+    <style>
+        /* ── NAV LAYOUT — definitive fix (overrides all external CSS) ── */
+        nav {
+            overflow: visible !important;
+        }
+        .nav-container {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            gap: 0 !important;
+            height: 100% !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding: 0 !important;
+        }
+        .nav-container .logo {
+            flex-shrink: 0 !important;
+            margin-right: 1.25rem !important;
+        }
+        .nav-links {
+            display: flex !important;
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+            gap: 0.15rem !important;
+            overflow: visible !important;
+        }
+        .nav-controls {
+            display: flex !important;
+            flex-shrink: 0 !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-left: auto !important;
+        }
+        /* hamburger is inside nav-controls – hide on desktop, show on mobile */
+        .nav-controls .hamburger { display: none !important; }
+        @media (max-width: 900px) {
+            .nav-links { display: none !important; }
+            .nav-controls .hamburger { display: flex !important; }
+            .nav-user { display: none !important; }
+        }
+    </style>
+    <link rel="stylesheet" href="ui-improvements.css">
+    <link rel="stylesheet" href="ui-improvements-v2.css">
+    <link rel="stylesheet" href="fz-ui-fix.css">
+</head>
+<body>
+
+<!-- Smoke background animation -->
+<div class="smoke-container" aria-hidden="true">
+    <div class="smoke-particle" style="left:15%;width:170px;height:170px;animation-delay:0s;"></div>
+    <div class="smoke-particle" style="left:40%;width:200px;height:200px;animation-delay:4s;"></div>
+    <div class="smoke-particle" style="left:70%;width:150px;height:150px;animation-delay:7s;"></div>
+    <div class="smoke-particle" style="left:90%;width:180px;height:180px;animation-delay:1.5s;"></div>
+</div>
+
+<nav role="navigation" aria-label="Main navigation">
+    <div class="nav-container">
+        <a href="dashboard.html" class="logo" aria-label="FreshZone Home">
+            <img src="logo1.png" alt="FreshZone Logo">
+        </a>
+        <div class="nav-links" id="desktop-nav">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="history.html">History</a>
+            <a href="about.html">About</a>
+            <a href="profile.html" class="active">Profile</a>
+            <a href="contact.html">Contact</a>
+            <a href="#" onclick="openLogoutModal();return false;">Logout</a>
+        </div>
+        <div class="nav-controls">
+            <div class="nav-user" id="nav-user-display">
+                <span class="nav-user-dot"></span>
+                <span id="nav-user-name">—</span>
+            </div>
+            <button class="dark-toggle" id="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode" aria-label="Toggle dark mode"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+            <label class="push-toggle-wrap" title="Toggle push notifications" aria-label="Toggle push notifications">
+                <span class="push-toggle-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+                <div class="push-toggle-switch" id="push-btn" onclick="togglePushNotifications()" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ')togglePushNotifications()">
+                    <div class="push-toggle-knob"></div>
+                </div>
+                <span class="push-toggle-label" id="push-label">OFF</span>
+            </label>
+            <button class="hamburger" id="hamburger" onclick="openMobileNav()" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav" onclick="closeMobileNav()" role="dialog" aria-modal="true">
+    <div class="mobile-nav-drawer" onclick="event.stopPropagation()">
+        <button class="mobile-nav-close" onclick="closeMobileNav()" aria-label="Close menu"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <a href="dashboard.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Monitor</a>
+        <a href="history.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5-4v-4h4"/></svg> History</a>
+            <a href="about.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> About</a>
+        <a href="profile.html" class="active"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profile</a>
+        <a href="contact.html"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg> Contact</a>
+        <div class="mobile-nav-divider"></div>
+        <a href="#" onclick="openLogoutModal();closeMobileNav();return false;" class="mobile-nav-logout"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</a>
+        <a href="#" onclick="togglePushNotifications();closeMobileNav();return false;" id="mobile-push-btn"><svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg> Notifications</a>
+    </div>
+</div>
+
+<div class="container profile-wrapper">
+    <div class="glass-card profile-card">
+
+        <!-- Avatar -->
+        <div class="profile-avatar">
+            <img src="" id="userPhoto" class="profile-img" alt="Profile photo" style="object-fit:cover;object-position:center center;">
+            <input type="file" id="upload" hidden accept="image/*" onchange="openCropModal(this)">
+            <button class="change-photo-btn" onclick="document.getElementById('upload').click()" aria-label="Change profile photo">
+                📷 Change Photo
+            </button>
+        </div>
+
+        <div class="profile-name" id="userName">—</div>
+
+        <div class="profile-divider"></div>
+
+        <!-- View mode -->
+        <div class="profile-details" id="profile-view">
+            <p><strong>Position:</strong> <span id="userPosition"></span></p>
+            <p><strong>Contact:</strong>  <span id="userContact"></span></p>
+            <p><strong>Email:</strong>    <span id="userEmail"></span></p>
+            <p><strong>Employee ID:</strong> <span id="userEmployeeID"></span></p>
+            <p><strong>Date Joined:</strong> <span id="userDateJoined"></span></p>
+            <p><strong>Last Login:</strong>  <span id="userLastLogin"></span></p>
+            <p><strong>Emergency Contact:</strong> <span id="userEmergency"></span></p>
+        </div>
+
+        <div id="roleMessage" class="profile-role-badge"></div>
+
+        <!-- Edit Profile button -->
+        <button onclick="toggleEdit(true)" id="edit-btn" style="margin-top:1rem;width:auto;padding:0.55rem 1.5rem;font-size:0.85rem;border-radius:10px;display:inline-flex;align-items:center;gap:6px;">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Profile
+        </button>
+
+        <!-- Edit form (hidden by default) -->
+        <div class="profile-edit-form" id="profile-edit" style="display:none;">
+            <div class="input-group">
+                <label for="edit-name">Full Name</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="input-group">
+                <label for="edit-contact">Contact Number</label>
+                <input type="tel" id="edit-contact">
+            </div>
+            <div class="input-group">
+                <label for="edit-emergency">Emergency Contact</label>
+                <input type="text" id="edit-emergency" placeholder="Name & number">
+            </div>
+            <div class="btn-row">
+                <button class="btn-success" onclick="saveProfile()" style="margin-top:0;"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save</button>
+                <button onclick="toggleEdit(false)" style="margin-top:0;background:var(--gray)!important;">Cancel</button>
+            </div>
+        </div>
+
+        <div class="profile-divider" style="margin-top:1.2rem;"></div>
+
+        <!-- Change password section -->
+        <div class="change-pw-section">
+            <h4><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Change Password</h4>
+            <div class="input-group">
+                <label for="pw-current">Current Password</label>
+                <div class="input-password-wrap">
+                    <input type="password" id="pw-current" placeholder="Current password">
+                    <button type="button" class="eye-btn" onclick="togglePassword('pw-current',this)" aria-label="Toggle visibility">
+                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="pw-new">New Password</label>
+                <div class="input-password-wrap">
+                    <input type="password" id="pw-new" placeholder="Min. 8 characters">
+                    <button type="button" class="eye-btn" onclick="togglePassword('pw-new',this)" aria-label="Toggle visibility">
+                        <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg class="eye-off-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    </button>
+                </div>
+                <div class="pw-strength-bar" id="profile-pw-bar"></div>
+                <span class="pw-strength-label" id="profile-pw-label"></span>
+            </div>
+            <button onclick="changePassword()" style="margin-top:0.75rem;width:auto;padding:0.55rem 1.4rem;font-size:0.82rem;border-radius:10px;background:var(--primary)!important;">
+                Update Password
+            </button>
+        </div>
+
+            <div class="profile-divider" style="margin:1.5rem 0 1rem;"></div>
+            <div class="profile-delete-section" style="text-align:left;">
+                <h4 style="margin-bottom:0.5rem;color:var(--danger);">Delete Account</h4>
+                <p style="margin:0 0 1rem;color:#7f1d1d;line-height:1.5;">Deleting your profile will remove your account from the database permanently. This cannot be undone.</p>
+                <button class="btn-danger" id="delete-account-btn" onclick="deleteAccount()" style="width:auto;padding:0.7rem 1.5rem;font-size:0.86rem;">
+                    Delete My Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <section class="aq-guide animate-in" aria-labelledby="profile-aq-guide-title">
+        <div class="aq-guide-head">
+            <h3 id="profile-aq-guide-title">Quick Reference: PM1.0</h3>
+            <span class="aq-guide-chip">Staff Knowledge</span>
+        </div>
+        <div class="aq-guide-grid">
+            <article class="aq-card">
+                <h4>What is PM1.0?</h4>
+                <p>Tracks very fine aerosol (≤1 µm) that travels fast indoors and can indicate fresh vaping activity. FreshZone uses PM1.0 as the sole detection metric.</p>
+            </article>
+            <article class="aq-card">
+                <h4>Detection threshold</h4>
+                <p>PM1.0 above 12 µg/m³ triggers a detection event. Readings between 13–35 µg/m³ indicate medium aerosol; 35+ µg/m³ indicates heavy vape presence.</p>
+            </article>
+            <article class="aq-card">
+                <h4>Why PM1.0?</h4>
+                <p>Vape aerosol is ultra-fine and hits PM1.0 first. It is the fastest and most accurate indicator of vape aerosol presence indoors.</p>
+            </article>
+        </div>
+    </section>
+</div>
+
+<div id="crop-modal" role="dialog" aria-modal="true" aria-label="Crop your photo">
+    <div class="crop-modal-card">
+        <h3 class="crop-modal-title"><svg class="h-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg> Crop Your Photo</h3>
+
+        <!-- Cropper lives here -->
+        <div class="crop-container">
+            <img id="crop-image" src="" alt="Image to crop">
+        </div>
+
+        <p class="crop-hint">Move or resize the box · Drag the photo to reposition · Zoom to get closer</p>
+
+        <!-- Zoom slider -->
+        <div class="crop-zoom-row">
+            <label for="zoom-slider"><svg class="sm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg> Zoom</label>
+            <input type="range" id="zoom-slider" min="0" max="3" step="0.01" value="0">
+        </div>
+
+        <div class="crop-actions">
+            <button class="crop-btn-apply" id="crop-apply-btn" onclick="applyCrop()">Save Photo</button>
+            <button class="crop-btn-cancel" onclick="closeCropModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="session-warning" role="status"></div>
+<div id="notification" class="notification" role="alert" aria-live="polite"></div>
+
+<div id="logoutModal" class="modal-overlay-custom" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+    <div class="modal-content-custom">
+        <h3 id="logout-title">Confirm Logout</h3>
+        <p>Are you sure you want to log out of FreshZone?</p>
+        <div class="modal-btn-group">
+            <button class="confirm-btn" onclick="confirmLogout()">Yes, Logout</button>
+            <button class="cancel-btn"  onclick="closeLogoutModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+    <footer class="site-footer">
+        <p>
+            © 2026 FreshZone – Campus Vape Aerosol Detection System<br>
+            <a href="terms.html">Terms of Service</a> |
+            <a href="privacy.html">Privacy Policy</a> |
+            DPO: <a href="mailto:dpo@freshzone.space">dpo@freshzone.space</a>
+        </p>
+    </footer>
+
+    <script src="cookie-consent.js?v=3" defer></script>
+
+<!-- Cropper.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+<script src="utils.js"></script>
+<script>
+    // Auth guard
+    (async function initUser() {
+        const user = await hydrateSessionUser();
+        if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; return; }
+        window._fzCurrentUser = user;
+        loadProfile();
+    })();
+    // ── CROPPER STATE ──────────────────────────────────────────
+    let cropperInstance = null;
+
+    // Called when user picks a file
+    function openCropModal(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showNotification('Please select an image file.', 'error');
+            input.value = '';
+            return;
+        }
+        if (file.size > 10 * 1024 * 1024) {
+            showNotification('Image must be under 10MB.', 'error');
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const cropImg = document.getElementById('crop-image');
+            cropImg.src = e.target.result;
+
+            // Show modal first so the image has a rendered size
+            document.getElementById('crop-modal').classList.add('open');
+
+            // Destroy previous instance if any
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+
+            // Init Cropper.js — full image visible, crop box locked inside it
+            cropperInstance = new Cropper(cropImg, {
+                aspectRatio: 1,              // Locked square
+                viewMode: 1,                 // Full image always visible, crop box can't leave image
+                dragMode: 'move',            // Drag moves the image to reposition under box
+                autoCropArea: 0.75,          // Crop box starts at 75% of the image size
+                cropBoxMovable: true,        // Can drag box around
+                cropBoxResizable: true,      // Can resize box (stays square via aspectRatio)
+                toggleDragModeOnDblclick: false,
+                background: false,           // No checkerboard
+                guides: true,
+                center: true,
+                highlight: true,
+                movable: true,
+                rotatable: false,
+                scalable: false,
+                zoomable: true,
+                zoomOnTouch: true,
+                zoomOnWheel: true,
+                minCropBoxWidth: 50,
+                minCropBoxHeight: 50,
+                initialAspectRatio: 1,
+                ready() {
+                    document.getElementById('zoom-slider').value = 0;
+                    // Fit entire image into the container so nothing is cropped on load
+                    const containerData = cropperInstance.getContainerData();
+                    const imageData = cropperInstance.getImageData();
+                    const scale = Math.min(
+                        containerData.width  / imageData.naturalWidth,
+                        containerData.height / imageData.naturalHeight
+                    );
+                    cropperInstance.zoomTo(scale);
+                }
+            });
+
+            // Zoom slider → cropper zoom
+            document.getElementById('zoom-slider').oninput = function() {
+                if (cropperInstance) {
+                    cropperInstance.zoomTo(parseFloat(this.value));
+                }
+            };
+
+            // Sync slider when user pinch-zooms or scroll-zooms the cropper
+            cropImg.addEventListener('zoom', function(e) {
+                const slider = document.getElementById('zoom-slider');
+                slider.value = Math.max(0, Math.min(3, e.detail.ratio));
+            });
+        };
+        reader.readAsDataURL(file);
+
+        // Reset file input so picking the same file again triggers onchange
+        input.value = '';
+    }
+
+    function closeCropModal() {
+        document.getElementById('crop-modal').classList.remove('open');
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
+        }
+    }
+
+    // Close modal if user clicks outside the card
+    document.getElementById('crop-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeCropModal();
+    });
+
+    async function applyCrop() {
+        if (!cropperInstance) return;
+
+        const applyBtn = document.getElementById('crop-apply-btn');
+        applyBtn.classList.add('loading');
+        applyBtn.textContent = 'Saving…';
+
+        try {
+            // Get cropped canvas — output at 300×300px, JPEG quality 0.82
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 300,
+                height: 300,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+
+            const croppedBase64 = canvas.toDataURL('image/jpeg', 0.82);
+
+            // Check size — backend allows up to 500KB base64
+            if (croppedBase64.length > 490000) {
+                // Re-compress at lower quality if too big
+                const smaller = canvas.toDataURL('image/jpeg', 0.6);
+                if (smaller.length > 490000) {
+                    showNotification('Image is too large even after compression. Try a smaller photo.', 'error');
+                    applyBtn.classList.remove('loading');
+                    applyBtn.textContent = 'Save Photo';
+                    return;
+                }
+                await uploadPhoto(smaller);
+            } else {
+                await uploadPhoto(croppedBase64);
+            }
+        } catch (err) {
+            showNotification('Failed to process image. Try another photo.', 'error');
+            applyBtn.classList.remove('loading');
+            applyBtn.textContent = 'Save Photo';
+        }
+    }
+
+    async function uploadPhoto(base64) {
+        const applyBtn = document.getElementById('crop-apply-btn');
+        try {
+            // Update preview immediately
+            document.getElementById('userPhoto').src = base64;
+
+            const data = await apiFetch('/profile', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    full_name: document.getElementById('userName').textContent,
+                    photo_url: base64
+                })
+            });
+
+            if (data && data.success) {
+                // Persist to localStorage so other pages pick it up
+                const cu = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                cu.photo_url = base64;
+                localStorage.setItem('currentUser', JSON.stringify(cu));
+                showNotification('Profile photo updated.', 'success');
+                closeCropModal();
+            } else {
+                showNotification(data?.message || 'Failed to save photo.', 'error');
+            }
+        } catch (err) {
+            showNotification('Connection error saving photo. Try again.', 'error');
+        } finally {
+            applyBtn.classList.remove('loading');
+            applyBtn.textContent = 'Save Photo';
+        }
+    }
+
+    // ── PROFILE LOAD ───────────────────────────────────────────
+    async function loadProfile() {
+        try {
+            const data = await apiFetch('/profile');
+            if (!data || !data.success) {
+                showNotification('Failed to load profile.', 'error');
+                return;
+            }
+            const u = data.user;
+
+            document.getElementById('userName').textContent       = u.full_name || '—';
+            const navName = document.getElementById('nav-user-name');
+            if (navName && u.full_name) navName.textContent = u.full_name;
+            document.getElementById('userEmail').textContent      = u.email || '—';
+            document.getElementById('userContact').textContent    = u.contact_number || '—';
+            document.getElementById('userPosition').textContent   = u.position || '—';
+            document.getElementById('userEmployeeID').textContent = u.employee_id || '—';
+            const phLocale = 'en-PH';
+            const phTZ     = { timeZone: 'Asia/Manila' };
+            function parseFirestoreDate(val) {
+                if (!val) return null;
+                // Firestore Timestamp object with _seconds
+                if (val._seconds) return new Date(val._seconds * 1000);
+                if (val.seconds) return new Date(val.seconds * 1000);
+                // Already a string or number
+                const d = new Date(val);
+                return isNaN(d.getTime()) ? null : d;
+            }
+            const dateJoined = parseFirestoreDate(u.date_joined);
+            const lastLogin  = parseFirestoreDate(u.last_login);
+            document.getElementById('userDateJoined').textContent = dateJoined
+                ? dateJoined.toLocaleDateString(phLocale, { ...phTZ, year:'numeric', month:'long', day:'numeric' })
+                : '—';
+            document.getElementById('userLastLogin').textContent  = lastLogin
+                ? lastLogin.toLocaleString(phLocale, { ...phTZ, year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', hour12:true })
+                : '—';
+            document.getElementById('userEmergency').textContent  = u.emergency_contact || '—';
+
+            const cachedUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const photoSrc = u.photo_url || cachedUser.photo_url
+                || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.full_name) + '&background=00b4d8&color=fff&size=150';
+            document.getElementById('userPhoto').src = photoSrc;
+
+            const rm = document.getElementById('roleMessage');
+            if (u.position === 'Administrator') {
+                rm.textContent = 'Full Administrative Access';
+                rm.style.background = 'rgba(0,78,122,0.1)';
+                rm.style.color = 'var(--primary)';
+            } else {
+                rm.textContent = 'Staff Access';
+                rm.style.background = 'rgba(40,167,69,0.1)';
+                rm.style.color = 'var(--success)';
+            }
+        } catch (err) {
+            showNotification('Error loading profile.', 'error');
+        }
+    }
+
+    function toggleEdit(open) {
+        document.getElementById('profile-edit').style.display = open ? 'block' : 'none';
+        document.getElementById('profile-view').style.display = open ? 'none' : 'block';
+        document.getElementById('edit-btn').style.display     = open ? 'none' : 'inline-block';
+        if (open) {
+            document.getElementById('edit-name').value      = document.getElementById('userName').textContent;
+            document.getElementById('edit-contact').value   = document.getElementById('userContact').textContent;
+            document.getElementById('edit-emergency').value = document.getElementById('userEmergency').textContent;
+        }
+    }
+
+    async function saveProfile() {
+        const full_name         = document.getElementById('edit-name').value.trim();
+        const contact_number    = document.getElementById('edit-contact').value.trim();
+        const emergency_contact = document.getElementById('edit-emergency').value.trim();
+
+        if (!full_name || full_name.length < 2) { showNotification('Name must be at least 2 characters.', 'error'); return; }
+        if (contact_number && !/^[0-9+\-\s()]{7,20}$/.test(contact_number)) { showNotification('Invalid contact number format.', 'error'); return; }
+
+        const data = await apiFetch('/profile', {
+            method: 'PUT',
+            body: JSON.stringify({ full_name, contact_number, emergency_contact })
+        });
+
+        if (data && data.success) {
+            const cu = JSON.parse(localStorage.getItem('currentUser'));
+            cu.full_name = full_name;
+            localStorage.setItem('currentUser', JSON.stringify(cu));
+            loadProfile();
+            toggleEdit(false);
+            showNotification('Profile updated successfully!', 'success');
+        } else {
+            showNotification(data?.message || 'Failed to update profile.', 'error');
+        }
+    }
+
+    async function deleteAccount() {
+        if (!confirm('This will permanently delete your FreshZone account from the database. Continue?')) return;
+
+        const btn = document.getElementById('delete-account-btn');
+        if (btn) { btn.textContent = 'Deleting…'; btn.disabled = true; }
+
+        try {
+            const data = await apiFetch('/profile', { method: 'DELETE' });
+            if (data && data.success) {
+                localStorage.removeItem('currentUser');
+                showNotification('Account deleted. Redirecting to login…', 'success', 3000);
+                setTimeout(() => window.location.href = 'auth.html', 1200);
+            } else {
+                showNotification(data?.message || 'Failed to delete account.', 'error');
+                if (btn) { btn.textContent = 'Delete My Account'; btn.disabled = false; }
+            }
+        } catch (err) {
+            showNotification('Connection error deleting account. Try again.', 'error');
+            if (btn) { btn.textContent = 'Delete My Account'; btn.disabled = false; }
+        }
+    }
+
+    async function changePassword() {
+        const current_password = document.getElementById('pw-current').value.trim();
+        const new_password     = document.getElementById('pw-new').value.trim();
+
+        if (!current_password || !new_password) { showNotification('Please fill both fields.', 'error'); return; }
+        if (new_password.length < 8) { showNotification('New password must be at least 8 characters.', 'error'); return; }
+        if (!/[a-zA-Z]/.test(new_password) || !/[0-9]/.test(new_password)) { showNotification('Password must have at least one letter and one number.', 'error'); return; }
+        if (current_password === new_password) { showNotification('New password must be different from current password.', 'error'); return; }
+
+        const data = await apiFetch('/profile/change-password', {
+            method: 'POST',
+            body: JSON.stringify({ current_password, new_password })
+        });
+
+        if (data && data.success) {
+            document.getElementById('pw-current').value = '';
+            document.getElementById('pw-new').value     = '';
+            document.getElementById('profile-pw-bar').style.width = '0%';
+            document.getElementById('profile-pw-label').textContent = '';
+            showNotification('Password updated successfully!', 'success');
+        } else {
+            showNotification(data?.message || 'Failed to change password.', 'error');
+        }
+    }
+
+    // Password strength meter
+    document.getElementById('pw-new').addEventListener('input', function() {
+        let pw = this.value, score = 0;
+        if (pw.length >= 8)  score++;
+        if (pw.length >= 12) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
+        const levels = [
+            {pct:'0%',  color:'#ddd',    text:''},
+            {pct:'20%', color:'#e74c3c', text:'Very Weak'},
+            {pct:'40%', color:'#e67e22', text:'Weak'},
+            {pct:'60%', color:'#f39c12', text:'Fair'},
+            {pct:'80%', color:'#2ecc71', text:'Strong'},
+            {pct:'100%',color:'#27ae60', text:'Very Strong'},
+        ];
+        const lv = levels[Math.min(score, 5)];
+        document.getElementById('profile-pw-bar').style.width      = lv.pct;
+        document.getElementById('profile-pw-bar').style.background = lv.color;
+        document.getElementById('profile-pw-label').textContent    = lv.text;
+        document.getElementById('profile-pw-label').style.color    = lv.color;
+    });
+
+    initHotkeys('profile');
+
+    // Push notification state
+    function updatePushBtn(subscribed) {
+        const toggle    = document.getElementById('push-btn');
+        const label     = document.getElementById('push-label');
+        const mobileBtn = document.getElementById('mobile-push-btn');
+        if (toggle) {
+            subscribed ? toggle.classList.add('active') : toggle.classList.remove('active');
+            toggle.style.background = '';
+            toggle.style.color = '';
+        }
+        if (label) {
+            label.textContent = subscribed ? 'ON' : 'OFF';
+            label.style.color = subscribed ? 'var(--secondary)' : '#94a3b8';
+        }
+        if (mobileBtn) mobileBtn.textContent = subscribed ? 'Notifications ON' : 'Notifications';
+    }
+
+    initPushNotifications();
+</script>
+<script src="/pwa.js" defer></script>
+    <script defer src="enhance.js"></script>
+    <script src="/fz-config.js"></script>
+    <script src="/fz-ai-chat.js" defer></script>
+</body>
+</html>
