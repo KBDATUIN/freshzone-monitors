@@ -8,26 +8,19 @@ let _currentUser = null;
 
 // Initialize - call this on page load to verify authentication
 async function initAuthGuard() {
-    // First try localStorage (fast, synchronous)
-    const stored = localStorage.getItem('currentUser');
-    if (stored) {
-        try {
-            _currentUser = JSON.parse(stored);
-            if (_currentUser) return _currentUser;
-        } catch (e) {}
-    }
-    
-    // If no stored user, check with API
+    // Always validate the session with the backend.
+    // localStorage may be stale if user switches accounts without clearing it.
     _currentUser = await hydrateSessionUser();
-    
+
     if (!_currentUser) {
-        // No valid session - redirect to login
+        // No valid session - clear stale cache and redirect to login
+        localStorage.removeItem('currentUser');
         alert('Access denied. Please login first.');
         window.location.href = 'auth.html';
         return null;
     }
-    
-    // Update localStorage with fresh user data
+
+    // Cache fresh user data for convenience
     localStorage.setItem('currentUser', JSON.stringify(_currentUser));
     return _currentUser;
 }
