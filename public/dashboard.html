@@ -755,10 +755,17 @@
             isAdmin = user.position === 'Administrator';
             isStaff = user.position === 'Staff / Teachers';
 
-            // DEBUG: remove any stale assumptions from earlier page loads
-            // Always render staff banner strictly from the hydrated user.
+            // Show staff banner ONLY for Staff / Teachers — never for Administrators.
             const staffBar = document.getElementById('staff-info-bar');
-            if (staffBar) staffBar.classList.toggle('visible', isStaff);
+            if (staffBar) {
+                if (isStaff) {
+                    staffBar.classList.add('visible');
+                    staffBar.style.removeProperty('display');
+                } else {
+                    staffBar.classList.remove('visible');
+                    staffBar.style.display = 'none'; // force-hide even if CSS overrides exist
+                }
+            }
 
             const nameEl = document.getElementById('nav-user-name');
             if (nameEl) nameEl.textContent = user.full_name || user.name || 'User';

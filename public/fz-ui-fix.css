@@ -234,7 +234,11 @@ footer,
 }
 
 /* 4f. Staff alert bar — proper padding so icon and text align */
-.staff-alert-bar {
+/* NOTE: display is intentionally NOT set here — it is controlled by the
+   .visible class toggled by JS based on the user's role. Setting display:flex
+   here would override the default display:none and show the bar for ALL users,
+   including Administrators. */
+.staff-alert-bar.visible {
     display: flex !important;
     align-items: flex-start !important;
     gap: 10px !important;
