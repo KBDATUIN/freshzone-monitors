@@ -749,12 +749,17 @@
         let isStaff = false;
 
         (async function initUser() {
-            user = await hydrateSessionUser();
+            user = await hydrateSessionUser(true);
             if (!user) { alert('Access denied. Please login.'); window.location.href = 'auth.html'; return; }
             window._fzCurrentUser = user;
             isAdmin = user.position === 'Administrator';
             isStaff = user.position === 'Staff / Teachers';
-            if (isStaff) document.getElementById('staff-info-bar')?.classList.add('visible');
+
+            // DEBUG: remove any stale assumptions from earlier page loads
+            // Always render staff banner strictly from the hydrated user.
+            const staffBar = document.getElementById('staff-info-bar');
+            if (staffBar) staffBar.classList.toggle('visible', isStaff);
+
             const nameEl = document.getElementById('nav-user-name');
             if (nameEl) nameEl.textContent = user.full_name || user.name || 'User';
             const sessionText = document.getElementById('hero-session-text');
