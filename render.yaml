@@ -21,34 +21,37 @@ services:
 
       # Set these in the Render dashboard — never commit real values here
       - key: DB_HOST
-        sync: true
+        sync: false
       - key: DB_PORT
-        sync: true
+        sync: false
       - key: DB_NAME
-        sync: true
+        sync: false
       - key: DB_USER
-        sync: true
+        sync: false
       - key: DB_PASS
-        sync: true
+        sync: false
       - key: JWT_SECRET
-        sync: true
+        sync: false
       - key: FRONTEND_URL
-        sync: true
+        sync: false
       - key: RENDER_BACKEND_URL
-        sync: true
+        sync: false
+
+      # ESP32 plain API key auth — set the key value in the Render dashboard
       - key: ESP32_API_KEY
-        sync: true
+        sync: false
       - key: ALLOW_LEGACY_ESP32_KEY
-        value: "true"
+        value: "true"   # must be true for plain x-api-key auth (no HMAC)
+
       - key: RESEND_API_KEY
-        sync: true
+        sync: false
       - key: VAPID_PUBLIC_KEY
-        sync: true
+        sync: false
       - key: VAPID_PRIVATE_KEY
-        sync: true
+        sync: false
       - key: ADMIN_EMAIL
-        sync: true
+        sync: false
       - key: SENTRY_DSN
-        sync: true
+        sync: false
       - key: SENTRY_TRACES_SAMPLE_RATE
         value: "0.1"
