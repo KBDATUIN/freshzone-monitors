@@ -4,7 +4,7 @@
 
 services:
   - type: web
-    name: freshzone-backend
+    name: freshzone-api
     runtime: node
     plan: free          # change to "starter" or higher when ready
     region: singapore   # closest to PH; options: oregon, frankfurt, singapore, ohio
